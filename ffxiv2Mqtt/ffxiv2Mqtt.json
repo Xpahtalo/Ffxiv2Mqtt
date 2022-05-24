@@ -1,0 +1,12 @@
+{
+  "Author": "X'pahtalo",
+  "Name": "FFXIV2MQTT",
+  "Punchline": "Send info over MQTT",
+  "Description": "Butts",
+  "InternalName": "ffxiv2Mqtt",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "plugin",
+    "goats"
+  ]
+}
