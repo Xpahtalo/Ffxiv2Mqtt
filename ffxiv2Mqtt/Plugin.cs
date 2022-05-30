@@ -38,13 +38,13 @@ namespace Ffxiv2Mqtt
             this.CommandManager = commandManager;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            mqttManager = new MqttManager(Configuration);
+            //mqttManager = new MqttManager(Configuration);
+            pluginInterface.Create<MqttManager>();
 
 
-
-            clientStateHandler = pluginInterface.Create<ClientStateHandler>(mqttManager);
-            conditionHandler = pluginInterface.Create<ConditionHandler>(mqttManager);
-            jobGaugeHandler = pluginInterface.Create<JobGaugeHandler>(mqttManager);
+            clientStateHandler = pluginInterface.Create<ClientStateHandler>();
+            conditionHandler = pluginInterface.Create<ConditionHandler>();
+            jobGaugeHandler = pluginInterface.Create<JobGaugeHandler>();
             //dragoonGaugeHandler = pluginInterface.Create<DragoonGaugeHandler>(mqttManager);
             
             this.Configuration.Initialize(this.PluginInterface);

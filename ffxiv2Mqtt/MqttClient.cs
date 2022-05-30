@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Logging;
 using MQTTnet;
@@ -9,16 +10,30 @@ using MQTTnet.Extensions.ManagedClient;
 
 namespace Ffxiv2Mqtt
 {
-    public class MqttManager
+    [PluginInterface]
+    public class MqttManager : IDisposable
     {
         private IManagedMqttClient mqttClient;
-        private Configuration configuration;
+
+        private bool disposed = false;
+
+        [PluginService]
+        [RequiredVersion("1.0")]
+        public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+        [PluginService]
+        [RequiredVersion("1.0")]
+        public static Configuration Configuration { get; private set; } = null!;
         public bool IsConnected { get => mqttClient.IsConnected; }
         public bool IsStarted { get => mqttClient.IsStarted; }
 
-        public MqttManager(Configuration configuration)
+
+
+        public static void Initialize(DalamudPluginInterface pluginInterface) =>
+            pluginInterface.Create<MqttManager>();
+
+        public MqttManager(DalamudPluginInterface pluginInterface)
         {
-            this.configuration = configuration;
+            MqttManager.Initialize(pluginInterface);
             mqttClient = new MqttFactory().CreateManagedMqttClient();
         }
 
@@ -26,9 +41,9 @@ namespace Ffxiv2Mqtt
         {
             var options = new ManagedMqttClientOptionsBuilder()
                 .WithClientOptions(new MqttClientOptionsBuilder()
-                    .WithClientId(configuration.ClientId)
-                    .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
-                    .WithCredentials(configuration.User, configuration.Password)
+                    .WithClientId(Configuration.ClientId)
+                    .WithTcpServer(Configuration.BrokerAddress, Configuration.BrokerPort)
+                    .WithCredentials(Configuration.User, Configuration.Password)
                     .Build())
                 .Build();
 
@@ -39,9 +54,9 @@ namespace Ffxiv2Mqtt
         {
             // TODO: Actually figure out what an approriate size should be.
             var sb = new StringBuilder(50);
-            sb.AppendFormat("{0}/", configuration.BaseTopic);
-            if (configuration.IncludeClientId)
-                sb.AppendFormat("{0}/", configuration.ClientId);
+            sb.AppendFormat("{0}/", Configuration.BaseTopic);
+            if (Configuration.IncludeClientId)
+                sb.AppendFormat("{0}/", Configuration.ClientId);
             sb.AppendFormat("{0}", topic);
 
             return sb.ToString();
@@ -84,10 +99,18 @@ namespace Ffxiv2Mqtt
         }
 
 
-        public void Dispose()
+        private void Dispose(bool disposing)
         {
+            if (!disposed) return;
             this.DisconnectFromBroker();
             mqttClient.Dispose();
+            disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

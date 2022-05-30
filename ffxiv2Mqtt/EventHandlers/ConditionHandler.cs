@@ -23,12 +23,12 @@ namespace Ffxiv2Mqtt.EventHandlers
         [RequiredVersion("1.0")]
         public static DataManager DataManager { get; private set; } = null!;
 
-        private MqttManager mqttManager;
+        [PluginService]
+        public static MqttManager MqttManager { get; private set; } = null!;
 
-        public ConditionHandler(DalamudPluginInterface pluginInterface, MqttManager mqttManager)
+        public ConditionHandler(DalamudPluginInterface pluginInterface)
         {
             ConditionHandler.Initialize(pluginInterface);
-            this.mqttManager = mqttManager;
 
             Condition.ConditionChange += ConditionChange;
         }
@@ -41,7 +41,7 @@ namespace Ffxiv2Mqtt.EventHandlers
         private void ConditionChange(ConditionFlag flag, bool value)
         {
             var topic = "Condition/" + flag.ToString();
-            mqttManager.PublishMessage(topic, value.ToString());
+            MqttManager.PublishMessage(topic, value.ToString());
         }
     }
 }

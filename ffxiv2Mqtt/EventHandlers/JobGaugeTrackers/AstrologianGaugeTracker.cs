@@ -33,7 +33,7 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
             {
                 if (astrologianGauge.Seals[i] != seals[i])
                 {
-                    mqttManager.PublishMessage(string.Format("JobGauge/AST/Seal{0}", i), astrologianGauge.Seals[i].ToString());
+                    mqttManager.PublishMessage(string.Format("JobGauge/AST/Seal{0}", i+1), astrologianGauge.Seals[i].ToString());
                     seals[i] = astrologianGauge.Seals[i];
                 }
             }

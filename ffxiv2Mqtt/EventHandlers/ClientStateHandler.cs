@@ -23,12 +23,13 @@ namespace Ffxiv2Mqtt.EventHandlers
         [RequiredVersion("1.0")]
         public static DataManager DataManager { get; private set; } = null!;
 
-        private MqttManager mqttManager;
+        [PluginService]
+        public static MqttManager MqttManager { get; private set; } = null!;
         
-        public ClientStateHandler(DalamudPluginInterface pluginInterface, MqttManager mqttManager)
+        public ClientStateHandler(DalamudPluginInterface pluginInterface)
         {
             ClientStateHandler.Initialize(pluginInterface);
-            this.mqttManager = mqttManager;
+            //this.mqttManager = mqttManager;
 
             ClientState.CfPop += CfPop;
             ClientState.Login += Login;
@@ -47,25 +48,25 @@ namespace Ffxiv2Mqtt.EventHandlers
         
         private void CfPop(object? s, ContentFinderCondition e)
         {
-            mqttManager.PublishMessage("ClientState/Queue", "Pop");
+            MqttManager.PublishMessage("ClientState/Queue", "Pop");
         }
 
         private void Login(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "Login");
-            mqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
+            MqttManager.PublishMessage("ClientState/Login", "Login");
+            MqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
         }
 
         private void Logout(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "Logout");
-            mqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", string.Empty);
+            MqttManager.PublishMessage("ClientState/Login", "Logout");
+            MqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", string.Empty);
         }
 
         private void TerritoryChanged(object? s, ushort e)
         {
             var territoryName = DataManager.GameData.Excel.GetSheet<TerritoryType>().GetRow(e).PlaceName.Value.Name;
-            mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString());
+            MqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString());
         }
     }
 }
