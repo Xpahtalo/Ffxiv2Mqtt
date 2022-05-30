@@ -13,6 +13,7 @@ namespace Ffxiv2Mqtt
 
         private const string configCommandName = "/mqtt";
         private const string testCommandName = "/mtest";
+        private const string customCommandName = "/mqttcustom";
 
         private DalamudPluginInterface PluginInterface { get; init; }
         private CommandManager CommandManager { get; init; }
@@ -58,7 +59,12 @@ namespace Ffxiv2Mqtt
             });
             this.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
             {
-                HelpMessage = "Test"
+                HelpMessage = "Test",
+                ShowInHelp = false
+            });
+            this.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+            {
+                HelpMessage = "Send a custom MQTT message with the given topic and payload."
             });
 
 
@@ -78,6 +84,7 @@ namespace Ffxiv2Mqtt
             if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
             this.CommandManager.RemoveHandler(configCommandName);
             this.CommandManager.RemoveHandler(testCommandName);
+            this.CommandManager.RemoveHandler(customCommandName);
             if (mqttManager != null) mqttManager.Dispose();
         }
 
@@ -90,6 +97,12 @@ namespace Ffxiv2Mqtt
             else if (command == testCommandName)
             {
                 mqttManager.PublishMessage("test", "success");
+            }
+            else if (command == customCommandName)
+            {
+                var argsList = args.Split(' ');
+
+                mqttManager.PublishMessage(argsList[0], argsList[1]);
             }
         }
 
