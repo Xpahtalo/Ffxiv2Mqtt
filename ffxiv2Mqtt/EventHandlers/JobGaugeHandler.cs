@@ -33,9 +33,8 @@ namespace Ffxiv2Mqtt.EventHandlers
         [PluginService]
         [RequiredVersion("1.0")]
         public static DataManager DataManager { get; private set; } = null!;
-
-        [PluginService]
-        public static MqttManager MqttManager { get; private set; } = null!;
+    
+        private MqttManager mqttManager;
 
         // Tanks
         private WarriorGaugeTracker     warriorGaugeTracker;
@@ -77,27 +76,28 @@ namespace Ffxiv2Mqtt.EventHandlers
         private const uint Sage         = 40;
 
 
-        public JobGaugeHandler(DalamudPluginInterface pluginInterface)
+        public JobGaugeHandler(DalamudPluginInterface pluginInterface, MqttManager mqttManager)
         {
             JobGaugeHandler.Initialize(pluginInterface);
+            this.mqttManager = mqttManager;
 
             // Tanks
-            warriorGaugeTracker     = new WarriorGaugeTracker(MqttManager);
-            darkKnightGaugeTracker  = new DarkKnightGaugeTracker(MqttManager);
+            warriorGaugeTracker     = new WarriorGaugeTracker(this.mqttManager);
+            darkKnightGaugeTracker  = new DarkKnightGaugeTracker(this.mqttManager);
             // Healer
-            whiteMageGaugeTracker   = new WhiteMageGaugeTracker(MqttManager);
-            astrologianGaugeTracker = new AstrologianGaugeTracker(MqttManager);
-            scholarGaugeTracker     = new ScholarGaugeTracker(MqttManager);
-            sageGaugeTracker        = new SageGaugeTracker(MqttManager);
+            whiteMageGaugeTracker   = new WhiteMageGaugeTracker(this.mqttManager);
+            astrologianGaugeTracker = new AstrologianGaugeTracker(this.mqttManager);
+            scholarGaugeTracker     = new ScholarGaugeTracker(this.mqttManager);
+            sageGaugeTracker        = new SageGaugeTracker(this.mqttManager);
             // Melee DPS
-            dragoonGaugeTracker     = new DragoonGaugeTracker(MqttManager);
-            monkGaugeTracker        = new MonkGaugeTracker(MqttManager);
-            reaperGaugeTracker      = new ReaperGaugeTracker(MqttManager);
+            dragoonGaugeTracker     = new DragoonGaugeTracker(this.mqttManager);
+            monkGaugeTracker        = new MonkGaugeTracker(this.mqttManager);
+            reaperGaugeTracker      = new ReaperGaugeTracker(this.mqttManager);
             // Physical Ranged DPS
-            machinistGaugeTracker   = new MachinistGaugeTracker(MqttManager);
+            machinistGaugeTracker   = new MachinistGaugeTracker(this.mqttManager);
             // Magical Ranged DPS
-            blackMageGuageTracker   = new BlackMageGuageTracker(MqttManager);
-            redMageGaugeTracker     = new RedMageGaugeTracker(MqttManager);
+            blackMageGuageTracker   = new BlackMageGuageTracker(this.mqttManager);
+            redMageGaugeTracker     = new RedMageGaugeTracker(this.mqttManager);
 
             Framework.Update += Update;
         }
