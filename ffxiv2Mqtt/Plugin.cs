@@ -7,7 +7,7 @@ using Ffxiv2Mqtt.EventHandlers;
 
 namespace Ffxiv2Mqtt
 {
-    public sealed class Plugin : IDalamudPlugin
+    public class Plugin : IDalamudPlugin
     {
         public string Name => "FFXIV2MQTT";
 
@@ -18,8 +18,8 @@ namespace Ffxiv2Mqtt
         private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
-        
-        
+
+
         private MqttManager mqttManager;
 
 
@@ -37,13 +37,14 @@ namespace Ffxiv2Mqtt
             this.CommandManager = commandManager;
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            pluginInterface.Create<MqttManager>();
+            mqttManager = new MqttManager(Configuration);
 
 
-            clientStateHandler = pluginInterface.Create<ClientStateHandler>();
-            conditionHandler = pluginInterface.Create<ConditionHandler>();
-            jobGaugeHandler = pluginInterface.Create<JobGaugeHandler>();
-            
+
+            clientStateHandler = pluginInterface.Create<ClientStateHandler>(mqttManager);
+            conditionHandler = pluginInterface.Create<ConditionHandler>(mqttManager);
+            jobGaugeHandler = pluginInterface.Create<JobGaugeHandler>(mqttManager);
+
             this.Configuration.Initialize(this.PluginInterface);
 
 
@@ -77,7 +78,7 @@ namespace Ffxiv2Mqtt
             if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
             this.CommandManager.RemoveHandler(configCommandName);
             this.CommandManager.RemoveHandler(testCommandName);
-            if (mqttManager != null) this.mqttManager.Dispose();
+            if (mqttManager != null) mqttManager.Dispose();
         }
 
         private void OnCommand(string command, string args)
