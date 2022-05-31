@@ -46,8 +46,9 @@ namespace Ffxiv2Mqtt.EventHandlers
         private ScholarGaugeTracker     scholarGaugeTracker;
         private SageGaugeTracker        sageGaugeTracker;
         // Melee DPS
-        private DragoonGaugeTracker     dragoonGaugeTracker;
         private MonkGaugeTracker        monkGaugeTracker;
+        private DragoonGaugeTracker     dragoonGaugeTracker;
+        private SamuraiGaugeTracker     samuraiGaugeTracker;
         private ReaperGaugeTracker      reaperGaugeTracker;
         // Physical Ranged DPS
         private MachinistGaugeTracker   machinistGaugeTracker;
@@ -92,8 +93,9 @@ namespace Ffxiv2Mqtt.EventHandlers
             scholarGaugeTracker     = new ScholarGaugeTracker(this.mqttManager);
             sageGaugeTracker        = new SageGaugeTracker(this.mqttManager);
             // Melee DPS
-            dragoonGaugeTracker     = new DragoonGaugeTracker(this.mqttManager);
             monkGaugeTracker        = new MonkGaugeTracker(this.mqttManager);
+            dragoonGaugeTracker     = new DragoonGaugeTracker(this.mqttManager);
+            samuraiGaugeTracker     = new SamuraiGaugeTracker(this.mqttManager);
             reaperGaugeTracker      = new ReaperGaugeTracker(this.mqttManager);
             // Physical Ranged DPS
             machinistGaugeTracker   = new MachinistGaugeTracker(this.mqttManager);
@@ -142,11 +144,14 @@ namespace Ffxiv2Mqtt.EventHandlers
                     sageGaugeTracker.Update(JobGauges.Get<SGEGauge>());
                     break;
                 // Melee DPS
+                case Monk:
+                    monkGaugeTracker.Update(JobGauges.Get<MNKGauge>());
+                    break;
                 case Dragoon:
                     dragoonGaugeTracker.Update(JobGauges.Get<DRGGauge>());
                     break;
-                case Monk:
-                    monkGaugeTracker.Update(JobGauges.Get<MNKGauge>());
+                case Samurai:
+                    samuraiGaugeTracker.Update(JobGauges.Get<SAMGauge>());
                     break;
                 case Reaper:
                     reaperGaugeTracker.Update(JobGauges.Get<RPRGauge>());
