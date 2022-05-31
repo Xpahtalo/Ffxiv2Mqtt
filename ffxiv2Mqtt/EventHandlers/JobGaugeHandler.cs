@@ -152,12 +152,15 @@ namespace Ffxiv2Mqtt.EventHandlers
                     break;
                 // Magical Ranged DPS
                 case Thaumaturge: // Thaumaturge also uses the Black Mage Job Gauge
+                    goto case BlackMage;
                 case BlackMage:
                     blackMageGuageTracker.Update(JobGauges.Get<BLMGauge>());
                     break;
                 case RedMage:
                     redMageGaugeTracker.Update(JobGauges.Get<RDMGauge>());
                     break;
+                default:
+                    return;
             }
         }
     }

@@ -24,9 +24,9 @@ namespace Ffxiv2Mqtt
         private MqttManager mqttManager;
 
 
-        private ClientStateHandler clientStateHandler;
-        private ConditionHandler conditionHandler;
-        private JobGaugeHandler jobGaugeHandler;
+        private ClientStateHandler? clientStateHandler;
+        private ConditionHandler? conditionHandler;
+        private JobGaugeHandler? jobGaugeHandler;
 
 
 
