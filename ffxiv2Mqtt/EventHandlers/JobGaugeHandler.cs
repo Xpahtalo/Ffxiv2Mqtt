@@ -37,6 +37,7 @@ namespace Ffxiv2Mqtt.EventHandlers
         private MqttManager mqttManager;
 
         // Tanks
+        private PaladinGaugeTracker     paladinGaugeTracker;
         private WarriorGaugeTracker     warriorGaugeTracker;
         private DarkKnightGaugeTracker  darkKnightGaugeTracker;
         // Healers
@@ -82,6 +83,7 @@ namespace Ffxiv2Mqtt.EventHandlers
             this.mqttManager = mqttManager;
 
             // Tanks
+            paladinGaugeTracker     = new PaladinGaugeTracker(this.mqttManager);
             warriorGaugeTracker     = new WarriorGaugeTracker(this.mqttManager);
             darkKnightGaugeTracker  = new DarkKnightGaugeTracker(this.mqttManager);
             // Healer
@@ -117,6 +119,9 @@ namespace Ffxiv2Mqtt.EventHandlers
             switch (localPlayer.ClassJob.Id)
             {
                 // Tanks
+                case Paladin:
+                    paladinGaugeTracker.Update(JobGauges.Get<PLDGauge>());
+                    break;
                 case Warrior:
                     warriorGaugeTracker.Update(JobGauges.Get<WARGauge>());
                     break;
