@@ -1,6 +1,7 @@
 ﻿using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game.Command;
+using Dalamud.Logging;
 using Dalamud.Game.ClientState;
 using System.IO;
 using Ffxiv2Mqtt.EventHandlers;
@@ -102,6 +103,11 @@ namespace Ffxiv2Mqtt
             {
                 var argsList = args.Split(' ');
 
+                if (argsList.Length < 2)
+                {
+                    PluginLog.LogError("Not enough arguments.");
+                    return;
+                }
                 mqttManager.PublishMessage(argsList[0], argsList[1]);
             }
         }
