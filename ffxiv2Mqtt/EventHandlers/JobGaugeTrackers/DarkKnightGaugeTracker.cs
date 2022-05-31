@@ -13,29 +13,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(DRKGauge darkKnightGauge)
         {
-            if (darkKnightGauge.Blood != blood)
-            {
-                mqttManager.PublishMessage("JobGauge/DRK/Blood", darkKnightGauge.Blood);
-                blood = darkKnightGauge.Blood;
-            }
-
-            if (CheckCountDownTimer(darksideTimeRemaining, darkKnightGauge.DarksideTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/DRK/DarksideTimeRemaining", darkKnightGauge.DarksideTimeRemaining);
-                darksideTimeRemaining = darkKnightGauge.DarksideTimeRemaining;
-            }
-
-            if (darkKnightGauge.HasDarkArts != hasDarkArts)
-            {
-                mqttManager.PublishMessage("JobGauge/DRK/DarkArts", darkKnightGauge.HasDarkArts);
-                hasDarkArts = darkKnightGauge.HasDarkArts;
-            }
-            
-            if(CheckCountDownTimer(shadowTimeRemaining, darkKnightGauge.ShadowTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/DRK/ShadowTimeRemaining", darkKnightGauge.ShadowTimeRemaining);
-                shadowTimeRemaining = darkKnightGauge.ShadowTimeRemaining;
-            }
+            TestValue(darkKnightGauge.Blood, ref blood, "JobGauge/DRK/Blood");
+            TestCountDown(darkKnightGauge.DarksideTimeRemaining, ref darksideTimeRemaining, 1000, "JobGauge/DRK/DarksideTimeRemaining");
+            TestValue(darkKnightGauge.HasDarkArts, ref hasDarkArts, "JobGauge/DRK/DarkArts");
+            TestCountDown(darkKnightGauge.ShadowTimeRemaining, ref shadowTimeRemaining, 1000, "JobGauge/DRK/ShadowTimeRemaining");
         }
     }
 }

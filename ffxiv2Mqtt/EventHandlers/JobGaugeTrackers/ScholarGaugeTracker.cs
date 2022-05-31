@@ -14,29 +14,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(SCHGauge scholarGauge)
         {
-            if (scholarGauge.Aetherflow != aetherflow)
-            {
-                mqttManager.PublishMessage("JobGauge/SCH/Aetherflow", scholarGauge.Aetherflow);
-                aetherflow = scholarGauge.Aetherflow;
-            }
-
-            if (scholarGauge.DismissedFairy != dismissedFairy)
-            {
-                mqttManager.PublishMessage("JobGauge/SCH/DismissedFairy", scholarGauge.DismissedFairy.ToString());
-                dismissedFairy = scholarGauge.DismissedFairy;
-            }
-
-            if (scholarGauge.FairyGauge != fairyGauge)
-            {
-                mqttManager.PublishMessage("JobGauge/SCH/FairyGauge", scholarGauge.FairyGauge.ToString());
-                fairyGauge = scholarGauge.FairyGauge;
-            }
-
-            if (CheckCountDownTimer(seraphTimer, scholarGauge.SeraphTimer, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/SCH/SeraphTimer", scholarGauge.SeraphTimer);
-                seraphTimer = scholarGauge.SeraphTimer;
-            }
+            TestValue(scholarGauge.Aetherflow, ref aetherflow, "JobGauge/SCH/Aetherflow");
+            TestValue(scholarGauge.DismissedFairy, ref dismissedFairy, "JobGauge/SCH/DismissedFairy");
+            TestValue(scholarGauge.FairyGauge, ref fairyGauge, "JobGauge/SCH/FairyGauge");
+            TestCountDown(scholarGauge.SeraphTimer, ref seraphTimer, 1000, "JobGauge/SCH/SeraphTimer");
         }
     }
 }

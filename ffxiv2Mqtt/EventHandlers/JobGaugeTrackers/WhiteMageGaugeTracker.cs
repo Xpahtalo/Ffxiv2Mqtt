@@ -12,23 +12,9 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(WHMGauge whiteMageGauge)
         {
-            if (whiteMageGauge.Lily != lily)
-            {
-                mqttManager.PublishMessage("JobGauge/WHM/Lily", whiteMageGauge.Lily);
-                lily = whiteMageGauge.Lily;
-            }
-
-            if (whiteMageGauge.BloodLily != bloodLily)
-            {
-                mqttManager.PublishMessage("JobGauge/WHM/BloodLily", whiteMageGauge.BloodLily);
-                bloodLily = whiteMageGauge.BloodLily;
-            }
-
-            if (CheckCountUpTimer(lilyTimer, whiteMageGauge.LilyTimer, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/WHM/LilyTimer", whiteMageGauge.LilyTimer);
-                lilyTimer = whiteMageGauge.LilyTimer;
-            }
+            TestValue(whiteMageGauge.Lily, ref lily, "JobGauge/WHM/Lily");
+            TestValue(whiteMageGauge.BloodLily, ref bloodLily, "JobGauge/WHM/BloodLily");
+            TestCountUp(whiteMageGauge.LilyTimer, ref lilyTimer, 1000, "JobGauge/WHM/LilyTimer");
         }
     }
 }

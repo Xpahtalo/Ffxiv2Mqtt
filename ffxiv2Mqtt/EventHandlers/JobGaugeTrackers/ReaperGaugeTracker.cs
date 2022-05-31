@@ -14,29 +14,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(RPRGauge reaperGauge)
         {
-            if (reaperGauge.Soul != soul)
-            {
-                mqttManager.PublishMessage("JobGauge/RPR/Soul", reaperGauge.Soul);
-                soul = reaperGauge.Soul;
-            }
-
-            if (reaperGauge.LemureShroud != lemureShroud)
-            {
-                mqttManager.PublishMessage("JobGauge/RPR/LemureShroud", reaperGauge.LemureShroud);
-                lemureShroud = reaperGauge.LemureShroud;
-            }
-
-            if (reaperGauge.VoidShroud != voidShroud)
-            {
-                mqttManager.PublishMessage("JobGauge/RPR/VoidShroud", reaperGauge.VoidShroud);
-                voidShroud = reaperGauge.VoidShroud;
-            }
-
-            if (CheckCountDownTimer(enshroudedTimeRemaining, reaperGauge.EnshroudedTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/RPR/EnshroudedTimer", reaperGauge.EnshroudedTimeRemaining);
-                enshroudedTimeRemaining = reaperGauge.EnshroudedTimeRemaining;
-            }
+            TestValue(reaperGauge.Soul, ref soul, "JobGauge/RPR/Soul");
+            TestValue(reaperGauge.LemureShroud, ref lemureShroud, "JobGauge/RPR/LemureShroud");
+            TestValue(reaperGauge.VoidShroud, ref voidShroud, "JobGauge/RPR/VoidShroud");
+            TestCountDown(reaperGauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, 1000, "JobGauge/RPR/EnshroudedTimer");
         }
     }
 }

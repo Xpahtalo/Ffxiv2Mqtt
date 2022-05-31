@@ -16,47 +16,13 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(MCHGauge machinistGauge)
         {
-            if (machinistGauge.Battery != battery)
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/Battery", machinistGauge.Battery);
-                battery = machinistGauge.Battery;
-            }
-
-            if (machinistGauge.Heat != heat)
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/Heat", machinistGauge.Heat);
-                heat = machinistGauge.Heat;
-            }
-
-            if (machinistGauge.IsOverheated != isOverheated)
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/IsOverheated", machinistGauge.IsOverheated);
-                isOverheated = machinistGauge.IsOverheated;
-            }
-
-            if (machinistGauge.IsRobotActive != isRobotActive)
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/IsRobotActive", machinistGauge.IsRobotActive);
-                isRobotActive = machinistGauge.IsRobotActive;
-            }
-
-            if (machinistGauge.LastSummonBatteryPower != lastSummonBatteryPower)
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/LastSummonBatteryPower", machinistGauge.LastSummonBatteryPower);
-                lastSummonBatteryPower = machinistGauge.LastSummonBatteryPower;
-            }
-
-            if (CheckCountDownTimer(overheatTimeRemaining, machinistGauge.OverheatTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/OverheatTimeRemaining", machinistGauge.OverheatTimeRemaining);
-                overheatTimeRemaining = machinistGauge.OverheatTimeRemaining;
-            }
-
-            if (CheckCountDownTimer(summonTimeRemaining, machinistGauge.SummonTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauge/MCH/SummonTimeRemaining", machinistGauge.SummonTimeRemaining);
-                summonTimeRemaining = machinistGauge.SummonTimeRemaining;
-            }
+            TestValue(machinistGauge.Battery, ref battery, "JobGauge/MCH/Battery");
+            TestValue(machinistGauge.Heat, ref heat, "JobGauge/MCH/Heat");
+            TestValue(machinistGauge.IsOverheated, ref isOverheated, "JobGauge/MCH/IsOverheated");
+            TestValue(machinistGauge.IsRobotActive, ref isRobotActive, "JobGauge/MCH/IsRobotActive");
+            TestValue(machinistGauge.LastSummonBatteryPower, ref lastSummonBatteryPower, "JobGauge/MCH/LastSummonBatteryPower");
+            TestCountDown(machinistGauge.OverheatTimeRemaining, ref overheatTimeRemaining, 1000, "JobGauge/MCH/OverheatTimeRemaining");
+            TestCountDown(machinistGauge.SummonTimeRemaining, ref summonTimeRemaining, 1000, "JobGauge/MCH/SummonTimeRemaining");
         }
     }
 }

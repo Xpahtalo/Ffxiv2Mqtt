@@ -13,29 +13,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(DRGGauge dragoonGauge)
         {
-            if (dragoonGauge.EyeCount != eyeCount)
-            {
-                mqttManager.PublishMessage("JobGauge/DRG/Eye", dragoonGauge.EyeCount);
-                eyeCount = dragoonGauge.EyeCount;
-            }
-
-            if (dragoonGauge.FirstmindsFocusCount != firstmindsFocusCount)
-            {
-                mqttManager.PublishMessage("JobGauge/DRG/FirstmindsFocus", dragoonGauge.FirstmindsFocusCount);
-                firstmindsFocusCount  = dragoonGauge.FirstmindsFocusCount;
-            }
-
-            if (dragoonGauge.IsLOTDActive != isLotdActive)
-            {
-                mqttManager.PublishMessage("JobGauge/DRG/Life", dragoonGauge.IsLOTDActive);
-                isLotdActive = dragoonGauge.IsLOTDActive;
-            }
-
-            if (CheckCountDownTimer(lotdTimer, dragoonGauge.LOTDTimer, 1000))
-            {
-                mqttManager.PublishMessage("JobGauges/DRG/LifeTimer", dragoonGauge.LOTDTimer);
-                lotdTimer = dragoonGauge.LOTDTimer;
-            }
+            TestValue(dragoonGauge.EyeCount, ref eyeCount, "JobGauge/DRG/Eye");
+            TestValue(dragoonGauge.FirstmindsFocusCount, ref firstmindsFocusCount, "JobGauge/DRG/FirstmindsFocus");
+            TestValue(dragoonGauge.IsLOTDActive, ref isLotdActive, "JobGauge/DRG/IsLOTDActive");
+            TestCountDown(dragoonGauge.LOTDTimer, ref lotdTimer, 1000, "JobGauge/DRG/LifeOfTheDragonTimeRemaining");
         }
     }
 }

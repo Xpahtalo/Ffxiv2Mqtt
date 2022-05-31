@@ -17,29 +17,14 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(MNKGauge monkGauge)
         {
-            // The crit chakra
-            if (monkGauge.Chakra != chakra)
-            {
-                mqttManager.PublishMessage("JobGauge/MNK/Chakra", monkGauge.Chakra);
-                chakra = monkGauge.Chakra;
-            }
+            TestValue(monkGauge.Chakra, ref chakra, "JobGauge/MNK/Chakra");
 
-            // Perfect Balance Chakra
             for (var i = 0; i < 3; i++)
             {
-                if (monkGauge.BeastChakra[i] != beastChakra[i])
-                {
-                    mqttManager.PublishMessage(string.Format("JobGauges/MNK/BeastChakra{0}", i + 1), monkGauge.BeastChakra[i].ToString());
-                    beastChakra[i] = monkGauge.BeastChakra[i];
-                }
+                TestValue(monkGauge.BeastChakra[i], ref beastChakra[i], string.Format("JobGauges/MNK/BeastChakra{0}", i + 1));
             }
 
-
-            if (CheckCountDownTimer(blitzTimeRemaining, monkGauge.BlitzTimeRemaining, 1000))
-            {
-                mqttManager.PublishMessage("JobGauges/MNK/BlitzTimer", monkGauge.BlitzTimeRemaining);
-                blitzTimeRemaining = monkGauge.BlitzTimeRemaining;
-            }
+            TestCountDown(monkGauge.BlitzTimeRemaining, ref blitzTimeRemaining, 1000, "JobGauges/MNK/BlitzTimer");
         }
     }
 }
