@@ -26,6 +26,7 @@ namespace Ffxiv2Mqtt
         {
             var options = new ManagedMqttClientOptionsBuilder()
                 .WithClientOptions(new MqttClientOptionsBuilder()
+                    .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
                     .WithClientId(configuration.ClientId)
                     .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
                     .WithCredentials(configuration.User, configuration.Password)
@@ -72,12 +73,13 @@ namespace Ffxiv2Mqtt
             PublishMessage(topic, payload.ToString());
         }
 
-        public void PublishPersistentMessage(string topic, string payload)
+        public void PublishRetainedMessage(string topic, string payload)
         {
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(BuildTopic(topic))
                 .WithPayload(payload)
-                .WithExactlyOnceQoS()
+                .WithAtLeastOnceQoS()
+                .WithRetainFlag()
                 .Build();
 
             mqttClient.PublishAsync(message);

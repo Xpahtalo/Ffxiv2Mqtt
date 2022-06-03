@@ -53,13 +53,13 @@ namespace Ffxiv2Mqtt.EventHandlers
         private void Login(object? s, System.EventArgs e)
         {
             mqttManager.PublishMessage("ClientState/Login", "Login");
-            mqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
+            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
         }
 
         private void Logout(object? s, System.EventArgs e)
         {
             mqttManager.PublishMessage("ClientState/Login", "Logout");
-            mqttManager.PublishPersistentMessage("ClientState/LoggedInCharacter", string.Empty);
+            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", string.Empty);
         }
 
         private void TerritoryChanged(object? s, ushort e)
