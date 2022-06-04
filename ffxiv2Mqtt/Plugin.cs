@@ -28,6 +28,7 @@ namespace Ffxiv2Mqtt
         private ClientStateHandler? clientStateHandler;
         private ConditionHandler? conditionHandler;
         private JobGaugeHandler? jobGaugeHandler;
+        private PlayerStateHandler? playerStateHandler;
 
 
 
@@ -46,6 +47,7 @@ namespace Ffxiv2Mqtt
             clientStateHandler = pluginInterface.Create<ClientStateHandler>(mqttManager);
             conditionHandler = pluginInterface.Create<ConditionHandler>(mqttManager);
             jobGaugeHandler = pluginInterface.Create<JobGaugeHandler>(mqttManager);
+            playerStateHandler = pluginInterface.Create<PlayerStateHandler>(mqttManager);
 
             this.Configuration.Initialize(this.PluginInterface);
 
@@ -83,6 +85,7 @@ namespace Ffxiv2Mqtt
             if (clientStateHandler != null) clientStateHandler.Dispose();
             if (conditionHandler != null) conditionHandler.Dispose();
             if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
+            if (playerStateHandler != null) playerStateHandler.Dispose();
             this.CommandManager.RemoveHandler(configCommandName);
             this.CommandManager.RemoveHandler(testCommandName);
             this.CommandManager.RemoveHandler(customCommandName);
