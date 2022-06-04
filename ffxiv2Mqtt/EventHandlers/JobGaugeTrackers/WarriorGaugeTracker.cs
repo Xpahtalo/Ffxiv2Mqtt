@@ -10,7 +10,7 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(WARGauge warriorGauge)
         {
-            TestValue(warriorGauge.BeastGauge, ref beastGauge, "JobGauge/WAR/BeastGauge");
+            mqttManager.TestValue(warriorGauge.BeastGauge, ref beastGauge, "JobGauge/WAR/BeastGauge");
         }
     }
 }

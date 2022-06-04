@@ -16,12 +16,12 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(SAMGauge samuraiGauge)
         {
-            TestValue(samuraiGauge.Kenki, ref kenki, "JobGauge/SAM/Kenki");
-            TestValue(samuraiGauge.MeditationStacks, ref meditationStacks, "JobGauge/SAM/MeditationStacks");
-            TestValue(samuraiGauge.HasGetsu, ref hasGetsu, "JobGauge/SAM/Getsu");
-            TestValue(samuraiGauge.HasKa, ref hasKa, "JobGauge/SAM/Ka");
-            TestValue(samuraiGauge.HasSetsu, ref hasSetsu, "JobGauge/SAM/Setsu");
-            TestValue(samuraiGauge.Kaeshi, ref kaeshi, "JobGauge/SAM/Kaeshi");
+            mqttManager.TestValue(samuraiGauge.Kenki, ref kenki, "JobGauge/SAM/Kenki");
+            mqttManager.TestValue(samuraiGauge.MeditationStacks, ref meditationStacks, "JobGauge/SAM/MeditationStacks");
+            mqttManager.TestValue(samuraiGauge.HasGetsu, ref hasGetsu, "JobGauge/SAM/Getsu");
+            mqttManager.TestValue(samuraiGauge.HasKa, ref hasKa, "JobGauge/SAM/Ka");
+            mqttManager.TestValue(samuraiGauge.HasSetsu, ref hasSetsu, "JobGauge/SAM/Setsu");
+            mqttManager.TestValue(samuraiGauge.Kaeshi, ref kaeshi, "JobGauge/SAM/Kaeshi");
         }
     }
 }

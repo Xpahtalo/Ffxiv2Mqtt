@@ -11,9 +11,9 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(RDMGauge redMageGauge)
         {
-            TestValue(redMageGauge.ManaStacks, ref manaStacks, "JobGauge/RDM/ManaStacks");
-            TestValue(redMageGauge.BlackMana, ref blackMana, "JobGauge/RDM/BlackMana");
-            TestValue(redMageGauge.WhiteMana, ref whiteMana, "JobGauge/RDM/WhiteMana");
+            mqttManager.TestValue(redMageGauge.ManaStacks, ref manaStacks, "JobGauge/RDM/ManaStacks");
+            mqttManager.TestValue(redMageGauge.BlackMana, ref blackMana, "JobGauge/RDM/BlackMana");
+            mqttManager.TestValue(redMageGauge.WhiteMana, ref whiteMana, "JobGauge/RDM/WhiteMana");
         }
     }
 }

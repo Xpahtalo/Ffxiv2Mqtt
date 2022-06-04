@@ -13,10 +13,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(SGEGauge sageGauge)
         {
-            TestValue(sageGauge.Addersgall, ref addersgall, "JobGauge/SGE/Addersgall");
-            TestCountUp(sageGauge.AddersgallTimer, ref addersgallTimer, 1000, "JobGauge/SGE/AddersgallTimer");
-            TestValue(sageGauge.Addersting, ref addersting, "JobGauge/SGE/Addersting");
-            TestValue(sageGauge.Eukrasia, ref eukrasia, "JobGauge/SGE/Eukrasia");
+            mqttManager.TestValue(sageGauge.Addersgall, ref addersgall, "JobGauge/SGE/Addersgall");
+            mqttManager.TestCountUp(sageGauge.AddersgallTimer, ref addersgallTimer, 1000, "JobGauge/SGE/AddersgallTimer");
+            mqttManager.TestValue(sageGauge.Addersting, ref addersting, "JobGauge/SGE/Addersting");
+            mqttManager.TestValue(sageGauge.Eukrasia, ref eukrasia, "JobGauge/SGE/Eukrasia");
         }
     }
 }

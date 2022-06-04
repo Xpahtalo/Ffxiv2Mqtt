@@ -21,18 +21,18 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
         
         public void Update(SMNGauge summonerGauge)
         {
-            TestValue(summonerGauge.AetherflowStacks, ref aetherflowStacks, "JobGauge/SMN/AetherflowStacks");
-            TestValue(summonerGauge.Attunement, ref attunement, "JobGauge/SMN/Attunement");
-            TestCountDown(summonerGauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, 1000, "JobGauge/SMN/AttunementTimer");
-            TestValue(summonerGauge.IsBahamutReady, ref isBahamutReady, "JobGauge/SMN/BahamutReady");
-            TestValue(summonerGauge.IsPhoenixReady, ref isPhoenixReady, "JobGauge/SMN/PhoenixReady");
-            TestValue(summonerGauge.IsGarudaReady, ref isGarudaReady, "JobGauge/SMN/GarudaReady");
-            TestValue(summonerGauge.IsGarudaAttuned, ref isGarudaAttuned, "JobGauge/SMN/GarudaAttuned");
-            TestValue(summonerGauge.IsIfritReady, ref isIfritReady, "JobGauge/SMN/IfritReady");
-            TestValue(summonerGauge.IsIfritAttuned, ref isIfritAttuned, "JobGauge/SMN/IfritAttuned");
-            TestValue(summonerGauge.IsTitanReady, ref isTitanReady, "JobGauge/SMN/TitanReady");
-            TestValue(summonerGauge.IsTitanAttuned, ref isTitanAttuned, "JobGauge/SMN/TitanAttuned");
-            TestCountDown(summonerGauge.SummonTimerRemaining, ref summonTimeRemaining, 1000, "JobGauge/SMN/SummonTimeRemaining");
+            mqttManager.TestValue(summonerGauge.AetherflowStacks, ref aetherflowStacks, "JobGauge/SMN/AetherflowStacks");
+            mqttManager.TestValue(summonerGauge.Attunement, ref attunement, "JobGauge/SMN/Attunement");
+            mqttManager.TestCountDown(summonerGauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, 1000, "JobGauge/SMN/AttunementTimer");
+            mqttManager.TestValue(summonerGauge.IsBahamutReady, ref isBahamutReady, "JobGauge/SMN/BahamutReady");
+            mqttManager.TestValue(summonerGauge.IsPhoenixReady, ref isPhoenixReady, "JobGauge/SMN/PhoenixReady");
+            mqttManager.TestValue(summonerGauge.IsGarudaReady, ref isGarudaReady, "JobGauge/SMN/GarudaReady");
+            mqttManager.TestValue(summonerGauge.IsGarudaAttuned, ref isGarudaAttuned, "JobGauge/SMN/GarudaAttuned");
+            mqttManager.TestValue(summonerGauge.IsIfritReady, ref isIfritReady, "JobGauge/SMN/IfritReady");
+            mqttManager.TestValue(summonerGauge.IsIfritAttuned, ref isIfritAttuned, "JobGauge/SMN/IfritAttuned");
+            mqttManager.TestValue(summonerGauge.IsTitanReady, ref isTitanReady, "JobGauge/SMN/TitanReady");
+            mqttManager.TestValue(summonerGauge.IsTitanAttuned, ref isTitanAttuned, "JobGauge/SMN/TitanAttuned");
+            mqttManager.TestCountDown(summonerGauge.SummonTimerRemaining, ref summonTimeRemaining, 1000, "JobGauge/SMN/SummonTimeRemaining");
         }
     }
 }

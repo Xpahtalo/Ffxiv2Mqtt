@@ -13,10 +13,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(DRKGauge darkKnightGauge)
         {
-            TestValue(darkKnightGauge.Blood, ref blood, "JobGauge/DRK/Blood");
-            TestCountDown(darkKnightGauge.DarksideTimeRemaining, ref darksideTimeRemaining, 1000, "JobGauge/DRK/DarksideTimeRemaining");
-            TestValue(darkKnightGauge.HasDarkArts, ref hasDarkArts, "JobGauge/DRK/DarkArts");
-            TestCountDown(darkKnightGauge.ShadowTimeRemaining, ref shadowTimeRemaining, 1000, "JobGauge/DRK/ShadowTimeRemaining");
+            mqttManager.TestValue(darkKnightGauge.Blood, ref blood, "JobGauge/DRK/Blood");
+            mqttManager.TestCountDown(darkKnightGauge.DarksideTimeRemaining, ref darksideTimeRemaining, 1000, "JobGauge/DRK/DarksideTimeRemaining");
+            mqttManager.TestValue(darkKnightGauge.HasDarkArts, ref hasDarkArts, "JobGauge/DRK/DarkArts");
+            mqttManager.TestCountDown(darkKnightGauge.ShadowTimeRemaining, ref shadowTimeRemaining, 1000, "JobGauge/DRK/ShadowTimeRemaining");
         }
     }
 }

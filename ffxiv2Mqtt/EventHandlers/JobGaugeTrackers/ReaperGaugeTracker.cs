@@ -14,10 +14,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(RPRGauge reaperGauge)
         {
-            TestValue(reaperGauge.Soul, ref soul, "JobGauge/RPR/Soul");
-            TestValue(reaperGauge.LemureShroud, ref lemureShroud, "JobGauge/RPR/LemureShroud");
-            TestValue(reaperGauge.VoidShroud, ref voidShroud, "JobGauge/RPR/VoidShroud");
-            TestCountDown(reaperGauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, 1000, "JobGauge/RPR/EnshroudedTimer");
+            mqttManager.TestValue(reaperGauge.Soul, ref soul, "JobGauge/RPR/Soul");
+            mqttManager.TestValue(reaperGauge.LemureShroud, ref lemureShroud, "JobGauge/RPR/LemureShroud");
+            mqttManager.TestValue(reaperGauge.VoidShroud, ref voidShroud, "JobGauge/RPR/VoidShroud");
+            mqttManager.TestCountDown(reaperGauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, 1000, "JobGauge/RPR/EnshroudedTimer");
         }
     }
 }

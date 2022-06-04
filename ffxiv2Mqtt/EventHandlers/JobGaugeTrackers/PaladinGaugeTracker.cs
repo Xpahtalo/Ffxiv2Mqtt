@@ -10,7 +10,7 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(PLDGauge paladinGauge)
         {
-            TestValue(paladinGauge.OathGauge, ref oathGauge, "JobGauge/PLD/OathGauge");
+            mqttManager.TestValue(paladinGauge.OathGauge, ref oathGauge, "JobGauge/PLD/OathGauge");
         }
     }
 }

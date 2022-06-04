@@ -13,10 +13,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(DRGGauge dragoonGauge)
         {
-            TestValue(dragoonGauge.EyeCount, ref eyeCount, "JobGauge/DRG/Eye");
-            TestValue(dragoonGauge.FirstmindsFocusCount, ref firstmindsFocusCount, "JobGauge/DRG/FirstmindsFocus");
-            TestValue(dragoonGauge.IsLOTDActive, ref isLotdActive, "JobGauge/DRG/IsLOTDActive");
-            TestCountDown(dragoonGauge.LOTDTimer, ref lotdTimer, 1000, "JobGauge/DRG/LifeOfTheDragonTimeRemaining");
+            mqttManager.TestValue(dragoonGauge.EyeCount, ref eyeCount, "JobGauge/DRG/Eye");
+            mqttManager.TestValue(dragoonGauge.FirstmindsFocusCount, ref firstmindsFocusCount, "JobGauge/DRG/FirstmindsFocus");
+            mqttManager.TestValue(dragoonGauge.IsLOTDActive, ref isLotdActive, "JobGauge/DRG/IsLOTDActive");
+            mqttManager.TestCountDown(dragoonGauge.LOTDTimer, ref lotdTimer, 1000, "JobGauge/DRG/LifeOfTheDragonTimeRemaining");
         }
     }
 }

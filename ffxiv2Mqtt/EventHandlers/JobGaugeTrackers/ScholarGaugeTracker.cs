@@ -14,10 +14,10 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(SCHGauge scholarGauge)
         {
-            TestValue(scholarGauge.Aetherflow, ref aetherflow, "JobGauge/SCH/Aetherflow");
-            TestValue(scholarGauge.DismissedFairy, ref dismissedFairy, "JobGauge/SCH/DismissedFairy");
-            TestValue(scholarGauge.FairyGauge, ref fairyGauge, "JobGauge/SCH/FairyGauge");
-            TestCountDown(scholarGauge.SeraphTimer, ref seraphTimer, 1000, "JobGauge/SCH/SeraphTimer");
+            mqttManager.TestValue(scholarGauge.Aetherflow, ref aetherflow, "JobGauge/SCH/Aetherflow");
+            mqttManager.TestValue(scholarGauge.DismissedFairy, ref dismissedFairy, "JobGauge/SCH/DismissedFairy");
+            mqttManager.TestValue(scholarGauge.FairyGauge, ref fairyGauge, "JobGauge/SCH/FairyGauge");
+            mqttManager.TestCountDown(scholarGauge.SeraphTimer, ref seraphTimer, 1000, "JobGauge/SCH/SeraphTimer");
         }
     }
 }

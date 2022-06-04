@@ -12,9 +12,9 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(WHMGauge whiteMageGauge)
         {
-            TestValue(whiteMageGauge.Lily, ref lily, "JobGauge/WHM/Lily");
-            TestValue(whiteMageGauge.BloodLily, ref bloodLily, "JobGauge/WHM/BloodLily");
-            TestCountUp(whiteMageGauge.LilyTimer, ref lilyTimer, 1000, "JobGauge/WHM/LilyTimer");
+            mqttManager.TestValue(whiteMageGauge.Lily, ref lily, "JobGauge/WHM/Lily");
+            mqttManager.TestValue(whiteMageGauge.BloodLily, ref bloodLily, "JobGauge/WHM/BloodLily");
+            mqttManager.TestCountUp(whiteMageGauge.LilyTimer, ref lilyTimer, 1000, "JobGauge/WHM/LilyTimer");
         }
     }
 }

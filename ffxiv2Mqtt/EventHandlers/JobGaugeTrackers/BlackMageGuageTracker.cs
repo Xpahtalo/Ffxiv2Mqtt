@@ -16,12 +16,12 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
 
         public void Update(BLMGauge blackMageGuage)
         {
-            TestValue(blackMageGuage.IsEnochianActive, ref isEnochianActive, "JobGauge/BLM/EnochianActive");
-            TestValue(blackMageGuage.IsParadoxActive, ref isParadoxActive, "JobGauge/BLM/ParadoxActive");
-            TestValue(blackMageGuage.AstralFireStacks, ref astralFireStacks, "JobGauge/BLM/AstralFireStacks");
-            TestValue(blackMageGuage.UmbralIceStacks, ref umbralIceStacks, "JobGauge/BLM/UmbralIceStacks");
-            TestCountDown(blackMageGuage.ElementTimeRemaining, ref elementTimeRemaining, 1000, "JobGauge/BLM/ElementTimer");
-            TestCountDown(blackMageGuage.EnochianTimer, ref enochianTimeRemaining, 1000, "JobGauge/BLM/EnochianTimer");
+            mqttManager.TestValue(blackMageGuage.IsEnochianActive, ref isEnochianActive, "JobGauge/BLM/EnochianActive");
+            mqttManager.TestValue(blackMageGuage.IsParadoxActive, ref isParadoxActive, "JobGauge/BLM/ParadoxActive");
+            mqttManager.TestValue(blackMageGuage.AstralFireStacks, ref astralFireStacks, "JobGauge/BLM/AstralFireStacks");
+            mqttManager.TestValue(blackMageGuage.UmbralIceStacks, ref umbralIceStacks, "JobGauge/BLM/UmbralIceStacks");
+            mqttManager.TestCountDown(blackMageGuage.ElementTimeRemaining, ref elementTimeRemaining, 1000, "JobGauge/BLM/ElementTimer");
+            mqttManager.TestCountDown(blackMageGuage.EnochianTimer, ref enochianTimeRemaining, 1000, "JobGauge/BLM/EnochianTimer");
         }
     }
 }
