@@ -54,6 +54,7 @@ namespace Ffxiv2Mqtt.EventHandlers
         private MachinistGaugeTracker   machinistGaugeTracker;
         // Magical Ranged DPS
         private BlackMageGuageTracker   blackMageGuageTracker;
+        private SummonerGaugeTracker    summonerGaugeTracker;
         private RedMageGaugeTracker     redMageGaugeTracker;
 
         private const uint Thaumaturge  = 7;
@@ -101,6 +102,7 @@ namespace Ffxiv2Mqtt.EventHandlers
             machinistGaugeTracker   = new MachinistGaugeTracker(this.mqttManager);
             // Magical Ranged DPS
             blackMageGuageTracker   = new BlackMageGuageTracker(this.mqttManager);
+            summonerGaugeTracker    = new SummonerGaugeTracker(this.mqttManager);
             redMageGaugeTracker     = new RedMageGaugeTracker(this.mqttManager);
 
             Framework.Update += Update;
@@ -165,6 +167,9 @@ namespace Ffxiv2Mqtt.EventHandlers
                     goto case BlackMage;
                 case BlackMage:
                     blackMageGuageTracker.Update(JobGauges.Get<BLMGauge>());
+                    break;
+                case Summoner:
+                    summonerGaugeTracker.Update(JobGauges.Get<SMNGauge>());
                     break;
                 case RedMage:
                     redMageGaugeTracker.Update(JobGauges.Get<RDMGauge>());
