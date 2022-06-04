@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Logging;
 using Dalamud.Game.ClientState;
 using Dalamud.Data;
 using Lumina.Excel.GeneratedSheets;
@@ -36,6 +37,8 @@ namespace Ffxiv2Mqtt.EventHandlers
             ClientState.Login += Login;
             ClientState.Logout += Logout;
             ClientState.TerritoryChanged += TerritoryChanged;
+
+            PluginLog.Information("ClientStateHandler initialized");
         }
 
         public void Dispose()

@@ -4,8 +4,11 @@ using Dalamud.Plugin;
 using Dalamud.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Client.Connecting;
+using MQTTnet.Client.Disconnecting;
 using MQTTnet.Client.Options;
 using MQTTnet.Extensions.ManagedClient;
+
 
 namespace Ffxiv2Mqtt
 {
@@ -18,12 +21,36 @@ namespace Ffxiv2Mqtt
 
         public MqttManager(Configuration configuration)
         {
+            PluginLog.Information("Initializing MQTTManager");
+            
             this.configuration = configuration;
             mqttClient = new MqttFactory().CreateManagedMqttClient();
+
+            mqttClient.ConnectedHandler = new MqttClientConnectedHandlerDelegate(e =>
+            {
+                PluginLog.Information("Connected to MQTT broker");
+            });
+
+            mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(e =>
+            {
+                PluginLog.Error($"Failed to connect to MQTT broker: {e.Exception.Message}");
+            });
+
+            mqttClient.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(e =>
+            {
+                if (e.Reason == MqttClientDisconnectReason.NormalDisconnection)
+                    PluginLog.Information("Disconnected from MQTT broker");
+                else
+                    PluginLog.Error($"Disconnected from MQTT broker: {e.Reason}");
+            });
+
+            PluginLog.Log("MqttManager Initialized");
         }
 
         public void ConnectToBroker()
         {
+            PluginLog.Information("Connecting to MQTT broker...");
+
             var options = new ManagedMqttClientOptionsBuilder()
                 .WithClientOptions(new MqttClientOptionsBuilder()
                     .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
@@ -54,6 +81,9 @@ namespace Ffxiv2Mqtt
 
         public void PublishMessage(string topic, string payload)
         {
+#if DEBUG
+            PluginLog.Debug($"Publishing message. Topic: {topic}, Payload: {payload}");
+#endif
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(BuildTopic(topic))
                 .WithPayload(payload)

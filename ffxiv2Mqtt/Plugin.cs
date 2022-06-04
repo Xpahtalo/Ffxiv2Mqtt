@@ -41,7 +41,8 @@ namespace Ffxiv2Mqtt
 
             this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             mqttManager = new MqttManager(Configuration);
-
+            if (Configuration.ConnectAtStartup)
+                mqttManager.ConnectToBroker();
 
 
             clientStateHandler = pluginInterface.Create<ClientStateHandler>(mqttManager);
@@ -50,9 +51,6 @@ namespace Ffxiv2Mqtt
             playerStateHandler = pluginInterface.Create<PlayerStateHandler>(mqttManager);
 
             this.Configuration.Initialize(this.PluginInterface);
-
-            if (Configuration.ConnectAtStartup)
-                mqttManager.ConnectToBroker();
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager);
 
