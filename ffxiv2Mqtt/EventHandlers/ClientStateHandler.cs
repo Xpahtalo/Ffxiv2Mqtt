@@ -40,13 +40,15 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         public void Dispose()
         {
+            mqttManager.PublishRetainedMessage("ClientState/Territory", "");
+            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", "");
+
             ClientState.CfPop -= CfPop;
             ClientState.Login -= Login;
             ClientState.Logout -= Logout;
             ClientState.TerritoryChanged -= TerritoryChanged;
         }
 
-        
         private void CfPop(object? s, ContentFinderCondition e)
         {
             mqttManager.PublishMessage("ClientState/Queue", "Pop");
@@ -58,7 +60,7 @@ namespace Ffxiv2Mqtt.EventHandlers
             Task.Run(() =>
             {
                 while (ClientState?.LocalPlayer?.Name == null)
-                    Thread.Sleep(100);
+                    Thread.Sleep(1000);
                 mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
             });
         }

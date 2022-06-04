@@ -51,8 +51,8 @@ namespace Ffxiv2Mqtt
 
             this.Configuration.Initialize(this.PluginInterface);
 
-
-            mqttManager.ConnectToBroker();
+            if (Configuration.ConnectAtStartup)
+                mqttManager.ConnectToBroker();
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager);
 

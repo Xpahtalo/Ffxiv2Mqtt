@@ -16,6 +16,7 @@ namespace Ffxiv2Mqtt
         public string User { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
         public string BaseTopic { get; set; } = "ffxiv";
+        public bool ConnectAtStartup { get; set; } = false;
 
         // the below exist just to make saving less cumbersome
 

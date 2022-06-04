@@ -25,7 +25,8 @@ namespace Ffxiv2Mqtt
             get { return this.settingsVisible; }
             set { this.settingsVisible = value; }
         }
-
+        
+        
         public PluginUI(Configuration configuration, MqttManager mqttManager)
         {
             this.configuration = configuration;
@@ -82,7 +83,9 @@ namespace Ffxiv2Mqtt
                 return;
             }
 
+
             
+
             if (ImGui.Begin("Config", ref this.settingsVisible,
                 ImGuiWindowFlags.AlwaysAutoResize ))
             {
@@ -93,7 +96,7 @@ namespace Ffxiv2Mqtt
                 }
 
                 bool includeClientId = this.configuration.IncludeClientId;
-                if (ImGui.Checkbox("Include Client ID in topid?", ref includeClientId))
+                if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId))
                 {
                     this.configuration.IncludeClientId = includeClientId;
                 }
@@ -111,7 +114,7 @@ namespace Ffxiv2Mqtt
                 }
 
                 string brokerAddress = this.configuration.BrokerAddress;
-                if (ImGui.InputText("Broker Address", ref brokerAddress, 256))
+                if (ImGui.InputText("Broker Address", ref brokerAddress, 2000))
                 {
                     this.configuration.BrokerAddress = brokerAddress;
                 }
@@ -126,6 +129,20 @@ namespace Ffxiv2Mqtt
                 if (ImGui.InputText("Base Topic", ref baseTopic, 256))
                 {
                     this.configuration.BaseTopic = baseTopic;
+                }
+
+                var fullTopic = baseTopic;
+                if (includeClientId)
+                {
+                    fullTopic += "/" + clientId;
+                }
+
+                ImGui.Text("All topics will be preceded by: " + fullTopic);
+
+                bool connectAtStartup = this.configuration.ConnectAtStartup;
+                if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup))
+                {
+                    this.configuration.ConnectAtStartup = connectAtStartup;
                 }
 
                 if (ImGui.Button("Save"))
