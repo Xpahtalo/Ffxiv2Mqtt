@@ -93,7 +93,7 @@ namespace Ffxiv2Mqtt
                || ((previous != 0) && (current == 0))
                || (current < previous)
                || (current - previous >= interval))
-                UpdateAndPublish(current, ref previous, topic);
+                UpdateAndPublish(current, ref previous, topic, false);
         }
         internal void TestCountDown(ushort current, ref ushort previous, ushort interval, string topic)
         {
@@ -101,7 +101,7 @@ namespace Ffxiv2Mqtt
                 || ((previous != 0) && (current == 0))
                 || (current > previous)
                 || (previous - current >= interval))
-                UpdateAndPublish(current, ref previous, topic);
+                UpdateAndPublish(current, ref previous, topic, false);
         }
         internal void TestCountDown(short current, ref short previous, short interval, string topic)
         {
@@ -109,19 +109,25 @@ namespace Ffxiv2Mqtt
                 || ((previous != 0) && (current == 0))
                 || (current > previous)
                 || (previous - current >= interval))
-                UpdateAndPublish(current, ref previous, topic);
+                UpdateAndPublish(current, ref previous, topic, false);
         }
 
+        internal void TestValue<T>(T current, ref T previous, string topic, bool retained)
+        {
+            if (current == null) return;
+            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic, retained);
+        }
         internal void TestValue<T>(T current, ref T previous, string topic)
         {
             if (current == null) return;
-
-            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic);
+            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic, false);
         }
-
-        internal void UpdateAndPublish<T>(T current, ref T previous, string topic)
+        internal void UpdateAndPublish<T>(T current, ref T previous, string topic, bool retained)
         {
-            PublishMessage(topic, current.ToString());
+            if (retained)
+                PublishRetainedMessage(topic, current.ToString());
+            else
+                PublishMessage(topic, current.ToString());
             previous = current;
         }
 
