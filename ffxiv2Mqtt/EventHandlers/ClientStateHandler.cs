@@ -54,7 +54,7 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         private void Login(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "LoggedIn");
+            mqttManager.PublishRetainedMessage("ClientState/Login", "LoggedIn");
             Task.Run(() =>
             {
                 while (ClientState?.LocalPlayer?.Name == null)
@@ -65,7 +65,7 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         private void Logout(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "LoggedOut");
+            mqttManager.PublishRetainedMessage("ClientState/Login", "LoggedOut");
             mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", string.Empty);
         }
 
@@ -73,7 +73,7 @@ namespace Ffxiv2Mqtt.EventHandlers
         {
             var territoryName = DataManager?.GameData?.Excel?.GetSheet<TerritoryType>()?.GetRow(e)?.PlaceName?.Value?.Name;
             if (territoryName != null)
-                mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString());
+                mqttManager.PublishRetainedMessage("ClientState/TerritoryChanged", territoryName.ToString());
         }
     }
 }
