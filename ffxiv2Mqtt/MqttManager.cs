@@ -38,8 +38,7 @@ namespace Ffxiv2Mqtt
 
         public string BuildTopic(string topic)
         {
-            // TODO: Actually figure out what an approriate size should be.
-            var sb = new StringBuilder(50);
+            var sb = new StringBuilder(100);
             sb.AppendFormat("{0}/", configuration.BaseTopic);
             if (configuration.IncludeClientId)
                 sb.AppendFormat("{0}/", configuration.ClientId);
