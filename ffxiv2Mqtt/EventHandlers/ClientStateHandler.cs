@@ -1,4 +1,6 @@
-﻿using Dalamud.IoC;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game.ClientState;
 using Dalamud.Data;
@@ -52,20 +54,26 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         private void Login(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "Login");
-            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
+            mqttManager.PublishMessage("ClientState/Login", "LoggedIn");
+            Task.Run(() =>
+            {
+                while (ClientState?.LocalPlayer?.Name == null)
+                    Thread.Sleep(100);
+                mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
+            });
         }
 
         private void Logout(object? s, System.EventArgs e)
         {
-            mqttManager.PublishMessage("ClientState/Login", "Logout");
+            mqttManager.PublishMessage("ClientState/Login", "LoggedOut");
             mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", string.Empty);
         }
 
         private void TerritoryChanged(object? s, ushort e)
         {
-            var territoryName = DataManager.GameData.Excel.GetSheet<TerritoryType>().GetRow(e).PlaceName.Value.Name;
-            mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString());
+            var territoryName = DataManager?.GameData?.Excel?.GetSheet<TerritoryType>()?.GetRow(e)?.PlaceName?.Value?.Name;
+            if (territoryName != null)
+                mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString());
         }
     }
 }
