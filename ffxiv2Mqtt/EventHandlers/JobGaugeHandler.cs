@@ -14,6 +14,7 @@ namespace Ffxiv2Mqtt.EventHandlers
         public static void Initialize(DalamudPluginInterface pluginInterface) =>
             pluginInterface.Create<JobGaugeHandler>();
 
+        #region Plugin Services
         [PluginService]
         [RequiredVersion("1.0")]
         public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -33,7 +34,8 @@ namespace Ffxiv2Mqtt.EventHandlers
         [PluginService]
         [RequiredVersion("1.0")]
         public static DataManager DataManager { get; private set; } = null!;
-    
+        #endregion
+
         private MqttManager mqttManager;
 
         // Tanks
@@ -108,11 +110,6 @@ namespace Ffxiv2Mqtt.EventHandlers
             Framework.Update += Update;
         }
 
-        public void Dispose()
-        {
-            Framework.Update -= Update;
-        }
-
         private void Update(Framework framework)
         {
             if (ClientState.IsPvP) return;
@@ -177,6 +174,11 @@ namespace Ffxiv2Mqtt.EventHandlers
                 default:
                     return;
             }
+        }
+
+        public void Dispose()
+        {
+            Framework.Update -= Update;
         }
     }
 }

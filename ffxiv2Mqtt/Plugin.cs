@@ -75,21 +75,6 @@ namespace Ffxiv2Mqtt
             this.PluginUi.Visible = true;
         }
 
-
-
-        public void Dispose()
-        {
-            this.PluginUi.Dispose();
-            if (clientStateHandler != null) clientStateHandler.Dispose();
-            if (conditionHandler != null) conditionHandler.Dispose();
-            if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
-            if (playerStateHandler != null) playerStateHandler.Dispose();
-            this.CommandManager.RemoveHandler(configCommandName);
-            this.CommandManager.RemoveHandler(testCommandName);
-            this.CommandManager.RemoveHandler(customCommandName);
-            if (mqttManager != null) mqttManager.Dispose();
-        }
-
         private void OnCommand(string command, string args)
         {
             if (command == configCommandName)
@@ -121,6 +106,20 @@ namespace Ffxiv2Mqtt
         private void DrawConfigUI()
         {
             this.PluginUi.SettingsVisible = true;
+        }
+
+        
+        public void Dispose()
+        {
+            this.PluginUi.Dispose();
+            if (clientStateHandler != null) clientStateHandler.Dispose();
+            if (conditionHandler != null) conditionHandler.Dispose();
+            if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
+            if (playerStateHandler != null) playerStateHandler.Dispose();
+            this.CommandManager.RemoveHandler(configCommandName);
+            this.CommandManager.RemoveHandler(testCommandName);
+            this.CommandManager.RemoveHandler(customCommandName);
+            if (mqttManager != null) mqttManager.Dispose();
         }
     }
 }

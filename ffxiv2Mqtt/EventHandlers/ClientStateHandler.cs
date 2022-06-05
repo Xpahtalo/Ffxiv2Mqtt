@@ -13,7 +13,8 @@ namespace Ffxiv2Mqtt.EventHandlers
     {
         public static void Initialize(DalamudPluginInterface pluginInterface) =>
             pluginInterface.Create<ClientStateHandler>();
-        
+
+        #region Plugin Services
         [PluginService]
         [RequiredVersion("1.0")]
         public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -25,7 +26,8 @@ namespace Ffxiv2Mqtt.EventHandlers
         [PluginService]
         [RequiredVersion("1.0")]
         public static DataManager DataManager { get; private set; } = null!;
-
+        #endregion
+        
         private MqttManager mqttManager;
         
         public ClientStateHandler(DalamudPluginInterface pluginInterface, MqttManager mqttManager)
@@ -39,17 +41,6 @@ namespace Ffxiv2Mqtt.EventHandlers
             ClientState.TerritoryChanged += TerritoryChanged;
 
             PluginLog.Information("ClientStateHandler initialized");
-        }
-
-        public void Dispose()
-        {
-            mqttManager.PublishRetainedMessage("ClientState/Territory", "");
-            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", "");
-
-            ClientState.CfPop -= CfPop;
-            ClientState.Login -= Login;
-            ClientState.Logout -= Logout;
-            ClientState.TerritoryChanged -= TerritoryChanged;
         }
 
         private void CfPop(object? s, ContentFinderCondition e)
@@ -79,6 +70,17 @@ namespace Ffxiv2Mqtt.EventHandlers
             var territoryName = DataManager?.GameData?.Excel?.GetSheet<TerritoryType>()?.GetRow(e)?.PlaceName?.Value?.Name;
             if (territoryName != null)
                 mqttManager.PublishRetainedMessage("ClientState/TerritoryChanged", territoryName.ToString());
+        }
+
+        public void Dispose()
+        {
+            mqttManager.PublishRetainedMessage("ClientState/Territory", "");
+            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", "");
+
+            ClientState.CfPop -= CfPop;
+            ClientState.Login -= Login;
+            ClientState.Logout -= Logout;
+            ClientState.TerritoryChanged -= TerritoryChanged;
         }
     }
 }

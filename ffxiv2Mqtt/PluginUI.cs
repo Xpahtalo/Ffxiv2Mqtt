@@ -26,15 +26,10 @@ namespace Ffxiv2Mqtt
             set { this.settingsVisible = value; }
         }
         
-        
         public PluginUI(Configuration configuration, MqttManager mqttManager)
         {
             this.configuration = configuration;
             this.mqttManager = mqttManager;
-        }
-
-        public void Dispose()
-        {
         }
 
         public void Draw()
@@ -151,6 +146,10 @@ namespace Ffxiv2Mqtt
                 }
             }
             ImGui.End();
+        }
+
+        public void Dispose()
+        {
         }
     }
 }
