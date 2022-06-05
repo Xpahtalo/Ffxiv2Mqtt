@@ -66,10 +66,14 @@ namespace Ffxiv2Mqtt
         public string BuildTopic(string topic)
         {
             var sb = new StringBuilder(100);
-            sb.AppendFormat("{0}/", configuration.BaseTopic);
+            sb.Append(configuration.BaseTopic);
+            sb.Append('/');
             if (configuration.IncludeClientId)
-                sb.AppendFormat("{0}/", configuration.ClientId);
-            sb.AppendFormat("{0}", topic);
+            {
+                sb.Append(configuration.ClientId);
+                sb.Append('/');
+            }
+            sb.Append(topic);
 
             return sb.ToString();
         }

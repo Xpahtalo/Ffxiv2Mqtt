@@ -34,7 +34,6 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         private MqttManager mqttManager;
 
-        private uint maxGP;
         private uint currentCp;
         private uint currentGp;
         private uint currentHp;
