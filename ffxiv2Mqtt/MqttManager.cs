@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Dalamud.Plugin;
 using Dalamud.Logging;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Client.Connecting;
-using MQTTnet.Client.Disconnecting;
-using MQTTnet.Client.Options;
+using MQTTnet.Protocol;
 using MQTTnet.Extensions.ManagedClient;
 
 
@@ -19,33 +19,36 @@ namespace Ffxiv2Mqtt
         public bool IsConnected { get => mqttClient.IsConnected; }
         public bool IsStarted { get => mqttClient.IsStarted; }
 
+
+
+
         public MqttManager(Configuration configuration)
         {
             PluginLog.Information("Initializing MQTTManager");
-            
+           
             this.configuration = configuration;
             mqttClient = new MqttFactory().CreateManagedMqttClient();
 
-            mqttClient.ConnectedHandler = new MqttClientConnectedHandlerDelegate(e =>
-            {
-                PluginLog.Information("Connected to MQTT broker");
-            });
-
-            mqttClient.ConnectingFailedHandler = new ConnectingFailedHandlerDelegate(e =>
-            {
-                PluginLog.Error($"Failed to connect to MQTT broker: {e.Exception.Message}");
-            });
-
-            mqttClient.DisconnectedHandler = new MqttClientDisconnectedHandlerDelegate(e =>
-            {
-                if (e.Reason == MqttClientDisconnectReason.NormalDisconnection)
-                    PluginLog.Information("Disconnected from MQTT broker");
-                else
-                    PluginLog.Error($"Disconnected from MQTT broker: {e.Reason}");
-            });
+            mqttClient.ConnectedAsync += LogConnectedAsync;
+            mqttClient.ConnectingFailedAsync += LogConnectingFailedAsync;
 
             PluginLog.Log("MqttManager Initialized");
         }
+
+        public Task LogConnectedAsync(EventArgs e)
+        {
+            PluginLog.Information("Connected to MQTT broker");
+            return Task.CompletedTask;
+        }
+
+        public Task LogConnectingFailedAsync(EventArgs e)
+        {
+            PluginLog.Warning($"Failed to connect: {e.ToString()}");
+            return Task.CompletedTask;
+        }
+        
+
+        
 
         public void ConnectToBroker()
         {
@@ -62,7 +65,7 @@ namespace Ffxiv2Mqtt
 
             mqttClient.StartAsync(options);
         }
-
+        
         public string BuildTopic(string topic)
         {
             var sb = new StringBuilder(100);
@@ -93,7 +96,7 @@ namespace Ffxiv2Mqtt
                 .WithPayload(payload)
                 .Build();
 
-            mqttClient.PublishAsync(message);
+            mqttClient.EnqueueAsync(message);
         }
 
         public void PublishMessage(string topic, bool payload)
@@ -111,11 +114,11 @@ namespace Ffxiv2Mqtt
             var message = new MqttApplicationMessageBuilder()
                 .WithTopic(BuildTopic(topic))
                 .WithPayload(payload)
-                .WithAtLeastOnceQoS()
+                .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
                 .WithRetainFlag()
                 .Build();
 
-            mqttClient.PublishAsync(message);
+            mqttClient.EnqueueAsync(message);
         }
 
 
@@ -164,9 +167,13 @@ namespace Ffxiv2Mqtt
             previous = current;
         }
 
+
         public void Dispose()
         {
             this.DisconnectFromBroker();
+
+            mqttClient.ConnectedAsync -= LogConnectedAsync;
+
             mqttClient.Dispose();
         }
     }

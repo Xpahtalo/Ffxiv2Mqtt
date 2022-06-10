@@ -7,6 +7,8 @@
     <Copyright></Copyright>
     <PackageProjectUrl>https://your.moms.house</PackageProjectUrl>
     <Configurations>Debug;Release</Configurations>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -20,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\Data\ffxiv2Mqtt.json">
+    <Content Include=".\ffxiv2Mqtt.yaml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -31,9 +33,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DalamudPackager" Version="2.1.6" />
-    <PackageReference Include="MQTTnet" Version="3.1.2" />
-    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="3.1.2" />
+    <PackageReference Include="DalamudLinter" Version="1.0.3" />
+    <PackageReference Include="DalamudPackager" Version="2.1.7" />
+    <PackageReference Include="MQTTnet" Version="4.0.0.167" />
+    <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.0.167" />
     <Reference Include="FFXIVClientStructs">
       <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
       <Private>false</Private>
@@ -48,10 +51,6 @@
     </Reference>
     <Reference Include="ImGui.NET">
       <HintPath>$(DalamudLibPath)ImGui.NET.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="ImGuiScene">
-      <HintPath>$(DalamudLibPath)ImGuiScene.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Lumina">

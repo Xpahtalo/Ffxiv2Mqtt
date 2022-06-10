@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net5.0-windows7.0": {
+      "DalamudLinter": {
+        "type": "Direct",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "yODrbT8F73JJsvC3UbQ+Cn+huhH4TEYvlunjKUUed2SHBhGDJrkV8l21Xe9GMut4ZauPvySgYWUigX/msAAEag=="
+      },
+      "DalamudPackager": {
+        "type": "Direct",
+        "requested": "[2.1.7, )",
+        "resolved": "2.1.7",
+        "contentHash": "jnZ/sdInyn07ycuWI+pPOtP/xE3v+c4+jYJfDt36FWnBF9NKqkpzfviJtPl/jGLgbaCmFIXu+Yid0N8GvdKefg=="
+      },
+      "MQTTnet": {
+        "type": "Direct",
+        "requested": "[4.0.0.167, )",
+        "resolved": "4.0.0.167",
+        "contentHash": "nF+QGoltNg8/uKCP2sh7nOuTWSOKNf6bqG5G5Px6ToFe4V70mMcjiigbzgVkntwdxjDJHXDhbxSRVvc8QDP6Jg=="
+      },
+      "MQTTnet.Extensions.ManagedClient": {
+        "type": "Direct",
+        "requested": "[4.0.0.167, )",
+        "resolved": "4.0.0.167",
+        "contentHash": "x62pCbx2FhpKl0iIn077/cZWRmp4LzzCqDTURkXpDjWkKMi0IwWQ45SH4eG121W40uygCd9f6XYYmFcz09olFQ==",
+        "dependencies": {
+          "MQTTnet": "4.0.0.167"
+        }
+      }
+    }
+  }
+}

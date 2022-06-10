@@ -1,0 +1,6 @@
+﻿---
+name: FFXIV2MQTT
+author: X'pahtalo
+punchline: Send game info over MQTT
+description: Send data to an MQTT broker to do all sorts of things. Change your lights with a macro, turn on the heater when you use Overheat, or start playing Rules of Nature when you switch to Gunbreaker.
+internal_name: ffxiv2Mqtt
