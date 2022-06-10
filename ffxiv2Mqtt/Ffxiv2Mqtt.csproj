@@ -23,7 +23,7 @@
 
   <ItemGroup>
     <Content Include=".\ffxiv2Mqtt.yaml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
 
