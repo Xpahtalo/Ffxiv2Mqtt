@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Plugin;
 using Dalamud.Logging;
 using MQTTnet;
 using MQTTnet.Client;
@@ -31,6 +29,9 @@ namespace Ffxiv2Mqtt
 
             mqttClient.ConnectedAsync += LogConnectedAsync;
             mqttClient.ConnectingFailedAsync += LogConnectingFailedAsync;
+            mqttClient.InternalClient.DisconnectedAsync += LogDisconnectedAsync;
+            mqttClient.ApplicationMessageSkippedAsync += LogMessageSkipped;
+            
 
             PluginLog.Log("MqttManager Initialized");
         }
@@ -41,14 +42,25 @@ namespace Ffxiv2Mqtt
             return Task.CompletedTask;
         }
 
-        public Task LogConnectingFailedAsync(EventArgs e)
+        public Task LogConnectingFailedAsync(ConnectingFailedEventArgs e)
         {
-            PluginLog.Warning($"Failed to connect: {e.ToString()}");
+            PluginLog.Warning($"Failed to connect: {e.Exception}");
             return Task.CompletedTask;
         }
-        
+        public Task LogDisconnectedAsync(MqttClientDisconnectedEventArgs e)
+        {
+            if (e.Reason == MqttClientDisconnectReason.NormalDisconnection)
+                PluginLog.Information("Disconnected from MQTT broker.");
+            else
+                PluginLog.Error($"Unexpected disconnect from MQTT broker: {e.Reason}");
+            return Task.CompletedTask;
+        }
+        public Task LogMessageSkipped(ApplicationMessageSkippedEventArgs e)
+        {
+            PluginLog.Warning($"Message skipped: {e.ApplicationMessage}");
+            return Task.CompletedTask;
+        }
 
-        
 
         public void ConnectToBroker()
         {
@@ -173,6 +185,9 @@ namespace Ffxiv2Mqtt
             this.DisconnectFromBroker();
 
             mqttClient.ConnectedAsync -= LogConnectedAsync;
+            mqttClient.ConnectingFailedAsync -= LogConnectingFailedAsync;
+            mqttClient.InternalClient.DisconnectedAsync -= LogDisconnectedAsync;
+            mqttClient.ApplicationMessageSkippedAsync -= LogMessageSkipped;
 
             mqttClient.Dispose();
         }
