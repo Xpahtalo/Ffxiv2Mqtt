@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Dalamud.Logging;
 using MQTTnet;
 using MQTTnet.Client;
-using MQTTnet.Protocol;
 using MQTTnet.Extensions.ManagedClient;
 
 
