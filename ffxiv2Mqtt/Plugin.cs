@@ -111,15 +111,15 @@ namespace Ffxiv2Mqtt
         
         public void Dispose()
         {
-            this.PluginUi.Dispose();
-            if (clientStateHandler != null) clientStateHandler.Dispose();
-            if (conditionHandler != null) conditionHandler.Dispose();
-            if (jobGaugeHandler != null) jobGaugeHandler.Dispose();
-            if (playerStateHandler != null) playerStateHandler.Dispose();
-            this.CommandManager.RemoveHandler(configCommandName);
-            this.CommandManager.RemoveHandler(testCommandName);
-            this.CommandManager.RemoveHandler(customCommandName);
-            if (mqttManager != null) mqttManager.Dispose();
+            PluginUi?.Dispose();
+            clientStateHandler?.Dispose();
+            conditionHandler?.Dispose();
+            jobGaugeHandler?.Dispose();
+            playerStateHandler?.Dispose();
+            CommandManager.RemoveHandler(configCommandName);
+            CommandManager.RemoveHandler(testCommandName);
+            CommandManager.RemoveHandler(customCommandName);
+            mqttManager?.Dispose();
         }
     }
 }
