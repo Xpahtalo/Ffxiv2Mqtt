@@ -132,7 +132,7 @@ namespace Ffxiv2Mqtt
                     fullTopic += "/" + clientId;
                 }
 
-                ImGui.Text("All topics will be preceded by: " + fullTopic);
+                ImGui.Text($"All topics will be preceded by: {fullTopic}");
 
                 bool connectAtStartup = this.configuration.ConnectAtStartup;
                 if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup))

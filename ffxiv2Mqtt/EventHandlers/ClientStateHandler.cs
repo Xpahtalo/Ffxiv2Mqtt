@@ -50,32 +50,32 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         private void Login(object? s, System.EventArgs e)
         {
-            mqttManager.PublishRetainedMessage("ClientState/Login", "LoggedIn");
+            mqttManager.PublishMessage("ClientState/Login", "LoggedIn", true);
             Task.Run(() =>
             {
                 while (ClientState?.LocalPlayer?.Name == null)
                     Thread.Sleep(1000);
-                mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString());
+                mqttManager.PublishMessage("ClientState/LoggedInCharacter", ClientState.LocalPlayer.Name.ToString(), true);
             });
         }
 
         private void Logout(object? s, System.EventArgs e)
         {
-            mqttManager.PublishRetainedMessage("ClientState/Login", "LoggedOut");
-            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", string.Empty);
+            mqttManager.PublishMessage("ClientState/Login", "LoggedOut", true);
+            mqttManager.PublishMessage("ClientState/LoggedInCharacter", string.Empty, true);
         }
 
         private void TerritoryChanged(object? s, ushort e)
         {
             var territoryName = DataManager?.GameData?.Excel?.GetSheet<TerritoryType>()?.GetRow(e)?.PlaceName?.Value?.Name;
             if (territoryName != null)
-                mqttManager.PublishRetainedMessage("ClientState/TerritoryChanged", territoryName.ToString());
+                mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString(), true);
         }
-
+        
         public void Dispose()
         {
-            mqttManager.PublishRetainedMessage("ClientState/Territory", "");
-            mqttManager.PublishRetainedMessage("ClientState/LoggedInCharacter", "");
+            mqttManager.PublishMessage("ClientState/Territory", "", true);
+            mqttManager.PublishMessage("ClientState/LoggedInCharacter", "", true);
 
             ClientState.CfPop -= CfPop;
             ClientState.Login -= Login;

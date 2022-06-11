@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Dalamud.Logging;
 using MQTTnet;
 using MQTTnet.Client;
+using MQTTnet.Protocol;
 using MQTTnet.Extensions.ManagedClient;
 
 
@@ -17,8 +18,6 @@ namespace Ffxiv2Mqtt
         public bool IsStarted { get => mqttClient.IsStarted; }
 
 
-
-
         public MqttManager(Configuration configuration)
         {
             PluginLog.Information("Initializing MQTTManager");
@@ -29,8 +28,6 @@ namespace Ffxiv2Mqtt
             mqttClient.ConnectedAsync += LogConnectedAsync;
             mqttClient.ConnectingFailedAsync += LogConnectingFailedAsync;
             mqttClient.InternalClient.DisconnectedAsync += LogDisconnectedAsync;
-            mqttClient.ApplicationMessageSkippedAsync += LogMessageSkipped;
-            
 
             PluginLog.Log("MqttManager Initialized");
         }
@@ -40,7 +37,6 @@ namespace Ffxiv2Mqtt
             PluginLog.Information("Connected to MQTT broker");
             return Task.CompletedTask;
         }
-
         public Task LogConnectingFailedAsync(ConnectingFailedEventArgs e)
         {
             PluginLog.Warning($"Failed to connect: {e.Exception}");
@@ -54,12 +50,6 @@ namespace Ffxiv2Mqtt
                 PluginLog.Error($"Unexpected disconnect from MQTT broker: {e.Reason}");
             return Task.CompletedTask;
         }
-        public Task LogMessageSkipped(ApplicationMessageSkippedEventArgs e)
-        {
-            PluginLog.Warning($"Message skipped: {e.ApplicationMessage}");
-            return Task.CompletedTask;
-        }
-
 
         public void ConnectToBroker()
         {
@@ -77,6 +67,32 @@ namespace Ffxiv2Mqtt
             mqttClient.StartAsync(options);
         }
         
+        public void DisconnectFromBroker()
+        {
+            mqttClient.StopAsync();
+        }
+
+
+        public void PublishMessage(string topic, string payload, bool retain = false)
+        {
+            var messageBuilder = new MqttApplicationMessageBuilder()
+               .WithTopic(BuildTopic(topic))
+               .WithPayload(payload);
+
+            if (retain) messageBuilder.WithRetainFlag().WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce);
+
+            var message = messageBuilder.Build();
+
+            try
+            {
+                mqttClient.EnqueueAsync(message);
+            }
+            catch (ArgumentNullException e)
+            {
+                PluginLog.Error($"Failed to publish message: {e.Message}");
+            }
+
+        }
         public string BuildTopic(string topic)
         {
             var sb = new StringBuilder(100);
@@ -90,46 +106,6 @@ namespace Ffxiv2Mqtt
             sb.Append(topic);
 
             return sb.ToString();
-        }
-
-        public void DisconnectFromBroker()
-        {
-            mqttClient.StopAsync();
-        }
-
-        public void PublishMessage(string topic, string payload)
-        {
-#if DEBUG
-            PluginLog.Debug($"Publishing message. Topic: {topic}, Payload: {payload}");
-#endif
-            var message = new MqttApplicationMessageBuilder()
-                .WithTopic(BuildTopic(topic))
-                .WithPayload(payload)
-                .Build();
-
-            mqttClient.EnqueueAsync(message);
-        }
-
-        public void PublishMessage(string topic, bool payload)
-        {
-            PublishMessage(topic, payload.ToString());
-        }
-
-        public void PublishMessage(string topic, int payload)
-        {
-            PublishMessage(topic, payload.ToString());
-        }
-
-        public void PublishRetainedMessage(string topic, string payload)
-        {
-            var message = new MqttApplicationMessageBuilder()
-                .WithTopic(BuildTopic(topic))
-                .WithPayload(payload)
-                .WithQualityOfServiceLevel(MQTTnet.Protocol.MqttQualityOfServiceLevel.AtLeastOnce)
-                .WithRetainFlag()
-                .Build();
-
-            mqttClient.EnqueueAsync(message);
         }
 
 
@@ -158,7 +134,6 @@ namespace Ffxiv2Mqtt
                 || (previous - current >= interval))
                 UpdateAndPublish(current, ref previous, topic, false);
         }
-
         internal void TestValue<T>(T current, ref T previous, string topic, bool retained)
         {
             if (current == null) return;
@@ -172,9 +147,9 @@ namespace Ffxiv2Mqtt
         internal void UpdateAndPublish<T>(T current, ref T previous, string topic, bool retained)
         {
             if (retained)
-                PublishRetainedMessage(topic, current.ToString());
+                PublishMessage(topic, current?.ToString() ?? "", true);
             else
-                PublishMessage(topic, current.ToString());
+                PublishMessage(topic, current?.ToString() ?? "", false);
             previous = current;
         }
 
@@ -186,7 +161,6 @@ namespace Ffxiv2Mqtt
             mqttClient.ConnectedAsync -= LogConnectedAsync;
             mqttClient.ConnectingFailedAsync -= LogConnectingFailedAsync;
             mqttClient.InternalClient.DisconnectedAsync -= LogDisconnectedAsync;
-            mqttClient.ApplicationMessageSkippedAsync -= LogMessageSkipped;
 
             mqttClient.Dispose();
         }

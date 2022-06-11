@@ -66,7 +66,7 @@ namespace Ffxiv2Mqtt.EventHandlers
 
         public void Dispose()
         {
-            mqttManager.PublishRetainedMessage("Player/Level", "");
+            mqttManager.PublishMessage("Player/Level", "", true);
 
             Framework.Update -= Update;
         }
