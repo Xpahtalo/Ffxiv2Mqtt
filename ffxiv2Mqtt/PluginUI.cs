@@ -1,6 +1,7 @@
 ﻿using ImGuiNET;
 using System;
 using System.Numerics;
+using Ffxiv2Mqtt.TopicTracker;
 
 namespace Ffxiv2Mqtt
 {
@@ -10,6 +11,7 @@ namespace Ffxiv2Mqtt
     {
         private Configuration configuration;
         private MqttManager mqttManager;
+        private TrackerManager trackerManager;
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -26,10 +28,11 @@ namespace Ffxiv2Mqtt
             set { this.settingsVisible = value; }
         }
         
-        public PluginUI(Configuration configuration, MqttManager mqttManager)
+        public PluginUI(Configuration configuration, MqttManager mqttManager, TrackerManager trackerManager)
         {
             this.configuration = configuration;
             this.mqttManager = mqttManager;
+            this.trackerManager = trackerManager;
         }
 
         public void Draw()
@@ -77,9 +80,6 @@ namespace Ffxiv2Mqtt
             {
                 return;
             }
-
-
-            
 
             if (ImGui.Begin("Config", ref this.settingsVisible,
                 ImGuiWindowFlags.AlwaysAutoResize ))
@@ -140,8 +140,17 @@ namespace Ffxiv2Mqtt
                     this.configuration.ConnectAtStartup = connectAtStartup;
                 }
 
+                int interval = this.configuration.Interval;
+                {
+                    if (ImGui.InputInt("Interval", ref interval))
+                    {
+                        this.configuration.Interval = interval;
+                    }
+                }
+
                 if (ImGui.Button("Save"))
                 {
+                    trackerManager.Configure(configuration);
                     configuration.Save();
                 }
             }

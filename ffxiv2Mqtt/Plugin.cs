@@ -3,10 +3,7 @@ using Dalamud.Plugin;
 using Dalamud.Game;
 using Dalamud.Game.Command;
 using Dalamud.Logging;
-using System.Collections.Generic;
 using Ffxiv2Mqtt.TopicTracker;
-using Ffxiv2Mqtt.TopicTracker.Data;
-using Ffxiv2Mqtt.TopicTracker.Events;
 
 
 namespace Ffxiv2Mqtt
@@ -47,7 +44,6 @@ namespace Ffxiv2Mqtt
 
             this.Configuration.Initialize(this.PluginInterface);
 
-            this.PluginUi = new PluginUI(this.Configuration, mqttManager);
 
             this.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
             {
@@ -68,38 +64,9 @@ namespace Ffxiv2Mqtt
 
             Dalamud.Initialize(this.PluginInterface);
             
-            trackerManager = new TrackerManager(new List<BaseTopicTracker>
-            {
-                new PlayerInfoTracker(mqttManager),
-                new PlayerCombatStatsTracker(mqttManager),
-                new PlayerGathererStatsTracker(mqttManager),
-                new PlayerCrafterStatsTracker(mqttManager),
-                new TerritoryTracker(mqttManager),
-                new ConditionTracker(mqttManager),
-                new LoginTracker(mqttManager),
-                new CfPopTracker(mqttManager),
-                new AstrologianGaugeTracker(mqttManager),
-                new BardGaugeTracker(mqttManager),
-                new BlackMageGuageTracker(mqttManager),
-                new DancerGaugeTracker(mqttManager),
-                new DarkKnightGaugeTracker(mqttManager),
-                new DragoonGaugeTracker(mqttManager),
-                new GunbreakerGaugeTracker(mqttManager),
-                new MachinistGaugeTracker(mqttManager),
-                new MonkGaugeTracker(mqttManager),
-                new NinjaGaugeTracker(mqttManager),
-                new PaladinGaugeTracker(mqttManager),
-                new ReaperGaugeTracker(mqttManager),
-                new RedMageGaugeTracker(mqttManager),
-                new SageGaugeTracker(mqttManager),
-                new ScholarGaugeTracker(mqttManager),
-                new SamuraiGaugeTracker(mqttManager),
-                new SummonerGaugeTracker(mqttManager),
-                new WarriorGaugeTracker(mqttManager),
-                new WhiteMageGaugeTracker(mqttManager),
-            });
+            trackerManager = new TrackerManager(mqttManager);
 
-
+            this.PluginUi = new PluginUI(this.Configuration, mqttManager, trackerManager);
             this.Framework.Update += Update;
         }
 

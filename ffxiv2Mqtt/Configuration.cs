@@ -9,6 +9,7 @@ namespace Ffxiv2Mqtt
     {
         public int Version { get; set; } = 0;
 
+        // MQTT Settings
         public string ClientId { get; set; } = "FFXIV";
         public bool IncludeClientId { get; set; } = false;
         public string BrokerAddress { get; set; } = string.Empty;
@@ -18,8 +19,11 @@ namespace Ffxiv2Mqtt
         public string BaseTopic { get; set; } = "ffxiv";
         public bool ConnectAtStartup { get; set; } = false;
 
-        // the below exist just to make saving less cumbersome
+        // Topic Settings
+        public int Interval { get; set; } = 5000;
 
+
+        // the below exist just to make saving less cumbersome
         [NonSerialized]
         private DalamudPluginInterface? pluginInterface;
 
