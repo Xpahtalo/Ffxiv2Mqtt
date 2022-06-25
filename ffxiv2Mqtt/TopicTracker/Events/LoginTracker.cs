@@ -12,6 +12,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
         internal LoginTracker(MqttManager m) : base(m)
         {
             topic = "Event/Login";
+            LoggedInCharacter = "";
             Dalamud.ClientState.Login += Login;
             Dalamud.ClientState.Logout += Logout;
         }
