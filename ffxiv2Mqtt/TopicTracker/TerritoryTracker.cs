@@ -18,7 +18,7 @@
 
         public TerritoryTracker(MqttManager mqttManager) : base(mqttManager)
         {
-            topic = "Territory";
+            topic = "Event/TerritoryChanged";
             Dalamud.ClientState.TerritoryChanged += TerritoryChanged;
         }
 
