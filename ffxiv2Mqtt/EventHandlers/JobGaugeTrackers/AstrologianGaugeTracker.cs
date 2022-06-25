@@ -22,7 +22,7 @@ namespace Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers
             
             for (int i = 0; i < seals.Length; i++)
             {
-                mqttManager.TestValue(astrologianGauge.Seals[i], ref seals[i], string.Format("JobGauge/AST/Seal{0}", i + 1));
+                mqttManager.TestValue(astrologianGauge.Seals[i], ref seals[i], $"JobGauge/AST/Seal{i + 1}");
             }
         }
     }

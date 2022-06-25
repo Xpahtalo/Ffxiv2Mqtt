@@ -112,37 +112,55 @@ namespace Ffxiv2Mqtt
         // Switching these to use generics would end up being more trouble than it's worth.
         internal void TestCountUp(short current, ref short previous, short interval, string topic)
         {
-            if (((previous == 0) && current != 0)
-               || ((previous != 0) && (current == 0))
-               || (current < previous)
-               || (current - previous >= interval))
+            bool reachedZero = (previous == 0) && (current != 0);
+            bool noLongerZero = (previous != 0) && (current == 0);
+            bool wentLower = current < previous;
+            bool exceededInterval = (current - previous) >= interval;
+
+            if (reachedZero || noLongerZero || wentLower || exceededInterval)
                 UpdateAndPublish(current, ref previous, topic, false);
         }
         internal void TestCountDown(ushort current, ref ushort previous, ushort interval, string topic)
         {
-            if (((previous == 0) && current != 0)
-                || ((previous != 0) && (current == 0))
-                || (current > previous)
-                || (previous - current >= interval))
+            bool reachedZero = (previous == 0) && (current != 0);
+            bool noLongerZero = (previous != 0) && (current == 0);
+            bool wentHigher = current > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
                 UpdateAndPublish(current, ref previous, topic, false);
         }
         internal void TestCountDown(short current, ref short previous, short interval, string topic)
         {
-            if (((previous == 0) && current != 0)
-                || ((previous != 0) && (current == 0))
-                || (current > previous)
-                || (previous - current >= interval))
+            bool reachedZero = (previous == 0) && (current != 0);
+            bool noLongerZero = (previous != 0) && (current == 0);
+            bool wentHigher = current > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
                 UpdateAndPublish(current, ref previous, topic, false);
         }
-        internal void TestValue<T>(T current, ref T previous, string topic, bool retained)
+        internal void TestCountDown(int current, ref int previous, int interval, string topic)
         {
-            if (current == null) return;
-            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic, retained);
+            bool reachedZero = (previous == 0) && (current != 0);
+            bool noLongerZero = (previous != 0) && (current == 0);
+            bool wentHigher = current > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
+                UpdateAndPublish(current, ref previous, topic, false);
         }
-        internal void TestValue<T>(T current, ref T previous, string topic)
+        
+        internal void TestValue<T>(T current, ref T previous, string topic, bool retained = false)
         {
-            if (current == null) return;
-            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic, false);
+            if (current == null)
+            {
+#if DEBUG
+                PluginLog.Error($"Failed to publish message: {topic} is null");
+#endif
+                return;
+            }
+            if (!current.Equals(previous)) UpdateAndPublish(current, ref previous, topic, retained);
         }
         internal void UpdateAndPublish<T>(T current, ref T previous, string topic, bool retained)
         {
