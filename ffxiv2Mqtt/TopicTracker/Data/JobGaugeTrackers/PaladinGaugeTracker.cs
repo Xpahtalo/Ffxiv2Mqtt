@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class PaladinGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class PaladinGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte OathGauge { get => oathGauge; }
         private byte oathGauge;

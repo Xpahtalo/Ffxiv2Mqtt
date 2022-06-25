@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SageGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class SageGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Addersgall { get => addersgall; }
         public short AddersgallTimer { get => addersgallTimer; }
@@ -34,7 +34,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             var gauge = Dalamud.JobGauges.Get<SGEGauge>();
 
             TestValue(gauge.Addersgall, ref addersgall);
-            TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, 1000);
+            TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, (short)synceTimer);
             TestValue(gauge.Addersting, ref addersting);
             TestValue(gauge.Eukrasia, ref eukrasia);
 

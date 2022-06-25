@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SummonerGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class SummonerGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte AetherflowStacks { get => aetherflowStacks; }
         public byte Attunement { get => attunement; }
@@ -52,7 +52,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
             TestValue(gauge.AetherflowStacks, ref aetherflowStacks);
             TestValue(gauge.Attunement, ref attunement);
-            TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, 1000);
+            TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, (ushort)synceTimer);
             TestValue(gauge.IsBahamutReady, ref isBahamutReady);
             TestValue(gauge.IsPhoenixReady, ref isPhoenixReady);
             TestValue(gauge.IsGarudaReady, ref isGarudaReady);
@@ -61,7 +61,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.IsIfritAttuned, ref isIfritAttuned);
             TestValue(gauge.IsTitanReady, ref isTitanReady);
             TestValue(gauge.IsTitanAttuned, ref isTitanAttuned);
-            TestCountDown(gauge.SummonTimerRemaining, ref summonTimeRemaining, 1000);
+            TestCountDown(gauge.SummonTimerRemaining, ref summonTimeRemaining, (ushort)synceTimer);
 
             PublishIfNeeded();
         }

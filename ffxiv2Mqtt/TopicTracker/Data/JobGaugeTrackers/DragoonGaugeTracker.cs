@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DragoonGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class DragoonGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte EyeCount { get => eyeCount; }
         public byte FirstmindsFocusCount { get => firstmindsFocusCount; }
@@ -36,7 +36,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.EyeCount, ref eyeCount);
             TestValue(gauge.FirstmindsFocusCount, ref firstmindsFocusCount);
             TestValue(gauge.IsLOTDActive, ref isLotdActive);
-            TestCountDown(gauge.LOTDTimer, ref lotdTimer, 1000);
+            TestCountDown(gauge.LOTDTimer, ref lotdTimer, (short)synceTimer);
 
             PublishIfNeeded();
         }

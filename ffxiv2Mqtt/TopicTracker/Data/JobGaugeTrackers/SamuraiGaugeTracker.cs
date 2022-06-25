@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SamuraiGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class SamuraiGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Kenki { get => kenki; }
         public byte MeditationStacks { get => meditationStacks; }

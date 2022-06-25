@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class RedMageGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class RedMageGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte BlackMana { get => blackMana; }
         public byte WhiteMana { get => whiteMana; }

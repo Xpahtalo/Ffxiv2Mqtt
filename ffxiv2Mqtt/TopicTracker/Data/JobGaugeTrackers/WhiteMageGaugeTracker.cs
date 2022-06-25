@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class WhiteMageGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class WhiteMageGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Lily { get => lily; }
         public byte BloodLily { get => bloodLily; }
@@ -33,7 +33,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
             TestValue(gauge.Lily, ref lily);
             TestValue(gauge.BloodLily, ref bloodLily);
-            TestCountUp(gauge.LilyTimer, ref lilyTimer, 1000);
+            TestCountUp(gauge.LilyTimer, ref lilyTimer, (short)synceTimer);
 
             PublishIfNeeded();
         }

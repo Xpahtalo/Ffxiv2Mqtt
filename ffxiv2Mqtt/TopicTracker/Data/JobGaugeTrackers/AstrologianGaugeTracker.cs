@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class AstrologianGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class AstrologianGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public CardType DrawnCard { get => drawnCard; }
         public CardType DrawnCrownCard { get => drawnCrownType; }

@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class BlackMageGuageTracker : BaseTopicTracker, IUpdatable
+    internal class BlackMageGuageTracker : BaseGaugeTracker, IUpdatable
     {
         public bool EnochianActive { get=> isEnochianActive;}
         public short EnochianTimeRemaining { get => enochianTimeRemaining; }
@@ -44,8 +44,8 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(blmGauge.IsParadoxActive, ref isParadoxActive);
             TestValue(blmGauge.AstralFireStacks, ref astralFireStacks);
             TestValue(blmGauge.UmbralIceStacks, ref umbralIceStacks);
-            TestCountDown(blmGauge.ElementTimeRemaining, ref elementTimeRemaining, 1000);
-            TestCountDown(blmGauge.EnochianTimer, ref enochianTimeRemaining, 1000);
+            TestCountDown(blmGauge.ElementTimeRemaining, ref elementTimeRemaining, (short)synceTimer);
+            TestCountDown(blmGauge.EnochianTimer, ref enochianTimeRemaining, (short)synceTimer);
 
             PublishIfNeeded();
         }

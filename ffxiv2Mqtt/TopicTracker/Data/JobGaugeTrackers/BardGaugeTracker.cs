@@ -5,7 +5,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class BardGaugeTracker : BaseTopicTracker,IUpdatable
+    internal class BardGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public Song Song { get => song; }
         public ushort SongTimer { get => songTimer; }
@@ -49,7 +49,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(brdGauge.LastSong, ref lastSong);
             TestValue(brdGauge.Repertoire, ref repertoire);
             TestValue(brdGauge.Song, ref song);
-            TestCountDown(brdGauge.SongTimer, ref songTimer, 1000);
+            TestCountDown(brdGauge.SongTimer, ref songTimer, (ushort)synceTimer);
             TestValue(brdGauge.SoulVoice, ref soulVoice);
 
             PublishIfNeeded();

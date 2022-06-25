@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DarkKnightGaugeTracker : BaseTopicTracker,IUpdatable
+    internal class DarkKnightGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Blood { get => blood; }
         public bool DarkArts { get=> hasDarkArts; }
@@ -34,9 +34,9 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             var gauge = Dalamud.JobGauges.Get<DRKGauge>();
 
             TestValue(gauge.Blood, ref blood);
-            TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, 1000);
+            TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, (ushort)synceTimer);
             TestValue(gauge.HasDarkArts, ref hasDarkArts);
-            TestCountDown(gauge.ShadowTimeRemaining, ref shadowTimeRemaining, 1000);
+            TestCountDown(gauge.ShadowTimeRemaining, ref shadowTimeRemaining, (ushort)synceTimer);
 
             PublishIfNeeded();
         }

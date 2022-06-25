@@ -64,7 +64,7 @@ namespace Ffxiv2Mqtt
 
             Dalamud.Initialize(this.PluginInterface);
             
-            trackerManager = new TrackerManager(mqttManager);
+            trackerManager = new TrackerManager(mqttManager, Configuration);
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager, trackerManager);
             this.Framework.Update += Update;

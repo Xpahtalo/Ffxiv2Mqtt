@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class MonkGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class MonkGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Chakra { get => chakra; }
         public BeastChakra[] BeastChakras { get => beastChakra; }
@@ -38,7 +38,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             {
                 TestValue(gauge.BeastChakra[i], ref beastChakra[i]);
             }
-            TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, 1000);
+            TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, (ushort)synceTimer);
 
             PublishIfNeeded();
         }

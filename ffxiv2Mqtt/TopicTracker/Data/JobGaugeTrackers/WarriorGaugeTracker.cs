@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class WarriorGaugeTracker : BaseTopicTracker,IUpdatable
+    internal class WarriorGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte BeastGauge { get => beastGauge; }
 

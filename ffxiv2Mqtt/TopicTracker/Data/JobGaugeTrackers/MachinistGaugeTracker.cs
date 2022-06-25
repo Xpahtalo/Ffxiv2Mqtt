@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class MachinistGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class MachinistGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Battery { get => battery; }
         public byte Heat { get => heat; }
@@ -44,8 +44,8 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.IsOverheated, ref isOverheated);
             TestValue(gauge.IsRobotActive, ref isRobotActive);
             TestValue(gauge.LastSummonBatteryPower, ref lastSummonBatteryPower);
-            TestCountDown(gauge.OverheatTimeRemaining, ref overheatTimeRemaining, 1000);
-            TestCountDown(gauge.SummonTimeRemaining, ref summonTimeRemaining, 1000);
+            TestCountDown(gauge.OverheatTimeRemaining, ref overheatTimeRemaining, (short)synceTimer);
+            TestCountDown(gauge.SummonTimeRemaining, ref summonTimeRemaining, (short)synceTimer);
 
             PublishIfNeeded();
         }

@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class ScholarGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class ScholarGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Aetherflow { get => aetherflow; }
         public DismissedFairy DismissedFairy { get => dismissedFairy; }
@@ -37,7 +37,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.Aetherflow, ref aetherflow);
             TestValue(gauge.DismissedFairy, ref dismissedFairy);
             TestValue(gauge.FairyGauge, ref fairyGauge);
-            TestCountDown(gauge.SeraphTimer, ref seraphTimer, 1000);
+            TestCountDown(gauge.SeraphTimer, ref seraphTimer, (short)synceTimer);
 
             PublishIfNeeded();
         }

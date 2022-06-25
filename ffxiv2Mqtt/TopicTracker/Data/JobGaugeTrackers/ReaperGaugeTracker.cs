@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class ReaperGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class ReaperGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public byte Soul { get => soul; }
         public byte LemureShroud { get => lemureShroud; }
@@ -36,7 +36,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.Soul, ref soul);
             TestValue(gauge.LemureShroud, ref lemureShroud);
             TestValue(gauge.VoidShroud, ref voidShroud);
-            TestCountDown(gauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, 1000);
+            TestCountDown(gauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, (ushort)synceTimer);
 
             PublishIfNeeded();
         }

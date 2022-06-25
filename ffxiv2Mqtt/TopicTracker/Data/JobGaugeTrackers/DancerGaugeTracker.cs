@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DancerGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class DancerGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public bool Dancing { get => isDancing; }
         public uint[] Steps { get => steps; }

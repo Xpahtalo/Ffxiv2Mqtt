@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class GunbreakerGaugeTracker : BaseTopicTracker, IUpdatable
+    internal class GunbreakerGaugeTracker : BaseGaugeTracker, IUpdatable
     {
         public short Ammo { get => ammo; }
         public byte AmmoComboStep { get => ammoComboStep; }
