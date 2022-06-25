@@ -15,9 +15,7 @@ namespace Ffxiv2Mqtt.TopicTracker
 
         internal TrackerManager(MqttManager m, Configuration configuration)
         {
-#if DEBUG
-            PluginLog.Debug("Creating TrackerManager");
-#endif
+            PluginLog.Verbose("Creating TrackerManager");
             allTrackers = new List<BaseTopicTracker>();
             updatables = new List<IUpdatable>();
             cleanables = new List<ICleanable>();
@@ -58,9 +56,7 @@ namespace Ffxiv2Mqtt.TopicTracker
                 AddTracker(tracker);
 
             Configure(configuration);
-#if DEBUG
-            PluginLog.Debug("TrackerManager created");
-#endif
+            PluginLog.Verbose("TrackerManager created");
         }
 
 

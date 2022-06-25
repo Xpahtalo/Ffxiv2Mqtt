@@ -11,9 +11,7 @@ namespace Ffxiv2Mqtt.TopicTracker
 
         internal BaseTopicTracker(MqttManager mqttManager)
         {
-#if DEBUG
-            PluginLog.Debug($"Creating {this.GetType()}");
-#endif
+            PluginLog.Verbose($"Creating {this.GetType().Name}");
             this.mqttManager = mqttManager;
             topic = "";
         }

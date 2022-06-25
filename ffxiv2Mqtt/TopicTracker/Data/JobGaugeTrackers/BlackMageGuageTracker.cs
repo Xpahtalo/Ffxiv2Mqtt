@@ -25,7 +25,6 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         public BlackMageGuageTracker(MqttManager m) : base(m) 
         {
-            PluginLog.Verbose("Creating BlackMageGaugeTracker");
             topic = "Player/JobGauge/BLM";
         }
 

@@ -10,9 +10,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         public virtual void Configure(Configuration configuration)
         {
-#if DEBUG
-            PluginLog.Debug($"Configuring {this.GetType().Name}");
-#endif
+            PluginLog.Verbose($"Configuring {this.GetType().Name}");
             this.synceTimer = configuration.Interval;
         }
     }

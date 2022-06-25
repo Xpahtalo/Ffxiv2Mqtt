@@ -26,7 +26,6 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         public BardGaugeTracker(MqttManager m) : base(m)
         {
-            PluginLog.Verbose("Creating BardGaugeTracker");
             topic = "Player/JobGauge/BRD";
             coda = new Song[3];
         }
