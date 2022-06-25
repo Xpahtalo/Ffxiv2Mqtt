@@ -35,7 +35,7 @@ namespace Ffxiv2Mqtt.TopicTracker
             var localPlayer = Dalamud.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if ((localPlayer.ClassJob.Id != BlackMageId) || (localPlayer.ClassJob.Id != Thaumaturge))
+            if (!((localPlayer.ClassJob.Id == BlackMageId) || (localPlayer.ClassJob.Id == Thaumaturge)))
                 return;
             var blmGauge = Dalamud.JobGauges.Get<BLMGauge>();
 

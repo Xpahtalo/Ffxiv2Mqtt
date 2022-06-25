@@ -7,10 +7,10 @@ namespace Ffxiv2Mqtt.TopicTracker
         public byte Ninki { get => ninki; }
         public int HutonTimer { get => hutonTimer; }
         public byte ManualHutonCasts { get => hutonManualCasts; }
-
+        
         private byte hutonManualCasts;
         private int hutonTimer;
-        public byte ninki;
+        private byte ninki;
 
         private const uint NinjaId = 30;
 

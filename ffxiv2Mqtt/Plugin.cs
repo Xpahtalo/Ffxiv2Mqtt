@@ -90,6 +90,7 @@ namespace Ffxiv2Mqtt
                 new ReaperGaugeTracker(mqttManager),
                 new RedMageGaugeTracker(mqttManager),
                 new SageGaugeTracker(mqttManager),
+                new ScholarGaugeTracker(mqttManager),
                 new SamuraiGaugeTracker(mqttManager),
                 new SummonerGaugeTracker(mqttManager),
                 new WarriorGaugeTracker(mqttManager),

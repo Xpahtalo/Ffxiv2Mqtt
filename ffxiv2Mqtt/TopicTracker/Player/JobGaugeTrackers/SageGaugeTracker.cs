@@ -6,7 +6,7 @@ namespace Ffxiv2Mqtt.TopicTracker
     {
         public byte Addersgall { get => addersgall; }
         public short AddersgallTimer { get => addersgallTimer; }
-        public byte Adderstinf { get => addersting; }
+        public byte Addersting { get => addersting; }
         public bool Eukrasia { get => eukrasia; }
 
         private byte addersgall;

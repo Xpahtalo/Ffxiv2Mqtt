@@ -5,7 +5,7 @@ namespace Ffxiv2Mqtt.TopicTracker
     internal class RedMageGaugeTracker : BaseTopicTracker, IUpdatable
     {
         public byte BlackMana { get => blackMana; }
-        public byte WhiteMana { get => WhiteMana; }
+        public byte WhiteMana { get => whiteMana; }
         public byte ManaStacks { get => manaStacks; }
 
         private byte blackMana;

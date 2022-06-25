@@ -16,7 +16,10 @@ namespace Ffxiv2Mqtt.TopicTracker
 
         private const uint ReaperId = 39;
 
-        public ReaperGaugeTracker(MqttManager m) : base(m) { }
+        public ReaperGaugeTracker(MqttManager m) : base(m)
+        {
+            topic = "Player/JobGauge/RPR";
+        }
 
         public void Update()
         {

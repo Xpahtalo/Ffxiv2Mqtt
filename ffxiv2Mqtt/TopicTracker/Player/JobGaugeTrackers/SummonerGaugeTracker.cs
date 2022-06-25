@@ -2,7 +2,7 @@
 
 namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class SummonerGaugeTracker : BaseTopicTracker,IUpdatable
+    internal class SummonerGaugeTracker : BaseTopicTracker, IUpdatable
     {
         public byte AetherflowStacks { get => aetherflowStacks; }
         public byte Attunement { get => attunement; }
@@ -33,8 +33,11 @@ namespace Ffxiv2Mqtt.TopicTracker
 
         private const uint SummonerId = 27;
 
-        public SummonerGaugeTracker(MqttManager m) : base(m) { }
-        
+        public SummonerGaugeTracker(MqttManager m) : base(m)
+        {
+            topic = "Player/JobGauge/SMN";
+        }
+
         public void Update()
         {
             if (Dalamud.ClientState.IsPvP)
