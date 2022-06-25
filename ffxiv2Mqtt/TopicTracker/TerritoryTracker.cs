@@ -1,5 +1,4 @@
-﻿
-namespace Ffxiv2Mqtt.TopicTracker
+﻿namespace Ffxiv2Mqtt.TopicTracker
 {
     internal class TerritoryTracker : BaseTopicTracker, ICleanable
     {
@@ -20,7 +19,6 @@ namespace Ffxiv2Mqtt.TopicTracker
         public TerritoryTracker(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Territory";
-
             Dalamud.ClientState.TerritoryChanged += TerritoryChanged;
         }
 

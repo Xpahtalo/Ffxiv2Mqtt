@@ -1,9 +1,9 @@
-﻿using Lumina.Excel.GeneratedSheets;
-
-namespace Ffxiv2Mqtt.TopicTracker
+﻿namespace Ffxiv2Mqtt.TopicTracker
 {
     internal class PlayerInfoTracker : BaseTopicTracker, IUpdatable
     {
+        public string Class { get => Dalamud.ClientState?.LocalPlayer?.ClassJob?.GameData?.Abbreviation ?? ""; }
+        uint classJobId;
         public byte Level { get => level; }
         byte level;
         public uint MaxHP { get => maxHP; }
@@ -14,8 +14,7 @@ namespace Ffxiv2Mqtt.TopicTracker
         uint maxCP;
         public uint MaxGP { get => maxGP; }
         uint maxGP;
-        public string Class { get => (classJob is null) ? classJob.Abbreviation : ""; }
-        ClassJob? classJob;
+
 
         internal PlayerInfoTracker(MqttManager mqttManager) : base(mqttManager)
         {
@@ -28,9 +27,7 @@ namespace Ffxiv2Mqtt.TopicTracker
             if (localPlayer is null)
                 return;
 
-            var currentClassJob = localPlayer.ClassJob.GameData;
-            if (currentClassJob is not null)
-                TestValue<ClassJob>(currentClassJob, ref classJob);
+            TestValue(localPlayer.ClassJob.Id, ref classJobId);
             TestValue(localPlayer.Level, ref level);
             TestValue(localPlayer.MaxHp, ref maxHP);
             TestValue(localPlayer.MaxMp, ref maxMP);

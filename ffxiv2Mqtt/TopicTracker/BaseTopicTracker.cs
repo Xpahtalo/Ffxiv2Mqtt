@@ -1,5 +1,5 @@
-﻿using Newtonsoft.Json;
-using Dalamud.Logging;
+﻿using Dalamud.Logging;
+using Newtonsoft.Json;
 
 namespace Ffxiv2Mqtt.TopicTracker
 {
@@ -11,7 +11,11 @@ namespace Ffxiv2Mqtt.TopicTracker
 
         internal BaseTopicTracker(MqttManager mqttManager)
         {
+#if DEBUG
+            PluginLog.Debug($"Creating {this.GetType()}");
+#endif
             this.mqttManager = mqttManager;
+            topic = "";
         }
 
         private protected void TestCountUp(short current, ref short previous, short interval)
@@ -70,7 +74,7 @@ namespace Ffxiv2Mqtt.TopicTracker
         
         private protected void TestValue<T>(T current, ref T previous)
         {
-            if (!current.Equals(previous))
+            if (!current!.Equals(previous))
             {
                 previous = current;
                 needsPublishing = true;
@@ -78,7 +82,7 @@ namespace Ffxiv2Mqtt.TopicTracker
         }
 
         
-        internal void PublishIfNeeded()
+        internal virtual void PublishIfNeeded()
         {
             if (needsPublishing)
             {
@@ -86,9 +90,9 @@ namespace Ffxiv2Mqtt.TopicTracker
                 needsPublishing = false;
             }
         }
-        internal void Publish()
+        internal virtual void Publish(bool retained = false)
         {
-            mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(this));
+            mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(this), retained);
         }
     }
 }

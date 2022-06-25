@@ -3,6 +3,7 @@ using Dalamud.Game;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Objects;
+using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.Interface;
@@ -28,4 +29,5 @@ public class Dalamud
     [PluginService][RequiredVersion("1.0")] public static ObjectTable Objects { get; private set; } = null!;
     [PluginService][RequiredVersion("1.0")] public static TitleScreenMenu TitleScreenMenu { get; private set; } = null!;
     [PluginService][RequiredVersion("1.0")] public static GameGui GameGui { get; private set; } = null!;
+    [PluginService][RequiredVersion("1.0")] public static JobGauges JobGauges { get; private set; } = null!;
 }
