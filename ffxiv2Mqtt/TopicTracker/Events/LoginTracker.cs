@@ -30,21 +30,16 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
             Publish(true);
         }
 
-        private void ClearState()
+        private void Logout(object? s, System.EventArgs e)
         {
             LoggedIn = false;
             LoggedInCharacter = "";
-            Publish(true);
-        }
-
-        private void Logout(object? s, System.EventArgs e)
-        {
-            ClearState();
+            Publish();
         }
 
         public void Cleanup()
         {
-            ClearState();
+            mqttManager.PublishMessage(topic, "");
             Dalamud.ClientState.Login -= Login;
             Dalamud.ClientState.Logout -= Logout;
         }

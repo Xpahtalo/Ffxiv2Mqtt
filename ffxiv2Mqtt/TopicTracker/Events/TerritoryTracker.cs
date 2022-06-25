@@ -27,11 +27,12 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
         internal void TerritoryChanged(object? s, ushort e)
         {
             territory = e;
-            Publish();
+            Publish(true);
         }
 
         public void Cleanup()
         {
+            mqttManager.PublishMessage(topic, "");
             Dalamud.ClientState.TerritoryChanged -= TerritoryChanged;
         }
     }
