@@ -1,8 +1,6 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace Ffxiv2Mqtt.TopicTracker
+﻿namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class PlayerCrafterStatsTracker : BaseTopicTracker
+    internal class PlayerCrafterStatsTracker : BaseTopicTracker, IUpdatable
     {
         public uint CP { get => cp; }
         uint cp;
@@ -12,8 +10,12 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "Player/Crafter/Current";
         }
 
-        internal void Update(PlayerCharacter localPlayer)
+        public void Update()
         {
+            var localPlayer = Dalamud.ClientState.LocalPlayer;
+            if (localPlayer is null)
+                return;
+
             TestValue(localPlayer.CurrentCp, ref cp);
             
             PublishIfNeeded();

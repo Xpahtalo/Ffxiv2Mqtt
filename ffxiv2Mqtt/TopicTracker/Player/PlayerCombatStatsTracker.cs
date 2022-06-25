@@ -1,8 +1,6 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace Ffxiv2Mqtt.TopicTracker
+﻿namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class PlayerCombatStatsTracker : BaseTopicTracker
+    internal class PlayerCombatStatsTracker : BaseTopicTracker, IUpdatable
     {
         public uint HP { get => hp; }
         public uint MP { get => mp; }
@@ -14,8 +12,12 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "Player/Combat/Current";
         }
 
-        internal void Update(PlayerCharacter localPlayer)
+        public void Update()
         {
+            var localPlayer = Dalamud.ClientState.LocalPlayer;
+            if (localPlayer is null)
+                return;
+
             TestValue(localPlayer.CurrentHp, ref hp);
             TestValue(localPlayer.CurrentMp, ref mp);
 

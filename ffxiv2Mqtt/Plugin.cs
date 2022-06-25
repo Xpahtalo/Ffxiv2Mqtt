@@ -5,6 +5,7 @@ using Dalamud.Plugin;
 using Dalamud.Game.Command;
 using Dalamud.Logging;
 using System.IO;
+using System.Collections.Generic;
 using Ffxiv2Mqtt.EventHandlers.JobGaugeTrackers;
 using Ffxiv2Mqtt.TopicTracker;
 
@@ -44,12 +45,9 @@ namespace Ffxiv2Mqtt
         #endregion
 
         private MqttManager mqttManager;
-        
-        private PlayerInfoTracker playerInfoTracker;
-        private PlayerCombatStatsTracker playerCombatStatsTracker;
-        private PlayerGathererStatsTracker playerGathererStatsTracker;
-        private PlayerCrafterStatsTracker playerCrafterStatsTracker;
-        private TerritoryTracker territoryTracker;
+
+
+        private List<BaseTopicTracker> trackers;
 
         // Tanks
         private PaladinGaugeTracker paladinGaugeTracker;
@@ -143,12 +141,15 @@ namespace Ffxiv2Mqtt
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
             Dalamud.Initialize(this.PluginInterface);
-            playerInfoTracker = new PlayerInfoTracker(mqttManager);
-            playerCombatStatsTracker = new PlayerCombatStatsTracker(mqttManager);
-            playerGathererStatsTracker = new PlayerGathererStatsTracker(mqttManager);
-            playerCrafterStatsTracker = new PlayerCrafterStatsTracker(mqttManager);
-            territoryTracker = new TerritoryTracker(mqttManager);
-            Dalamud.ClientState.TerritoryChanged += territoryTracker.TerritoryChanged;
+            trackers = new List<BaseTopicTracker>
+            {
+                new PlayerInfoTracker(mqttManager),
+                new PlayerCombatStatsTracker(mqttManager),
+                new PlayerGathererStatsTracker(mqttManager),
+                new PlayerCrafterStatsTracker(mqttManager),
+                new TerritoryTracker(mqttManager)
+            };
+
 
             // Tanks
             paladinGaugeTracker = new PaladinGaugeTracker(this.mqttManager);
@@ -219,11 +220,14 @@ namespace Ffxiv2Mqtt
         {
             mqttManager.PublishMessage("Player/Level", "", true);
 
+            foreach (ICleanable tracker in trackers)
+                tracker.Cleanup();
+
+            
             Condition.ConditionChange -= ConditionChange;
             ClientState.CfPop -= CfPop;
             ClientState.Login -= Login;
             ClientState.Logout -= Logout;
-            Dalamud.ClientState.TerritoryChanged -= territoryTracker.TerritoryChanged;
             Framework.Update -= Update;
 
             PluginUi?.Dispose();
@@ -264,12 +268,6 @@ namespace Ffxiv2Mqtt
             mqttManager.PublishMessage("ClientState/LoggedInCharacter", string.Empty, true);
         }
 
-        private void TerritoryChanged(object? s, ushort e)
-        {
-            var territoryName = DataManager?.GameData?.Excel?.GetSheet<Lumina.Excel.GeneratedSheets.TerritoryType>()?.GetRow(e)?.PlaceName?.Value?.Name;
-            if (territoryName != null)
-                mqttManager.PublishMessage("ClientState/TerritoryChanged", territoryName.ToString(), true);
-        }
 
         private void Update(Framework framework)
         {
@@ -277,10 +275,9 @@ namespace Ffxiv2Mqtt
             if (localPlayer == null)
                 return;
 
-            playerInfoTracker.Update(localPlayer);
-            playerCombatStatsTracker.Update(localPlayer);
-            playerGathererStatsTracker.Update(localPlayer);
-            playerCrafterStatsTracker.Update(localPlayer);
+            foreach (IUpdatable tracker in trackers)
+                tracker.Update();
+                
 
             if (!ClientState.IsPvP)
             {

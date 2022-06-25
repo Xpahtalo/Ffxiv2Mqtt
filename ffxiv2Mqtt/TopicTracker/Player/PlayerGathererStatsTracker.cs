@@ -1,9 +1,6 @@
-﻿using Newtonsoft.Json;
-using Dalamud.Game.ClientState.Objects.SubKinds;
-
-namespace Ffxiv2Mqtt.TopicTracker
+﻿namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class PlayerGathererStatsTracker : BaseTopicTracker
+    internal class PlayerGathererStatsTracker : BaseTopicTracker, IUpdatable
     {
         public uint GP { get => gp; }
         uint gp;
@@ -13,8 +10,12 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "Player/Gatherer/Current";
         }
 
-        internal void Update(PlayerCharacter localPlayer)
+        public void Update()
         {
+            var localPlayer = Dalamud.ClientState.LocalPlayer;
+            if (localPlayer is null)
+                return;
+
             if (localPlayer.MaxGp != 0)
                 TestValue(localPlayer.CurrentGp, ref gp);
 

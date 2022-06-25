@@ -1,10 +1,8 @@
-﻿using Dalamud.Game.ClientState.Objects.SubKinds;
-using Lumina.Excel.GeneratedSheets;
-using Dalamud.Game.ClientState.Resolvers;
+﻿using Lumina.Excel.GeneratedSheets;
 
 namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class PlayerInfoTracker : BaseTopicTracker
+    internal class PlayerInfoTracker : BaseTopicTracker, IUpdatable
     {
         public byte Level { get => level; }
         byte level;
@@ -24,8 +22,12 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "Player/Info";
         }
 
-        internal void Update(PlayerCharacter localPlayer)
+        public void Update()
         {
+            var localPlayer = Dalamud.ClientState.LocalPlayer;
+            if (localPlayer is null)
+                return;
+
             var currentClassJob = localPlayer.ClassJob.GameData;
             if (currentClassJob is not null)
                 TestValue<ClassJob>(currentClassJob, ref classJob);
