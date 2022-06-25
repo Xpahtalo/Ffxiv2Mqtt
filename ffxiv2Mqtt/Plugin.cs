@@ -49,6 +49,7 @@ namespace Ffxiv2Mqtt
         private PlayerCombatStatsTracker playerCombatStatsTracker;
         private PlayerGathererStatsTracker playerGathererStatsTracker;
         private PlayerCrafterStatsTracker playerCrafterStatsTracker;
+        private TerritoryTracker territoryTracker;
 
         // Tanks
         private PaladinGaugeTracker paladinGaugeTracker;
@@ -120,7 +121,6 @@ namespace Ffxiv2Mqtt
             if (Configuration.ConnectAtStartup)
                 mqttManager.ConnectToBroker();
 
-
             this.Configuration.Initialize(this.PluginInterface);
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager);
@@ -142,10 +142,13 @@ namespace Ffxiv2Mqtt
             this.PluginInterface.UiBuilder.Draw += DrawUI;
             this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
 
+            Dalamud.Initialize(this.PluginInterface);
             playerInfoTracker = new PlayerInfoTracker(mqttManager);
             playerCombatStatsTracker = new PlayerCombatStatsTracker(mqttManager);
             playerGathererStatsTracker = new PlayerGathererStatsTracker(mqttManager);
             playerCrafterStatsTracker = new PlayerCrafterStatsTracker(mqttManager);
+            territoryTracker = new TerritoryTracker(mqttManager);
+            Dalamud.ClientState.TerritoryChanged += territoryTracker.TerritoryChanged;
 
             // Tanks
             paladinGaugeTracker = new PaladinGaugeTracker(this.mqttManager);
@@ -176,7 +179,6 @@ namespace Ffxiv2Mqtt
             this.ClientState.CfPop += CfPop;
             this.ClientState.Login += Login;
             this.ClientState.Logout += Logout;
-            this.ClientState.TerritoryChanged += TerritoryChanged;
             this.Framework.Update += Update;
         }
 
@@ -221,7 +223,7 @@ namespace Ffxiv2Mqtt
             ClientState.CfPop -= CfPop;
             ClientState.Login -= Login;
             ClientState.Logout -= Logout;
-            ClientState.TerritoryChanged -= TerritoryChanged;
+            Dalamud.ClientState.TerritoryChanged -= territoryTracker.TerritoryChanged;
             Framework.Update -= Update;
 
             PluginUi?.Dispose();

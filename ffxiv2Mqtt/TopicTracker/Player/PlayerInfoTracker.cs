@@ -16,8 +16,8 @@ namespace Ffxiv2Mqtt.TopicTracker
         uint maxCP;
         public uint MaxGP { get => maxGP; }
         uint maxGP;
-        public string Class { get => classJob.Abbreviation; }
-        ClassJob classJob;
+        public string Class { get => (classJob is null) ? classJob.Abbreviation : ""; }
+        ClassJob? classJob;
 
         internal PlayerInfoTracker(MqttManager mqttManager) : base(mqttManager)
         {
