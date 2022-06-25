@@ -1,4 +1,5 @@
 ﻿using Dalamud.Logging;
+using Ffxiv2Mqtt.TopicTracker.Interfaces;
 using System.Collections.Generic;
 
 namespace Ffxiv2Mqtt.TopicTracker

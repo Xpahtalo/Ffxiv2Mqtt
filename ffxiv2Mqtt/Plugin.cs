@@ -5,6 +5,8 @@ using Dalamud.Game.Command;
 using Dalamud.Logging;
 using System.Collections.Generic;
 using Ffxiv2Mqtt.TopicTracker;
+using Ffxiv2Mqtt.TopicTracker.Data;
+using Ffxiv2Mqtt.TopicTracker.Events;
 
 
 namespace Ffxiv2Mqtt
