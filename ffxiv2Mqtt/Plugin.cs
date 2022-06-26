@@ -88,6 +88,7 @@ namespace Ffxiv2Mqtt
                     PluginLog.LogError("Not enough arguments.");
                     return;
                 }
+                PluginLog.Information($"Publishing a custom message. topic: {argsList[0]} payload: {argsList[1]}");
                 mqttManager.PublishMessage(argsList[0], argsList[1]);
             }
         }
