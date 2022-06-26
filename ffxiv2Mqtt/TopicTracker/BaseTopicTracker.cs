@@ -23,11 +23,18 @@ namespace Ffxiv2Mqtt.TopicTracker
             bool wentLower = current < previous;
             bool exceededInterval = (current - previous) >= interval;
 
-            if (reachedZero || noLongerZero || wentLower || exceededInterval)
+            if (reachedZero || noLongerZero || wentLower)
             {
                 previous = current;
                 needsPublishing = true;
+                return;
             }
+            if (interval >= 0)
+                if (exceededInterval)
+                {
+                    previous = current;
+                    needsPublishing = true;
+                }
         }
         
         private protected void TestCountDown(ushort current, ref ushort previous, ushort interval)
@@ -37,11 +44,18 @@ namespace Ffxiv2Mqtt.TopicTracker
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
+            if (reachedZero || noLongerZero || wentHigher)
             {
                 previous = current;
                 needsPublishing = true;
+                return;
             }
+            if (interval >= 0)
+                if (exceededInterval)
+                {
+                    previous = current;
+                    needsPublishing = true;
+                }
         }
         private protected void TestCountDown(short current, ref short previous, short interval)
         {
@@ -50,11 +64,18 @@ namespace Ffxiv2Mqtt.TopicTracker
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
+            if (reachedZero || noLongerZero || wentHigher)
             {
                 previous = current;
                 needsPublishing = true;
+                return;
             }
+            if (interval >= 0)
+                if (exceededInterval)
+                {
+                    previous = current;
+                    needsPublishing = true;
+                }
         }
         private protected void TestCountDown(int current, ref int previous, int interval)
         {
@@ -63,11 +84,18 @@ namespace Ffxiv2Mqtt.TopicTracker
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (reachedZero || noLongerZero || wentHigher || exceededInterval)
+            if (reachedZero || noLongerZero || wentHigher)
             {
                 previous = current;
                 needsPublishing = true;
+                return;
             }
+            if (interval >= 0)
+                if (exceededInterval)
+                {
+                    previous = current;
+                    needsPublishing = true;
+                }            
         }
         
         private protected void TestValue<T>(T current, ref T previous)
