@@ -27,7 +27,7 @@ namespace Ffxiv2Mqtt
             get { return this.settingsVisible; }
             set { this.settingsVisible = value; }
         }
-        
+
         public PluginUI(Configuration configuration, MqttManager mqttManager, TrackerManager trackerManager)
         {
             this.configuration = configuration;
@@ -48,7 +48,7 @@ namespace Ffxiv2Mqtt
                 return;
             }
 
-            if (ImGui.Begin("Status", ref this.visible, 
+            if (ImGui.Begin("Status", ref this.visible,
                 ImGuiWindowFlags.AlwaysAutoResize))
             {
                 if (ImGui.Button("Show Settings"))
@@ -60,8 +60,8 @@ namespace Ffxiv2Mqtt
                 {
                     mqttManager.ConnectToBroker();
                 }
-            
-                if(ImGui.Button("Disconnect"))
+
+                if (ImGui.Button("Disconnect"))
                 {
                     mqttManager.DisconnectFromBroker();
                 }
@@ -82,83 +82,74 @@ namespace Ffxiv2Mqtt
             }
 
             if (ImGui.Begin("Config", ref this.settingsVisible,
-                ImGuiWindowFlags.AlwaysAutoResize ))
+                ImGuiWindowFlags.AlwaysAutoResize))
             {
                 string clientId = this.configuration.ClientId;
                 if (ImGui.InputText("Client ID", ref clientId, 256))
-                {
                     this.configuration.ClientId = clientId;
-                }
 
                 bool includeClientId = this.configuration.IncludeClientId;
                 if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId))
-                {
                     this.configuration.IncludeClientId = includeClientId;
-                }
+                HelpMarker("This is useful if you have multiple computers connected to the same broker, so you can differentiate between them. Otherwise, leave it off.");
 
                 string user = this.configuration.User;
                 if (ImGui.InputText("User", ref user, 256))
-                {
                     this.configuration.User = user;
-                }
 
                 string password = this.configuration.Password;
                 if (ImGui.InputText("Password", ref password, 256, ImGuiInputTextFlags.Password))
-                {
                     this.configuration.Password = password;
-                }
+                HelpMarker("Password is stored in plaintext. It is not secure, so please use a unique password for your user.");
+
 
                 string brokerAddress = this.configuration.BrokerAddress;
                 if (ImGui.InputText("Broker Address", ref brokerAddress, 2000))
-                {
                     this.configuration.BrokerAddress = brokerAddress;
-                }
 
                 int brokerPort = this.configuration.BrokerPort;
                 if (ImGui.InputInt("Broker Port", ref brokerPort))
-                {
                     this.configuration.BrokerPort = brokerPort;
-                }
 
                 string baseTopic = this.configuration.BaseTopic;
                 if (ImGui.InputText("Base Topic", ref baseTopic, 256))
-                {
                     this.configuration.BaseTopic = baseTopic;
-                }
 
                 var fullTopic = baseTopic;
                 if (includeClientId)
-                {
                     fullTopic += "/" + clientId;
-                }
 
                 ImGui.Text($"All topics will be preceded by: {fullTopic}");
 
                 bool connectAtStartup = this.configuration.ConnectAtStartup;
                 if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup))
-                {
                     this.configuration.ConnectAtStartup = connectAtStartup;
-                }
 
                 int interval = this.configuration.Interval;
-                {
-                    if (ImGui.InputInt("Interval", ref interval))
-                    {
-                        this.configuration.Interval = interval;
-                    }
-                }
+                if (ImGui.InputInt("Sync Interval", ref interval))
+                    this.configuration.Interval = interval;
 
                 if (ImGui.Button("Save"))
-                {
                     trackerManager.Configure(configuration);
-                    configuration.Save();
-                }
+                configuration.Save();
             }
             ImGui.End();
         }
 
         public void Dispose()
         {
+        }
+
+        public static void HelpMarker(string text)
+        {
+            ImGui.SameLine();
+            ImGui.TextDisabled("(?)");
+            if (ImGui.IsItemHovered())
+            {
+                ImGui.BeginTooltip();
+                ImGui.TextUnformatted(text);
+                ImGui.EndTooltip();
+            }
         }
     }
 }
