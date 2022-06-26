@@ -24,12 +24,20 @@ namespace Ffxiv2Mqtt
            
             this.configuration = configuration;
             mqttClient = new MqttFactory().CreateManagedMqttClient();
-
+#if DEBUG
+            PluginLog.Debug("Hooking ConnectedAsync");
+#endif
             mqttClient.ConnectedAsync += LogConnectedAsync;
+#if DEBUG
+            PluginLog.Debug("Hooking ConnectingFailedAsync");
+#endif
             mqttClient.ConnectingFailedAsync += LogConnectingFailedAsync;
+#if DEBUG
+            PluginLog.Debug("Hooking DisconnectedAsync");
+#endif
             mqttClient.InternalClient.DisconnectedAsync += LogDisconnectedAsync;
 
-            PluginLog.Log("MqttManager Initialized");
+            PluginLog.Information("MqttManager Initialized");
         }
 
         public Task LogConnectedAsync(EventArgs e)

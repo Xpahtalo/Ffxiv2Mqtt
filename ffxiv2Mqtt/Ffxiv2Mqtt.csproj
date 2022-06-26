@@ -22,6 +22,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Include=".\ffxiv2Mqtt.yaml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Content>
@@ -63,4 +67,7 @@
     </Reference>
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="icon.png" Link="images\icon.png" CopyToOutputDirectory="Always" />
+  </ItemGroup>
 </Project>
