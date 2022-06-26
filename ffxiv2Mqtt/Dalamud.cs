@@ -12,6 +12,7 @@ using Dalamud.Plugin;
 
 namespace Ffxiv2Mqtt;
 
+// From GatherBuddy https://github.com/Ottermandias/GatherBuddy
 public class Dalamud
 {
     public static void Initialize(DalamudPluginInterface pluginInterface)
