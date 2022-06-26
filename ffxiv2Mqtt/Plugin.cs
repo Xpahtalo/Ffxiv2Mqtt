@@ -59,14 +59,13 @@ namespace Ffxiv2Mqtt
                 HelpMessage = "Send a custom MQTT message with the given topic and payload."
             });
 
-            this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-
             Dalamud.Initialize(this.PluginInterface);
             
             trackerManager = new TrackerManager(mqttManager, Configuration);
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager, trackerManager);
+            this.PluginInterface.UiBuilder.Draw += DrawUI;
+            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
             this.Framework.Update += Update;
         }
 
