@@ -7,7 +7,7 @@ namespace Ffxiv2Mqtt
     [Serializable]
     public class Configuration : IPluginConfiguration
     {
-        public int Version { get; set; } = 0;
+        public int Version { get; set; } = 1;
 
         // MQTT Settings
         public string ClientId { get; set; } = "FFXIV";
