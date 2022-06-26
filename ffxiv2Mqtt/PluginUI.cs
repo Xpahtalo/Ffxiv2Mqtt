@@ -128,6 +128,7 @@ namespace Ffxiv2Mqtt
                 int interval = this.configuration.Interval;
                 if (ImGui.InputInt("Sync Interval", ref interval))
                     this.configuration.Interval = interval;
+                HelpMarker("This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
 
                 if (ImGui.Button("Save"))
                     trackerManager.Configure(configuration);
