@@ -69,14 +69,19 @@ namespace Ffxiv2Mqtt
                     .WithClientId(configuration.ClientId)
                     .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
                     .WithCredentials(configuration.User, configuration.Password)
+                    .WithWillTopic(BuildTopic("connected"))
+                    .WithWillPayload("false")
+                    .WithWillRetain(true)
                     .Build())
                 .Build();
 
             mqttClient.StartAsync(options);
+            mqttClient.EnqueueAsync(ConnectedMessage());
         }
         
         public void DisconnectFromBroker()
         {
+            mqttClient.EnqueueAsync(DisconnectedMessage());
             mqttClient.StopAsync();
         }
 
@@ -113,6 +118,27 @@ namespace Ffxiv2Mqtt
             sb.Append(topic);
 
             return sb.ToString();
+        }
+
+
+        private MqttApplicationMessage ConnectedMessage()
+        {
+            return new MqttApplicationMessageBuilder()
+                   .WithTopic(BuildTopic("connected"))
+                   .WithPayload("true")
+                   .WithRetainFlag()
+                   .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                   .Build();
+        }
+
+        private MqttApplicationMessage DisconnectedMessage()
+        {
+            return new MqttApplicationMessageBuilder()
+                   .WithTopic(BuildTopic("connected"))
+                   .WithPayload("false")
+                   .WithRetainFlag()
+                   .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                   .Build();
         }
 
         public void Dispose()
