@@ -15,7 +15,7 @@ Automations can be set up easily with the GUI or YAML. Here's an example:
   description: ''
   trigger:
   - platform: mqtt
-    topic: ffxiv/ClientState/Queue
+    topic: ffxiv/Event/ContentFinder
     payload: Pop
   action:
   - service: notify.homeassistant_app
