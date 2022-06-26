@@ -9,7 +9,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         internal PlayerCrafterStatsTracker(MqttManager mqttManager) : base(mqttManager)
         {
-            topic = "Player/Crafter/Current";
+            topic = "Player/Crafter/CurrentStats";
         }
 
         public void Update()
