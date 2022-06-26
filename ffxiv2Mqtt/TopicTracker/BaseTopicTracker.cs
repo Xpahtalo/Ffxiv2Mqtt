@@ -16,33 +16,55 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "";
         }
 
-        private protected void TestCountUp(short current, ref short previous, short interval)
+        private protected void TestCountUp(short current, ref short previous, int interval)
         {
             bool reachedZero = (previous == 0) && (current != 0);
             bool noLongerZero = (previous != 0) && (current == 0);
             bool wentLower = current < previous;
             bool exceededInterval = (current - previous) >= interval;
 
+            if(needsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+            
             if (reachedZero || noLongerZero || wentLower)
             {
                 previous = current;
                 needsPublishing = true;
                 return;
             }
-            if (interval >= 0)
-                if (exceededInterval)
+            else
+            {
+                if (interval >= 0)
                 {
-                    previous = current;
-                    needsPublishing = true;
+                    if (exceededInterval)
+                    {
+                        previous = current;
+                        needsPublishing = true;
+                    }
                 }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                { 
+                    previous = current;
+                }
+            }
         }
-        
-        private protected void TestCountDown(ushort current, ref ushort previous, ushort interval)
+    
+
+        private protected void TestCountDown(ushort current, ref ushort previous, int interval)
         {
             bool reachedZero = (previous == 0) && (current != 0);
             bool noLongerZero = (previous != 0) && (current == 0);
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
+
+            if (needsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
 
             if (reachedZero || noLongerZero || wentHigher)
             {
@@ -50,19 +72,34 @@ namespace Ffxiv2Mqtt.TopicTracker
                 needsPublishing = true;
                 return;
             }
-            if (interval >= 0)
-                if (exceededInterval)
+            else
+            {
+                if (interval >= 0)
+                {
+                    if (exceededInterval)
+                    {
+                        previous = current;
+                        needsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
-                    needsPublishing = true;
                 }
+            }
         }
-        private protected void TestCountDown(short current, ref short previous, short interval)
+        private protected void TestCountDown(short current, ref short previous, int interval)
         {
             bool reachedZero = (previous == 0) && (current != 0);
             bool noLongerZero = (previous != 0) && (current == 0);
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
+
+            if (needsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
 
             if (reachedZero || noLongerZero || wentHigher)
             {
@@ -70,12 +107,21 @@ namespace Ffxiv2Mqtt.TopicTracker
                 needsPublishing = true;
                 return;
             }
-            if (interval >= 0)
-                if (exceededInterval)
+            else
+            {
+                if (interval >= 0)
+                {
+                    if (exceededInterval)
+                    {
+                        previous = current;
+                        needsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
-                    needsPublishing = true;
                 }
+            }
         }
         private protected void TestCountDown(int current, ref int previous, int interval)
         {
@@ -84,18 +130,33 @@ namespace Ffxiv2Mqtt.TopicTracker
             bool wentHigher = current > previous;
             bool exceededInterval = (previous - current) >= interval;
 
+            if (needsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+
             if (reachedZero || noLongerZero || wentHigher)
             {
                 previous = current;
                 needsPublishing = true;
                 return;
             }
-            if (interval >= 0)
-                if (exceededInterval)
+            else
+            {
+                if (interval >= 0)
+                {
+                    if (exceededInterval)
+                    {
+                        previous = current;
+                        needsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
-                    needsPublishing = true;
-                }            
+                }
+            }
         }
         
         private protected void TestValue<T>(T current, ref T previous)
@@ -105,6 +166,8 @@ namespace Ffxiv2Mqtt.TopicTracker
                 previous = current;
                 needsPublishing = true;
             }
+            else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                previous = current;            
         }
 
         

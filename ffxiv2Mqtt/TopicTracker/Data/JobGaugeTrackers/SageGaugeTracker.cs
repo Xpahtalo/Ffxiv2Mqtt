@@ -34,7 +34,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             var gauge = Dalamud.JobGauges.Get<SGEGauge>();
 
             TestValue(gauge.Addersgall, ref addersgall);
-            TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, (short)synceTimer);
+            TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, syncTimer);
             TestValue(gauge.Addersting, ref addersting);
             TestValue(gauge.Eukrasia, ref eukrasia);
 

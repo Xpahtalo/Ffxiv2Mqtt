@@ -33,7 +33,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
             TestValue(gauge.Lily, ref lily);
             TestValue(gauge.BloodLily, ref bloodLily);
-            TestCountUp(gauge.LilyTimer, ref lilyTimer, (short)synceTimer);
+            TestCountUp(gauge.LilyTimer, ref lilyTimer, syncTimer);
 
             PublishIfNeeded();
         }

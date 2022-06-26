@@ -43,8 +43,8 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(blmGauge.IsParadoxActive, ref isParadoxActive);
             TestValue(blmGauge.AstralFireStacks, ref astralFireStacks);
             TestValue(blmGauge.UmbralIceStacks, ref umbralIceStacks);
-            TestCountDown(blmGauge.ElementTimeRemaining, ref elementTimeRemaining, (short)synceTimer);
-            TestCountDown(blmGauge.EnochianTimer, ref enochianTimeRemaining, (short)synceTimer);
+            TestCountDown(blmGauge.ElementTimeRemaining, ref elementTimeRemaining, syncTimer);
+            TestCountDown(blmGauge.EnochianTimer, ref enochianTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }

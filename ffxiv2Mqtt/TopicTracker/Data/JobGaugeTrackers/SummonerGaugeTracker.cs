@@ -52,7 +52,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
             TestValue(gauge.AetherflowStacks, ref aetherflowStacks);
             TestValue(gauge.Attunement, ref attunement);
-            TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, syncTimer);
             TestValue(gauge.IsBahamutReady, ref isBahamutReady);
             TestValue(gauge.IsPhoenixReady, ref isPhoenixReady);
             TestValue(gauge.IsGarudaReady, ref isGarudaReady);
@@ -61,7 +61,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.IsIfritAttuned, ref isIfritAttuned);
             TestValue(gauge.IsTitanReady, ref isTitanReady);
             TestValue(gauge.IsTitanAttuned, ref isTitanAttuned);
-            TestCountDown(gauge.SummonTimerRemaining, ref summonTimeRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.SummonTimerRemaining, ref summonTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }

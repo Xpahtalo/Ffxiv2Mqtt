@@ -34,9 +34,9 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             var gauge = Dalamud.JobGauges.Get<DRKGauge>();
 
             TestValue(gauge.Blood, ref blood);
-            TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer);
             TestValue(gauge.HasDarkArts, ref hasDarkArts);
-            TestCountDown(gauge.ShadowTimeRemaining, ref shadowTimeRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.ShadowTimeRemaining, ref shadowTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }

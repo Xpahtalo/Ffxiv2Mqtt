@@ -48,7 +48,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(brdGauge.LastSong, ref lastSong);
             TestValue(brdGauge.Repertoire, ref repertoire);
             TestValue(brdGauge.Song, ref song);
-            TestCountDown(brdGauge.SongTimer, ref songTimer, (ushort)synceTimer);
+            TestCountDown(brdGauge.SongTimer, ref songTimer, syncTimer);
             TestValue(brdGauge.SoulVoice, ref soulVoice);
 
             PublishIfNeeded();

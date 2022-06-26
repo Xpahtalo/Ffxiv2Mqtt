@@ -37,7 +37,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.Aetherflow, ref aetherflow);
             TestValue(gauge.DismissedFairy, ref dismissedFairy);
             TestValue(gauge.FairyGauge, ref fairyGauge);
-            TestCountDown(gauge.SeraphTimer, ref seraphTimer, (short)synceTimer);
+            TestCountDown(gauge.SeraphTimer, ref seraphTimer, syncTimer);
 
             PublishIfNeeded();
         }

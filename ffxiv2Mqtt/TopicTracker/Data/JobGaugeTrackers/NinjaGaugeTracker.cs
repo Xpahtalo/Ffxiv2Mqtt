@@ -32,7 +32,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             var gauge = Dalamud.JobGauges.Get<NINGauge>();
 
             TestValue(gauge.HutonManualCasts, ref hutonManualCasts);
-            TestCountDown(gauge.HutonTimer, ref hutonTimer, (short)synceTimer);
+            TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer);
             TestValue(gauge.Ninki, ref ninki);
 
             PublishIfNeeded();

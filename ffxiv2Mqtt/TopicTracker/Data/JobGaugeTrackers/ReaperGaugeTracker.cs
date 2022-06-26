@@ -36,7 +36,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.Soul, ref soul);
             TestValue(gauge.LemureShroud, ref lemureShroud);
             TestValue(gauge.VoidShroud, ref voidShroud);
-            TestCountDown(gauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.EnshroudedTimeRemaining, ref enshroudedTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }

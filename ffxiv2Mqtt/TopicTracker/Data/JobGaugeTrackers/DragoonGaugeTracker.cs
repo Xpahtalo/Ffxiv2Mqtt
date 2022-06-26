@@ -36,7 +36,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.EyeCount, ref eyeCount);
             TestValue(gauge.FirstmindsFocusCount, ref firstmindsFocusCount);
             TestValue(gauge.IsLOTDActive, ref isLotdActive);
-            TestCountDown(gauge.LOTDTimer, ref lotdTimer, (short)synceTimer);
+            TestCountDown(gauge.LOTDTimer, ref lotdTimer, syncTimer);
 
             PublishIfNeeded();
         }

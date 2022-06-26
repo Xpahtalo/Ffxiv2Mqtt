@@ -44,8 +44,8 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             TestValue(gauge.IsOverheated, ref isOverheated);
             TestValue(gauge.IsRobotActive, ref isRobotActive);
             TestValue(gauge.LastSummonBatteryPower, ref lastSummonBatteryPower);
-            TestCountDown(gauge.OverheatTimeRemaining, ref overheatTimeRemaining, (short)synceTimer);
-            TestCountDown(gauge.SummonTimeRemaining, ref summonTimeRemaining, (short)synceTimer);
+            TestCountDown(gauge.OverheatTimeRemaining, ref overheatTimeRemaining, syncTimer);
+            TestCountDown(gauge.SummonTimeRemaining, ref summonTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }

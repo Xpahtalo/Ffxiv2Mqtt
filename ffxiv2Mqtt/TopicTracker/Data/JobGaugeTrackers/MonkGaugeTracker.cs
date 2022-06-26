@@ -38,7 +38,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
             {
                 TestValue(gauge.BeastChakra[i], ref beastChakra[i]);
             }
-            TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, (ushort)synceTimer);
+            TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, syncTimer);
 
             PublishIfNeeded();
         }
