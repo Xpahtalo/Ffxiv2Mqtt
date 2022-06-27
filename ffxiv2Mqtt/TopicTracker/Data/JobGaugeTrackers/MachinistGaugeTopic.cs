@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class MachinistGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class MachinistGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Battery { get => battery; }
         public byte Heat { get => heat; }
@@ -23,7 +23,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint MachinistId = 31;
 
-        public MachinistGaugeTracker(MqttManager m) : base(m)
+        public MachinistGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/MCH";
         }

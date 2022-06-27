@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class AstrologianGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class AstrologianGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public CardType DrawnCard { get => drawnCard; }
         public CardType DrawnCrownCard { get => drawnCrownType; }
@@ -16,7 +16,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
         private const uint AstrologianId = 33;
 
 
-        public AstrologianGaugeTracker(MqttManager m) : base(m)
+        public AstrologianGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/AST";
             seals = new SealType[3];

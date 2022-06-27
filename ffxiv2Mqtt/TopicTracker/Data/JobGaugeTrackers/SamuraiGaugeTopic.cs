@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SamuraiGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class SamuraiGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Kenki { get => kenki; }
         public byte MeditationStacks { get => meditationStacks; }
@@ -22,7 +22,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint SamuraiId = 34;
 
-        public SamuraiGaugeTracker(MqttManager m) : base(m) {
+        public SamuraiGaugeTopic(MqttManager m) : base(m) {
             topic = "Player/JobGauge/SAM";
         }
 

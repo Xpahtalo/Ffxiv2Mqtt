@@ -3,14 +3,14 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class PaladinGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class PaladinGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte OathGauge { get => oathGauge; }
         private byte oathGauge;
 
         private const uint PaladinId = 19;
 
-        public PaladinGaugeTracker(MqttManager m) : base(m)
+        public PaladinGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/PLD";
         }

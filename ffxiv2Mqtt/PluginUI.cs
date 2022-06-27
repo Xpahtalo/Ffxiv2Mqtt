@@ -11,7 +11,7 @@ namespace Ffxiv2Mqtt
     {
         private Configuration configuration;
         private MqttManager mqttManager;
-        private TrackerManager trackerManager;
+        private TopicManager trackerManager;
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -28,7 +28,7 @@ namespace Ffxiv2Mqtt
             set { this.settingsVisible = value; }
         }
 
-        public PluginUI(Configuration configuration, MqttManager mqttManager, TrackerManager trackerManager)
+        public PluginUI(Configuration configuration, MqttManager mqttManager, TopicManager trackerManager)
         {
             this.configuration = configuration;
             this.mqttManager = mqttManager;

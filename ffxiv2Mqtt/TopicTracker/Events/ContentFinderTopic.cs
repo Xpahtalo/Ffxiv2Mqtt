@@ -2,9 +2,9 @@
 
 namespace Ffxiv2Mqtt.TopicTracker.Events
 {
-    internal class CfPopTracker : BaseTopicTracker, ICleanable
+    internal class ContentFinderTopic : Topic, ICleanable
     {
-        internal CfPopTracker(MqttManager m) : base(m)
+        internal ContentFinderTopic(MqttManager m) : base(m)
         {
             topic = "Event/ContentFinder";
             Dalamud.ClientState.CfPop += CfPop;

@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 
 namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class BaseTopicTracker
+    internal class Topic
     {
         private protected MqttManager mqttManager;
         private protected string topic;
         private protected bool needsPublishing;
 
-        internal BaseTopicTracker(MqttManager mqttManager)
+        internal Topic(MqttManager mqttManager)
         {
             PluginLog.Verbose($"Creating {this.GetType().Name}");
             this.mqttManager = mqttManager;

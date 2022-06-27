@@ -6,50 +6,50 @@ using System.Collections.Generic;
 
 namespace Ffxiv2Mqtt.TopicTracker
 {
-    internal class TrackerManager
+    internal class TopicManager
     {
-        private List<BaseTopicTracker> allTrackers;
+        private List<Topic> allTrackers;
         private List<IUpdatable> updatables;
         private List<ICleanable> cleanables;
         private List<IConfigurable> configurables;
 
-        internal TrackerManager(MqttManager m, Configuration configuration)
+        internal TopicManager(MqttManager m, Configuration configuration)
         {
             PluginLog.Verbose("Creating TrackerManager");
-            allTrackers = new List<BaseTopicTracker>();
+            allTrackers = new List<Topic>();
             updatables = new List<IUpdatable>();
             cleanables = new List<ICleanable>();
             configurables = new List<IConfigurable>();
 
-            var trackers = new List<BaseTopicTracker>
+            var trackers = new List<Topic>
             {
-                new PlayerInfoTracker(m),
-                new PlayerCombatStatsTracker(m),
-                new PlayerGathererStatsTracker(m),
-                new PlayerCrafterStatsTracker(m),
-                new TerritoryTracker(m),
-                new ConditionTracker(m),
-                new LoginTracker(m),
-                new CfPopTracker(m),
-                new AstrologianGaugeTracker(m),
-                new BardGaugeTracker(m),
-                new BlackMageGuageTracker(m),
-                new DancerGaugeTracker(m),
-                new DarkKnightGaugeTracker(m),
-                new DragoonGaugeTracker(m),
-                new GunbreakerGaugeTracker(m),
-                new MachinistGaugeTracker(m),
-                new MonkGaugeTracker(m),
-                new NinjaGaugeTracker(m),
-                new PaladinGaugeTracker(m),
-                new ReaperGaugeTracker(m),
-                new RedMageGaugeTracker(m),
-                new SageGaugeTracker(m),
-                new ScholarGaugeTracker(m),
-                new SamuraiGaugeTracker(m),
-                new SummonerGaugeTracker(m),
-                new WarriorGaugeTracker(m),
-                new WhiteMageGaugeTracker(m),
+                new PlayerInfoTopic(m),
+                new PlayerCombatStatsTopic(m),
+                new PlayerGathererStatsTopic(m),
+                new PlayerCrafterStatsTopic(m),
+                new TerritoryTopic(m),
+                new ConditionsTopic(m),
+                new LoginTopic(m),
+                new ContentFinderTopic(m),
+                new AstrologianGaugeTopic(m),
+                new BardGaugeTopic(m),
+                new BlackMageJobGuageTopic(m),
+                new DancerGaugeTopic(m),
+                new DarkKnightGaugeTopic(m),
+                new DragoonGaugeTopic(m),
+                new GunbreakerGaugeTopic(m),
+                new MachinistGaugeTopic(m),
+                new MonkGaugeTopic(m),
+                new NinjaGaugeTopic(m),
+                new PaladinGaugeTopic(m),
+                new ReaperGaugeTopic(m),
+                new RedMageGaugeTopic(m),
+                new SageGaugeTopic(m),
+                new ScholarGaugeTopic(m),
+                new SamuraiGaugeTopic(m),
+                new SummonerGaugeTopic(m),
+                new WarriorGaugeTopic(m),
+                new WhiteMageGaugeTopic(m),
             };
 
             foreach (var tracker in trackers)
@@ -60,7 +60,7 @@ namespace Ffxiv2Mqtt.TopicTracker
         }
 
 
-        internal void AddTracker(BaseTopicTracker tracker)
+        internal void AddTracker(Topic tracker)
         {
             try
             {

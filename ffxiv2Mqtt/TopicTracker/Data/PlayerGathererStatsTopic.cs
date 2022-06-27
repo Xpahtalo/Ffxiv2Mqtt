@@ -2,12 +2,12 @@
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class PlayerGathererStatsTracker : BaseTopicTracker, IUpdatable
+    internal class PlayerGathererStatsTopic : Topic, IUpdatable
     {
         public uint GP { get => gp; }
         uint gp;
 
-        internal PlayerGathererStatsTracker(MqttManager mqttManager) : base(mqttManager)
+        internal PlayerGathererStatsTopic(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Player/Gatherer/CurrentStats";
         }

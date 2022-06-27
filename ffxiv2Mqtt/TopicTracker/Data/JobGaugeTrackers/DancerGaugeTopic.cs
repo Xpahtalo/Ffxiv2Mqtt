@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DancerGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class DancerGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public bool Dancing { get => isDancing; }
         public uint[] Steps { get => steps; }
@@ -21,7 +21,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint DancerId = 38;
 
-        public DancerGaugeTracker(MqttManager m) : base(m)
+        public DancerGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/DNC";
             steps = new uint[4];

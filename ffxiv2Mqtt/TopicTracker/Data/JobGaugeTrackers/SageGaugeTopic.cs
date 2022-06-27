@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SageGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class SageGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Addersgall { get => addersgall; }
         public short AddersgallTimer { get => addersgallTimer; }
@@ -17,7 +17,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint SageId = 40;
 
-        public SageGaugeTracker(MqttManager m) : base(m)
+        public SageGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/SGE";
         }

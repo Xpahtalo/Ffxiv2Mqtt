@@ -5,7 +5,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class BardGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class BardGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public Song Song { get => song; }
         public ushort SongTimer { get => songTimer; }
@@ -24,7 +24,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
         private const uint BardId = 23;
 
 
-        public BardGaugeTracker(MqttManager m) : base(m)
+        public BardGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/BRD";
             coda = new Song[3];

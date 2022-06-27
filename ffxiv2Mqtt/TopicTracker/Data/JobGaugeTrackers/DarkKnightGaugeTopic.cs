@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DarkKnightGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class DarkKnightGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Blood { get => blood; }
         public bool DarkArts { get=> hasDarkArts; }
@@ -17,7 +17,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint DarkKnightId = 32;
 
-        public DarkKnightGaugeTracker(MqttManager m) : base(m) 
+        public DarkKnightGaugeTopic(MqttManager m) : base(m) 
         {
             topic = "Player/JobGauge/DRK";
         }

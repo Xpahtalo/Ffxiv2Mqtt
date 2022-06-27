@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class GunbreakerGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class GunbreakerGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public short Ammo { get => ammo; }
         public byte AmmoComboStep { get => ammoComboStep; }
@@ -16,7 +16,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint GunbreakerId = 37;
 
-        public GunbreakerGaugeTracker(MqttManager m) : base(m)
+        public GunbreakerGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/GNB";
         }

@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class DragoonGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class DragoonGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte EyeCount { get => eyeCount; }
         public byte FirstmindsFocusCount { get => firstmindsFocusCount; }
@@ -17,7 +17,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint DragoonId = 22;
 
-        public DragoonGaugeTracker(MqttManager m) : base(m)
+        public DragoonGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/DRG";
         }

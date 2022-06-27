@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class RedMageGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class RedMageGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte BlackMana { get => blackMana; }
         public byte WhiteMana { get => whiteMana; }
@@ -15,7 +15,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint RedMageId = 35;
 
-        public RedMageGaugeTracker(MqttManager m) : base(m)
+        public RedMageGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/RDM";
         }

@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class ReaperGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class ReaperGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Soul { get => soul; }
         public byte LemureShroud { get => lemureShroud; }
@@ -17,7 +17,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint ReaperId = 39;
 
-        public ReaperGaugeTracker(MqttManager m) : base(m)
+        public ReaperGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/RPR";
         }

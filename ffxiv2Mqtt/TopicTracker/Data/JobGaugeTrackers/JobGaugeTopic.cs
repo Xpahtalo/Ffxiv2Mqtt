@@ -3,10 +3,10 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class BaseGaugeTracker:BaseTopicTracker, IConfigurable
+    internal class JobGaugeTopic:Topic, IConfigurable
     {
         protected int syncTimer;
-        internal BaseGaugeTracker(MqttManager m) : base(m) { }
+        internal JobGaugeTopic(MqttManager m) : base(m) { }
 
         public virtual void Configure(Configuration configuration)
         {

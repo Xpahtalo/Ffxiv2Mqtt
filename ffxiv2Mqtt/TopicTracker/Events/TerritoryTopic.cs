@@ -2,7 +2,7 @@
 
 namespace Ffxiv2Mqtt.TopicTracker.Events
 {
-    internal class TerritoryTracker : BaseTopicTracker, ICleanable
+    internal class TerritoryTopic : Topic, ICleanable
     {
         public string Name
         {
@@ -18,7 +18,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
 
         ushort territory;
 
-        public TerritoryTracker(MqttManager mqttManager) : base(mqttManager)
+        public TerritoryTopic(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Event/TerritoryChanged";
             Dalamud.ClientState.TerritoryChanged += TerritoryChanged;

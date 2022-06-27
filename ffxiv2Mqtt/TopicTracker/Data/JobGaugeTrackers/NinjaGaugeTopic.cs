@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class NinjaGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class NinjaGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Ninki { get => ninki; }
         public int HutonTimer { get => hutonTimer; }
@@ -15,7 +15,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint NinjaId = 30;
 
-        public NinjaGaugeTracker(MqttManager m) : base(m)
+        public NinjaGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/NIN";
         }

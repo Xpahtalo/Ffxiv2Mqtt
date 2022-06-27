@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class SummonerGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class SummonerGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte AetherflowStacks { get => aetherflowStacks; }
         public byte Attunement { get => attunement; }
@@ -34,7 +34,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint SummonerId = 27;
 
-        public SummonerGaugeTracker(MqttManager m) : base(m)
+        public SummonerGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/SMN";
         }

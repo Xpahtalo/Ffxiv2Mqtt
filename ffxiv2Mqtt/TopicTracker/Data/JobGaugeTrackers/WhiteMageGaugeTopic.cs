@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class WhiteMageGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class WhiteMageGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Lily { get => lily; }
         public byte BloodLily { get => bloodLily; }
@@ -15,7 +15,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint WhiteMageId = 24;
 
-        public WhiteMageGaugeTracker(MqttManager m) : base(m)
+        public WhiteMageGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/WHM";
         }

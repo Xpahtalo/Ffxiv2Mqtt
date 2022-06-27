@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class MonkGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class MonkGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Chakra { get => chakra; }
         public BeastChakra[] BeastChakras { get => beastChakra; }
@@ -16,7 +16,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint MonkId = 20;
 
-        public MonkGaugeTracker(MqttManager m) : base(m)
+        public MonkGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/MNK";
             beastChakra = new BeastChakra[3];

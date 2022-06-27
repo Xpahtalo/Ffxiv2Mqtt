@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class BlackMageGuageTracker : BaseGaugeTracker, IUpdatable
+    internal class BlackMageJobGuageTopic : JobGaugeTopic, IUpdatable
     {
         public bool EnochianActive { get=> isEnochianActive;}
         public short EnochianTimeRemaining { get => enochianTimeRemaining; }
@@ -23,7 +23,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
         private const uint Thaumaturge = 7;
         private const uint BlackMageId = 25;
 
-        public BlackMageGuageTracker(MqttManager m) : base(m) 
+        public BlackMageJobGuageTopic(MqttManager m) : base(m) 
         {
             topic = "Player/JobGauge/BLM";
         }

@@ -3,9 +3,9 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Events
 {
-    internal class ConditionTracker : BaseTopicTracker, ICleanable
+    internal class ConditionsTopic : Topic, ICleanable
     {
-        internal ConditionTracker(MqttManager mqttManager) : base(mqttManager)
+        internal ConditionsTopic(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Player/Conditions";
 

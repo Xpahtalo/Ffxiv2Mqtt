@@ -4,12 +4,12 @@ using System.Threading.Tasks;
 
 namespace Ffxiv2Mqtt.TopicTracker.Events
 {
-    internal class LoginTracker : BaseTopicTracker, ICleanable
+    internal class LoginTopic : Topic, ICleanable
     {
         public bool LoggedIn { get; set; }
         public string LoggedInCharacter { get; set; }
 
-        internal LoginTracker(MqttManager m) : base(m)
+        internal LoginTopic(MqttManager m) : base(m)
         {
             topic = "Event/Login";
             LoggedInCharacter = "";

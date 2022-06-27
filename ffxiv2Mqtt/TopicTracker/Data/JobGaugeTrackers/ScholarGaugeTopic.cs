@@ -4,7 +4,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class ScholarGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class ScholarGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte Aetherflow { get => aetherflow; }
         public DismissedFairy DismissedFairy { get => dismissedFairy; }
@@ -18,7 +18,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
         private const uint ScholarId = 28;
 
-        public ScholarGaugeTracker(MqttManager m) : base(m)
+        public ScholarGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/SCH";
         }

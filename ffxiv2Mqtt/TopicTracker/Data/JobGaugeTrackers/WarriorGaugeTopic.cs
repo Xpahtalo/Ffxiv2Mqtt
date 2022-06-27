@@ -3,7 +3,7 @@ using Ffxiv2Mqtt.TopicTracker.Interfaces;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class WarriorGaugeTracker : BaseGaugeTracker, IUpdatable
+    internal class WarriorGaugeTopic : JobGaugeTopic, IUpdatable
     {
         public byte BeastGauge { get => beastGauge; }
 
@@ -11,7 +11,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
         
         private const uint WarriorId = 21;
 
-        public WarriorGaugeTracker(MqttManager m) : base(m) {
+        public WarriorGaugeTopic(MqttManager m) : base(m) {
             topic = "Player/JobGauge/WAR";
         }
 

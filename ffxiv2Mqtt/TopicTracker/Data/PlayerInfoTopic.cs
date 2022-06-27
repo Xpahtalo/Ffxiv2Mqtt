@@ -2,7 +2,7 @@
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class PlayerInfoTracker : BaseTopicTracker, IUpdatable
+    internal class PlayerInfoTopic : Topic, IUpdatable
     {
         public string Class { get => Dalamud.ClientState?.LocalPlayer?.ClassJob?.GameData?.Abbreviation ?? ""; }
         uint classJobId;
@@ -18,7 +18,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
         uint maxGP;
 
 
-        internal PlayerInfoTracker(MqttManager mqttManager) : base(mqttManager)
+        internal PlayerInfoTopic(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Player/Info";
         }
