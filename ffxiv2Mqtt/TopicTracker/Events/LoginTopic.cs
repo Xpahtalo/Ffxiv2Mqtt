@@ -23,9 +23,10 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
 
             Task.Run(() =>
             {
-                while (Dalamud.ClientState?.LocalPlayer?.Name == null)
+                var name = Dalamud.ClientState?.LocalPlayer?.Name?.ToString();
+                while (name is null || name == "")
                     Thread.Sleep(1000);
-                LoggedInCharacter = Dalamud.ClientState.LocalPlayer.Name.ToString();
+                LoggedInCharacter = name;
             });
             Publish(true);
         }
