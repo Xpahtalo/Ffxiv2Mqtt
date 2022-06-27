@@ -12,6 +12,8 @@ using Dalamud.Plugin;
 
 namespace Ffxiv2Mqtt;
 
+// This is used to skip the usual service DI throughout the plugin. Technically incorrect, but significantly easier until the DI is improved.
+
 // From GatherBuddy https://github.com/Ottermandias/GatherBuddy
 public class Dalamud
 {

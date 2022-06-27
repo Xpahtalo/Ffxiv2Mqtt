@@ -5,10 +5,11 @@ using Dalamud.Game.Command;
 using Dalamud.Logging;
 using Ffxiv2Mqtt.TopicTracker;
 
+// Entry point for the plugin
 
 namespace Ffxiv2Mqtt
 {
-    public class Plugin : IDalamudPlugin
+    public class Ffxiv2Mqtt : IDalamudPlugin
     {
         public string Name => "FFXIV2MQTT";
 
@@ -19,22 +20,20 @@ namespace Ffxiv2Mqtt
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
 
+        private readonly MqttManager mqttManager;
+        private readonly TopicManager topicManager;
 
-        private MqttManager mqttManager;
-        private TopicManager trackerManager;
 
-
-        public Plugin(
+        public Ffxiv2Mqtt(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
         {
             Dalamud.Initialize(pluginInterface);
             this.Configuration = Dalamud.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            this.Configuration.Initialize(Dalamud.PluginInterface);
+            
             mqttManager = new MqttManager(Configuration);
             if (Configuration.ConnectAtStartup)
                 mqttManager.ConnectToBroker();
-
-            this.Configuration.Initialize(Dalamud.PluginInterface);
-
 
             Dalamud.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
             {
@@ -50,11 +49,9 @@ namespace Ffxiv2Mqtt
                 HelpMessage = "Send a custom MQTT message with the given topic and payload."
             });
 
-            Dalamud.Initialize(Dalamud.PluginInterface);
-            
-            trackerManager = new TopicManager(mqttManager, Configuration);
+            topicManager = new TopicManager(mqttManager, Configuration);
 
-            this.PluginUi = new PluginUI(this.Configuration, mqttManager, trackerManager);
+            this.PluginUi = new PluginUI(this.Configuration, mqttManager, topicManager);
             Dalamud.PluginInterface.UiBuilder.Draw += DrawUI;
             Dalamud.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
             Dalamud.Framework.Update += Update;
@@ -62,6 +59,7 @@ namespace Ffxiv2Mqtt
 
         private void OnCommand(string command, string args)
         {
+            PluginLog.Information($"Recieved command: {command}, with the args: {args}");
             if (command == configCommandName)
             {
                 this.PluginUi.Visible = true;
@@ -96,12 +94,12 @@ namespace Ffxiv2Mqtt
 
         private void Update(Framework framework)
         {
-            trackerManager.Update();
+            topicManager.Update();
         }
 
         public void Dispose()
         {
-            trackerManager.Clean();
+            topicManager.Clean();
 
             Dalamud.Framework.Update -= Update;
 
