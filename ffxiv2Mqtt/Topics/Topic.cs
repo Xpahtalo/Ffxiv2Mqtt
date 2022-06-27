@@ -16,6 +16,7 @@ namespace Ffxiv2Mqtt.TopicTracker
             topic = "";
         }
 
+        // In .NET 6 and C# 11, these can be simplified down to a single method with generics using INumber.
         private protected void TestCountUp(short current, ref short previous, int interval)
         {
             bool reachedZero = (previous == 0) && (current != 0);
@@ -51,7 +52,6 @@ namespace Ffxiv2Mqtt.TopicTracker
                 }
             }
         }
-    
 
         private protected void TestCountDown(ushort current, ref ushort previous, int interval)
         {
