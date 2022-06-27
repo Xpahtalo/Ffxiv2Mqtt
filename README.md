@@ -1,5 +1,6 @@
 # FFXIV2MQTT
-Outputs data to an MQTT broker so you can open your garage door from within the game.
+Outputs data to an MQTT broker for home automation.
+Requires a broker that suppors MQTT V5.
 
 ## Setup
 Use /mqtt to open the menu.
