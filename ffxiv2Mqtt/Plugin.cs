@@ -16,57 +16,48 @@ namespace Ffxiv2Mqtt
         private const string testCommandName = "/mtest";
         private const string customCommandName = "/mqttcustom";
 
-        private DalamudPluginInterface PluginInterface { get; init; }
-        private CommandManager CommandManager { get; init; }
         private Configuration Configuration { get; init; }
         private PluginUI PluginUi { get; init; }
 
-        [PluginService]
-        private Framework Framework { get; init; }
 
         private MqttManager mqttManager;
         private TopicManager trackerManager;
 
 
         public Plugin(
-            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-            [RequiredVersion("1.0")] CommandManager commandManager,
-            [RequiredVersion("1.0")] Framework framework)
+            [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
         {
-            this.PluginInterface = pluginInterface;
-            this.CommandManager = commandManager;
-            this.Framework = framework;
-
-            this.Configuration = this.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            Dalamud.Initialize(pluginInterface);
+            this.Configuration = Dalamud.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
             mqttManager = new MqttManager(Configuration);
             if (Configuration.ConnectAtStartup)
                 mqttManager.ConnectToBroker();
 
-            this.Configuration.Initialize(this.PluginInterface);
+            this.Configuration.Initialize(Dalamud.PluginInterface);
 
 
-            this.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
+            Dalamud.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Display MQTT Client Info"
             });
-            this.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
+            Dalamud.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Test",
                 ShowInHelp = false
             });
-            this.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+            Dalamud.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Send a custom MQTT message with the given topic and payload."
             });
 
-            Dalamud.Initialize(this.PluginInterface);
+            Dalamud.Initialize(Dalamud.PluginInterface);
             
             trackerManager = new TopicManager(mqttManager, Configuration);
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager, trackerManager);
-            this.PluginInterface.UiBuilder.Draw += DrawUI;
-            this.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            this.Framework.Update += Update;
+            Dalamud.PluginInterface.UiBuilder.Draw += DrawUI;
+            Dalamud.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            Dalamud.Framework.Update += Update;
         }
 
         private void OnCommand(string command, string args)
@@ -112,12 +103,12 @@ namespace Ffxiv2Mqtt
         {
             trackerManager.Clean();
 
-            Framework.Update -= Update;
+            Dalamud.Framework.Update -= Update;
 
             PluginUi?.Dispose();
-            CommandManager.RemoveHandler(configCommandName);
-            CommandManager.RemoveHandler(testCommandName);
-            CommandManager.RemoveHandler(customCommandName);
+            Dalamud.CommandManager.RemoveHandler(configCommandName);
+            Dalamud.CommandManager.RemoveHandler(testCommandName);
+            Dalamud.CommandManager.RemoveHandler(customCommandName);
             mqttManager?.Dispose();
         }
     }
