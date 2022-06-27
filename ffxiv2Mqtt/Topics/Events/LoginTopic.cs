@@ -7,12 +7,12 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
     internal class LoginTopic : Topic, ICleanable
     {
         public bool LoggedIn { get; set; }
-        public string LoggedInCharacter { get; set; }
+        public string Character { get; set; }
 
         internal LoginTopic(MqttManager m) : base(m)
         {
             topic = "Event/Login";
-            LoggedInCharacter = "";
+            Character = "";
             Dalamud.ClientState.Login += Login;
             Dalamud.ClientState.Logout += Logout;
         }
@@ -23,18 +23,16 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
 
             Task.Run(() =>
             {
-                var name = Dalamud.ClientState?.LocalPlayer?.Name?.ToString();
-                while (name is null || name == "")
+                while (Dalamud.ClientState?.LocalPlayer?.Name is null)
                     Thread.Sleep(1000);
-                LoggedInCharacter = name;
+                Character = Dalamud.ClientState.LocalPlayer.Name.ToString();
+                Publish(true);
             });
-            Publish(true);
         }
 
         private void Logout(object? s, System.EventArgs e)
         {
             LoggedIn = false;
-            LoggedInCharacter = "";
             Publish();
         }
 
