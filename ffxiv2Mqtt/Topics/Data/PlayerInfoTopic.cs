@@ -5,18 +5,19 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
     internal class PlayerInfoTopic : Topic, IUpdatable
     {
         public string Class { get => Dalamud.ClientState?.LocalPlayer?.ClassJob?.GameData?.Abbreviation ?? ""; }
-        uint classJobId;
+        public uint ClassId { get => classJobId; }
         public byte Level { get => level; }
-        byte level;
         public uint MaxHP { get => maxHP; }
-        uint maxHP;
         public uint MaxMP { get => maxMP; }
-        uint maxMP;
         public uint MaxCP { get => maxCP; }
-        uint maxCP;
         public uint MaxGP { get => maxGP; }
-        uint maxGP;
 
+        uint classJobId;
+        byte level;
+        uint maxHP;
+        uint maxMP;
+        uint maxGP;
+        uint maxCP;
 
         internal PlayerInfoTopic(MqttManager mqttManager) : base(mqttManager)
         {
