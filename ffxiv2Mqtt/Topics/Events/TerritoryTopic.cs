@@ -15,6 +15,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Events
                     return "Unknown";
             }
         }
+        public ushort ID { get => territory; }
 
         ushort territory;
 
