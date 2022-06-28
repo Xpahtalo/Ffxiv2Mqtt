@@ -1,5 +1,5 @@
 ﻿using Dalamud.Logging;
-using Newtonsoft.Json;
+using System.Text.Json;
 using System;
 
 namespace Ffxiv2Mqtt.Topic
@@ -196,11 +196,10 @@ namespace Ffxiv2Mqtt.Topic
         internal virtual void Publish(bool retained)
         {
             Publish(this, retained);
-            //mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(this), retained);
         }
         internal virtual void Publish(Object o, bool retained = false)
         {
-            var json = JsonConvert.SerializeObject(o);
+            var json = JsonSerializer.Serialize(o);
 #if DEBUG
             PluginLog.Debug($"Publishing {json} to {topic} from {this.GetType().Name}");
 #endif

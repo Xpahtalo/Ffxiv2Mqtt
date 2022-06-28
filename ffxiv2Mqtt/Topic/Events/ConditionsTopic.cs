@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json;
 using Dalamud.Game.ClientState.Conditions;
 using Ffxiv2Mqtt.Topic.Interfaces;
 
@@ -17,7 +17,12 @@ namespace Ffxiv2Mqtt.Topic.Events
 
         private void ConditionChange(ConditionFlag flag, bool value)
         {
-            mqttManager.PublishMessage($"{topic}/{flag}", JsonConvert.SerializeObject(new { Id = (int)flag, Active = value }));
+            var o = new
+            {
+                Id = (int)flag,
+                Active = value
+            };
+            mqttManager.PublishMessage($"{topic}/{flag}", JsonSerializer.Serialize(o));
         }
 
         public void Cleanup()
