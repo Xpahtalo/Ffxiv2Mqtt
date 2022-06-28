@@ -162,13 +162,21 @@ namespace Ffxiv2Mqtt.Topic
         
         private protected void TestValue<T>(T current, ref T previous)
         {
-            if (!current!.Equals(previous))
+            if (current is not null)
             {
-                previous = current;
-                needsPublishing = true;
+
+                if (!current.Equals(previous))
+                {
+                    previous = current;
+                    needsPublishing = true;
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                    previous = current;
             }
-            else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                previous = current;            
+            else
+            {
+                PluginLog.Error($"Tried to test a null value in {this.GetType().Name}");
+            }
         }
 
         
@@ -192,7 +200,11 @@ namespace Ffxiv2Mqtt.Topic
         }
         internal virtual void Publish(Object o, bool retained = false)
         {
-            mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(o), retained);
+            var json = JsonConvert.SerializeObject(o);
+#if DEBUG
+            PluginLog.Debug($"Publishing {json} to {topic} from {this.GetType().Name}");
+#endif
+            mqttManager.PublishMessage(topic, json, retained);
         }
     }
 }
