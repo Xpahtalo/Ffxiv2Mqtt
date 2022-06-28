@@ -1,13 +1,17 @@
 ﻿using Ffxiv2Mqtt.TopicTracker.Interfaces;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Ffxiv2Mqtt.TopicTracker.Data
 {
-    internal class PlayerCombatStatsTopic : Topic, IUpdatable
+    internal unsafe class PlayerCombatStatsTopic : Topic, IUpdatable
     {
         public uint HP { get => hp; }
         public uint MP { get => mp; }
+        public byte Shield { get => shield; }
+
         uint hp;
         uint mp;
+        byte shield;
 
         internal PlayerCombatStatsTopic(MqttManager mqttManager) : base(mqttManager)
         {
@@ -22,6 +26,7 @@ namespace Ffxiv2Mqtt.TopicTracker.Data
 
             TestValue(localPlayer.CurrentHp, ref hp);
             TestValue(localPlayer.CurrentMp, ref mp);
+            TestValue(((Character*)localPlayer.Address)->ShieldValue, ref shield);
 
             PublishIfNeeded();
         }
