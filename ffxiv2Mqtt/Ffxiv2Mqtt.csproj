@@ -34,7 +34,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="lib\** "/>
+    <Compile Remove="lib\** " />
   </ItemGroup>
   
   <ItemGroup>

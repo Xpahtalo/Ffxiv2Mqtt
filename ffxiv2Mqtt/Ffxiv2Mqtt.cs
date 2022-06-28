@@ -3,7 +3,7 @@ using Dalamud.Plugin;
 using Dalamud.Game;
 using Dalamud.Game.Command;
 using Dalamud.Logging;
-using Ffxiv2Mqtt.TopicTracker;
+using Ffxiv2Mqtt.Topic;
 
 // Entry point for the plugin
 
@@ -27,24 +27,24 @@ namespace Ffxiv2Mqtt
         public Ffxiv2Mqtt(
             [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
         {
-            Dalamud.Initialize(pluginInterface);
-            this.Configuration = Dalamud.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
-            this.Configuration.Initialize(Dalamud.PluginInterface);
+            DalamudServices.Initialize(pluginInterface);
+            this.Configuration = DalamudServices.PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+            this.Configuration.Initialize(DalamudServices.PluginInterface);
             
             mqttManager = new MqttManager(Configuration);
             if (Configuration.ConnectAtStartup)
                 mqttManager.ConnectToBroker();
 
-            Dalamud.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
+            DalamudServices.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Display MQTT Client Info"
             });
-            Dalamud.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
+            DalamudServices.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Test",
                 ShowInHelp = false
             });
-            Dalamud.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+            DalamudServices.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
             {
                 HelpMessage = "Send a custom MQTT message with the given topic and payload."
             });
@@ -52,9 +52,9 @@ namespace Ffxiv2Mqtt
             topicManager = new TopicManager(mqttManager, Configuration);
 
             this.PluginUi = new PluginUI(this.Configuration, mqttManager, topicManager);
-            Dalamud.PluginInterface.UiBuilder.Draw += DrawUI;
-            Dalamud.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            Dalamud.Framework.Update += Update;
+            DalamudServices.PluginInterface.UiBuilder.Draw += DrawUI;
+            DalamudServices.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+            DalamudServices.Framework.Update += Update;
         }
 
         private void OnCommand(string command, string args)
@@ -101,12 +101,12 @@ namespace Ffxiv2Mqtt
         {
             topicManager.Clean();
 
-            Dalamud.Framework.Update -= Update;
+            DalamudServices.Framework.Update -= Update;
 
             PluginUi?.Dispose();
-            Dalamud.CommandManager.RemoveHandler(configCommandName);
-            Dalamud.CommandManager.RemoveHandler(testCommandName);
-            Dalamud.CommandManager.RemoveHandler(customCommandName);
+            DalamudServices.CommandManager.RemoveHandler(configCommandName);
+            DalamudServices.CommandManager.RemoveHandler(testCommandName);
+            DalamudServices.CommandManager.RemoveHandler(customCommandName);
             mqttManager?.Dispose();
         }
     }

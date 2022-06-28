@@ -1,7 +1,7 @@
 ﻿using ImGuiNET;
 using System;
 using System.Numerics;
-using Ffxiv2Mqtt.TopicTracker;
+using Ffxiv2Mqtt.Topic;
 
 namespace Ffxiv2Mqtt
 {
