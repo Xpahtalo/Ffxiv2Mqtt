@@ -180,9 +180,15 @@ namespace Ffxiv2Mqtt.Topic
                 needsPublishing = false;
             }
         }
-        internal virtual void Publish(bool retained = false)
+        
+        internal virtual void Publish()
         {
-            mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(this), retained);
+            Publish(this, false);
+        }
+        internal virtual void Publish(bool retained)
+        {
+            Publish(this, retained);
+            //mqttManager.PublishMessage(topic, JsonConvert.SerializeObject(this), retained);
         }
         internal virtual void Publish(Object o, bool retained = false)
         {
