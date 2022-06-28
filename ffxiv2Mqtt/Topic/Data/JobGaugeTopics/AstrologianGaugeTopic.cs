@@ -13,9 +13,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private CardType drawnCrownType;
         private SealType[] seals;
 
-        private const uint AstrologianId = 33;
-
-
         public AstrologianGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/AST";
@@ -29,20 +26,21 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != AstrologianId)
-                return;
-            var gauge = DalamudServices.JobGauges.Get<ASTGauge>();
-
-
-            TestValue(gauge.DrawnCard, ref drawnCard);
-            TestValue(gauge.DrawnCrownCard, ref drawnCrownType);
-
-            for (int i = 0; i < seals.Length; i++)
+            if ((Job)localPlayer.ClassJob.Id == Job.Astrologian)
             {
-                TestValue(gauge.Seals[i], ref seals[i]);
-            }
+                var gauge = DalamudServices.JobGauges.Get<ASTGauge>();
 
-            PublishIfNeeded();
+
+                TestValue(gauge.DrawnCard, ref drawnCard);
+                TestValue(gauge.DrawnCrownCard, ref drawnCrownType);
+
+                for (int i = 0; i < seals.Length; i++)
+                {
+                    TestValue(gauge.Seals[i], ref seals[i]);
+                }
+
+                PublishIfNeeded();
+            }
         }
     }
 }
