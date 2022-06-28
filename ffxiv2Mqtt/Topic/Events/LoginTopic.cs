@@ -12,9 +12,12 @@ namespace Ffxiv2Mqtt.Topic.Events
         internal LoginTopic(MqttManager m) : base(m)
         {
             topic = "Event/Login";
-            Character = "";
+            LoggedIn = DalamudServices.ClientState.IsLoggedIn;
+            Character = DalamudServices.ClientState.LocalPlayer?.Name.ToString() ?? ""; 
             DalamudServices.ClientState.Login += Login;
             DalamudServices.ClientState.Logout += Logout;
+
+            Publish(true);
         }
 
         private void Login(object? s, System.EventArgs e)
@@ -29,11 +32,11 @@ namespace Ffxiv2Mqtt.Topic.Events
                 Publish(true);
             });
         }
-
+        
         private void Logout(object? s, System.EventArgs e)
         {
             LoggedIn = false;
-            Publish();
+            Publish(true);
         }
 
         public void Cleanup()
