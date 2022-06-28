@@ -51,6 +51,7 @@ namespace Ffxiv2Mqtt.Topic
                 new WarriorGaugeTopic(m),
                 new WhiteMageGaugeTopic(m),
                 new WorldInfoTopic(m),
+                new PlayerStatusesTopic(m),
             };
 
             foreach (var tracker in trackers)
