@@ -15,7 +15,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte addersting;
         private bool eukrasia;
 
-        private const uint SageId = 40;
 
         public SageGaugeTopic(MqttManager m) : base(m)
         {
@@ -29,10 +28,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != SageId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Sage)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<SGEGauge>();
-
             TestValue(gauge.Addersgall, ref addersgall);
             TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, syncTimer);
             TestValue(gauge.Addersting, ref addersting);

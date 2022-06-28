@@ -15,8 +15,7 @@ namespace Ffxiv2Mqtt.Topic.Data
         private bool isLotdActive;
         private short lotdTimer;
 
-        private const uint DragoonId = 22;
-
+        
         public DragoonGaugeTopic(MqttManager m) : base(m)
         {
             topic = "Player/JobGauge/DRG";
@@ -29,10 +28,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != DragoonId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Dragoon)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<DRGGauge>();
-
             TestValue(gauge.EyeCount, ref eyeCount);
             TestValue(gauge.FirstmindsFocusCount, ref firstmindsFocusCount);
             TestValue(gauge.IsLOTDActive, ref isLotdActive);

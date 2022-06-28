@@ -20,8 +20,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private short elementTimeRemaining;
         private short enochianTimeRemaining;
         
-        private const uint Thaumaturge = 7;
-        private const uint BlackMageId = 25;
 
         public BlackMageJobGuageTopic(MqttManager m) : base(m) 
         {
@@ -35,7 +33,7 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (!((localPlayer.ClassJob.Id == BlackMageId) || (localPlayer.ClassJob.Id == Thaumaturge)))
+            if (!((Job)localPlayer.ClassJob.Id == Job.BlackMage || (Job)localPlayer.ClassJob.Id == Job.Thaumaturge))
                 return;
             var blmGauge = DalamudServices.JobGauges.Get<BLMGauge>();
 

@@ -32,7 +32,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private bool isTitanAttuned;
         private ushort summonTimeRemaining;
 
-        private const uint SummonerId = 27;
 
         public SummonerGaugeTopic(MqttManager m) : base(m)
         {
@@ -46,7 +45,7 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != SummonerId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Summoner)
                 return;
             var gauge = DalamudServices.JobGauges.Get<SMNGauge>();
 

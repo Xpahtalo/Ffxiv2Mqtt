@@ -21,8 +21,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private ushort songTimer;
         private byte soulVoice;
 
-        private const uint BardId = 23;
-
 
         public BardGaugeTopic(MqttManager m) : base(m)
         {
@@ -37,10 +35,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != BardId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Bard)
                 return;
-            var brdGauge = DalamudServices.JobGauges.Get<BRDGauge>();
 
+            var brdGauge = DalamudServices.JobGauges.Get<BRDGauge>();
             for (var i = 0; i < coda.Length; i++)
             {
                 TestValue(brdGauge.Coda[i], ref coda[i]);

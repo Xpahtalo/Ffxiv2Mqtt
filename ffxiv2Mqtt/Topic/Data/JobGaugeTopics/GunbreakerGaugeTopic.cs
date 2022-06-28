@@ -14,7 +14,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte ammoComboStep;
         private short maxTimerDuration;
 
-        private const uint GunbreakerId = 37;
 
         public GunbreakerGaugeTopic(MqttManager m) : base(m)
         {
@@ -28,10 +27,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != GunbreakerId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Gunbreaker)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<GNBGauge>();
-
             TestValue(gauge.Ammo, ref ammo);
             TestValue(gauge.AmmoComboStep, ref ammoComboStep);
             TestValue(gauge.MaxTimerDuration, ref maxTimerDuration);

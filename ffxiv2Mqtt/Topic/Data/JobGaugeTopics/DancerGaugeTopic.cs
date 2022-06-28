@@ -34,10 +34,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != DancerId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Dancer)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<DNCGauge>();
-
             TestValue(gauge.CompletedSteps, ref completedSteps);
             TestValue(gauge.Esprit, ref esprit);
             TestValue(gauge.Feathers, ref feathers);

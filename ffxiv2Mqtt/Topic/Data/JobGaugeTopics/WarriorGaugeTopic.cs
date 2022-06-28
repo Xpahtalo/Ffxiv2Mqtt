@@ -9,7 +9,6 @@ namespace Ffxiv2Mqtt.Topic.Data
 
         private byte beastGauge;
         
-        private const uint WarriorId = 21;
 
         public WarriorGaugeTopic(MqttManager m) : base(m) {
             topic = "Player/JobGauge/WAR";
@@ -22,10 +21,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != WarriorId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Warrior)
                 return;
-            var gauge = DalamudServices.JobGauges.Get<WARGauge>();
             
+            var gauge = DalamudServices.JobGauges.Get<WARGauge>();
             TestValue(gauge.BeastGauge, ref beastGauge);
 
             PublishIfNeeded();

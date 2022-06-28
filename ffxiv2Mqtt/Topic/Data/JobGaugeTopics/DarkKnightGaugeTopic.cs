@@ -15,7 +15,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private ushort darksideTimeRemaining;
         private ushort shadowTimeRemaining;
 
-        private const uint DarkKnightId = 32;
 
         public DarkKnightGaugeTopic(MqttManager m) : base(m) 
         {
@@ -29,10 +28,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != DarkKnightId)
+            if ((Job)localPlayer.ClassJob.Id != Job.DarkKnight)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<DRKGauge>();
-
             TestValue(gauge.Blood, ref blood);
             TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer);
             TestValue(gauge.HasDarkArts, ref hasDarkArts);

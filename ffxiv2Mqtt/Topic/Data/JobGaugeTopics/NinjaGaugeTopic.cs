@@ -13,7 +13,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private int hutonTimer;
         private byte ninki;
 
-        private const uint NinjaId = 30;
 
         public NinjaGaugeTopic(MqttManager m) : base(m)
         {
@@ -27,10 +26,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != NinjaId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Ninja)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<NINGauge>();
-
             TestValue(gauge.HutonManualCasts, ref hutonManualCasts);
             TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer);
             TestValue(gauge.Ninki, ref ninki);

@@ -22,10 +22,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != PaladinId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Paladin)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<PLDGauge>();
-
             TestValue(gauge.OathGauge, ref oathGauge);
 
             PublishIfNeeded();

@@ -16,7 +16,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte fairyGauge;
         private short seraphTimer;
 
-        private const uint ScholarId = 28;
 
         public ScholarGaugeTopic(MqttManager m) : base(m)
         {
@@ -30,10 +29,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != ScholarId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Scholar)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<SCHGauge>();
-
             TestValue(gauge.Aetherflow, ref aetherflow);
             TestValue(gauge.DismissedFairy, ref dismissedFairy);
             TestValue(gauge.FairyGauge, ref fairyGauge);

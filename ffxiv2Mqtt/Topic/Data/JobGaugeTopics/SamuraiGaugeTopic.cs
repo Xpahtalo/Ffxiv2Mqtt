@@ -20,7 +20,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private bool hasSetsu;
         private Kaeshi kaeshi;
 
-        private const uint SamuraiId = 34;
 
         public SamuraiGaugeTopic(MqttManager m) : base(m) {
             topic = "Player/JobGauge/SAM";
@@ -33,10 +32,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != SamuraiId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Samurai)
                 return;
-            var gauge = DalamudServices.JobGauges.Get<SAMGauge>();
 
+            var gauge = DalamudServices.JobGauges.Get<SAMGauge>();
             TestValue(gauge.Kenki, ref kenki);
             TestValue(gauge.MeditationStacks, ref meditationStacks);
             TestValue(gauge.HasGetsu, ref hasGetsu);

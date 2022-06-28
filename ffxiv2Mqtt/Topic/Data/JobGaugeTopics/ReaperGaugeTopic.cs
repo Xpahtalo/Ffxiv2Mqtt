@@ -15,7 +15,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte voidShroud;
         private ushort enshroudedTimeRemaining;
 
-        private const uint ReaperId = 39;
 
         public ReaperGaugeTopic(MqttManager m) : base(m)
         {
@@ -29,10 +28,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != ReaperId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Reaper)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<RPRGauge>();
-
             TestValue(gauge.Soul, ref soul);
             TestValue(gauge.LemureShroud, ref lemureShroud);
             TestValue(gauge.VoidShroud, ref voidShroud);

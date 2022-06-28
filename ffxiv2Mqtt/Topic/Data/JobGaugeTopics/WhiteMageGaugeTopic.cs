@@ -13,7 +13,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte bloodLily;
         private short lilyTimer;
 
-        private const uint WhiteMageId = 24;
 
         public WhiteMageGaugeTopic(MqttManager m) : base(m)
         {
@@ -27,7 +26,7 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != WhiteMageId)
+            if ((Job)localPlayer.ClassJob.Id != Job.WhiteMage)
                 return;
             var gauge = DalamudServices.JobGauges.Get<WHMGauge>();
 

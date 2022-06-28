@@ -14,7 +14,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private BeastChakra[] beastChakra;
         private ushort blitzTimeRemaining;
 
-        private const uint MonkId = 20;
 
         public MonkGaugeTopic(MqttManager m) : base(m)
         {
@@ -29,10 +28,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != MonkId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Monk)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<MNKGauge>();
-
             TestValue(gauge.Chakra, ref chakra);
             for (var i = 0; i < 3; i++)
             {

@@ -21,7 +21,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private short summonTimeRemaining;
         private byte lastSummonBatteryPower;
 
-        private const uint MachinistId = 31;
 
         public MachinistGaugeTopic(MqttManager m) : base(m)
         {
@@ -35,10 +34,10 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != MachinistId)
+            if ((Job)localPlayer.ClassJob.Id != Job.Machinist)
                 return;
+            
             var gauge = DalamudServices.JobGauges.Get<MCHGauge>();
-
             TestValue(gauge.Battery, ref battery);
             TestValue(gauge.Heat, ref heat);
             TestValue(gauge.IsOverheated, ref isOverheated);

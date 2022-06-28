@@ -13,7 +13,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         private byte whiteMana;
         private byte manaStacks;
 
-        private const uint RedMageId = 35;
 
         public RedMageGaugeTopic(MqttManager m) : base(m)
         {
@@ -27,7 +26,7 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is null)
                 return;
-            if (localPlayer.ClassJob.Id != RedMageId)
+            if ((Job)localPlayer.ClassJob.Id != Job.RedMage)
                 return;
             var gauge = DalamudServices.JobGauges.Get<RDMGauge>();
 
