@@ -13,10 +13,15 @@ namespace Ffxiv2Mqtt.Topic.Data
         public StatusList Statuses { get => DalamudServices.ClientState.LocalPlayer.StatusList; }
 
         int statusCount;
+        JsonSerializerOptions serializerOptions;
 
         public PlayerStatusesTopic(MqttManager m) : base(m)
         {
             topic = "Player/Status";
+            serializerOptions = new JsonSerializerOptions
+            {
+                Converters = { new StatusSerializer() }
+            };
         }
 
         public void Update()
@@ -24,11 +29,8 @@ namespace Ffxiv2Mqtt.Topic.Data
             var localPlayer = DalamudServices.ClientState.LocalPlayer;
             if (localPlayer is not null)
             {
-                var statusList = from status in localPlayer.StatusList
-                                    where status.Address != IntPtr.Zero
-                                    select status;
-
-                TestValue(statusList.Count(), ref statusCount);
+                var activeStatusCount = localPlayer.StatusList.Count<Status>(status => status.Address != IntPtr.Zero);
+                TestValue(activeStatusCount, ref statusCount);
             }
 
             PublishIfNeeded();
@@ -36,8 +38,7 @@ namespace Ffxiv2Mqtt.Topic.Data
 
         internal override void Publish()
         {
-            var serializeOptions = new JsonSerializerOptions { Converters = { new StatusSerializer() } };
-            mqttManager.PublishMessage(topic, JsonSerializer.Serialize(DalamudServices.ClientState.LocalPlayer.StatusList as IReadOnlyCollection<Status>, serializeOptions));
+            mqttManager.PublishMessage(topic, JsonSerializer.Serialize(DalamudServices.ClientState.LocalPlayer.StatusList as IReadOnlyCollection<Status>, serializerOptions));
         }
         
         public class StatusSerializer:JsonConverter<Status>
