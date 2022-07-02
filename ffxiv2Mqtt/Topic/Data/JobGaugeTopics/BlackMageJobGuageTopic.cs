@@ -1,4 +1,5 @@
-﻿using Dalamud.Logging;
+﻿using Ffxiv2Mqtt.Enums;
+using Dalamud.Logging;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Ffxiv2Mqtt.Topic.Interfaces;
 

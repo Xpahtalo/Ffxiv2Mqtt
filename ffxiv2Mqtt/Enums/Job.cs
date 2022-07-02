@@ -1,6 +1,6 @@
-﻿namespace Ffxiv2Mqtt
+﻿namespace Ffxiv2Mqtt.Enums
 {
-    enum Job : uint
+    public enum Job : uint
     {
         Adventurer = 0,
         Gladiator = 1,
@@ -43,5 +43,35 @@
         Dancer = 38,
         Reaper = 39,
         Sage = 40,
+    }
+
+    public static class JobExtensions
+    {
+        public static bool IsGatherer(this Job job)
+        {
+            return job switch
+            {
+                Job.Miner => true,
+                Job.Botanist => true,
+                Job.Fisher => true,
+                _ => false,
+            };
+        }
+
+        public static bool IsCrafter(this Job job)
+        {
+            return job switch
+            {
+                Job.Carpenter => true,
+                Job.Blacksmith => true,
+                Job.Armorer => true,
+                Job.Goldsmith => true,
+                Job.Leatherworker => true,
+                Job.Weaver => true,
+                Job.Alchemist => true,
+                Job.Culinarian => true,
+                _ => false,
+            };
+        }
     }
 }

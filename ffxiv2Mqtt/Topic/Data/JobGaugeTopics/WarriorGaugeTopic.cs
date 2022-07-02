@@ -1,4 +1,5 @@
-﻿using Dalamud.Game.ClientState.JobGauge.Types;
+﻿using Ffxiv2Mqtt.Enums;
+using Dalamud.Game.ClientState.JobGauge.Types;
 using Ffxiv2Mqtt.Topic.Interfaces;
 
 namespace Ffxiv2Mqtt.Topic.Data
