@@ -37,7 +37,7 @@ namespace Ffxiv2Mqtt.Topic.Data
             TestValue(localPlayer.MaxCp, ref maxCP);
             TestValue(localPlayer.MaxGp, ref maxGP);
 
-            PublishIfNeeded();
+            PublishIfNeeded(retained: true);
         }
     }
 }

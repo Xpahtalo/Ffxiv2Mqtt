@@ -180,11 +180,11 @@ namespace Ffxiv2Mqtt.Topic
         }
 
         
-        internal virtual void PublishIfNeeded()
+        internal virtual void PublishIfNeeded(bool retained = false)
         {
             if (needsPublishing)
             {
-                Publish();
+                Publish(retained);
                 needsPublishing = false;
             }
         }
