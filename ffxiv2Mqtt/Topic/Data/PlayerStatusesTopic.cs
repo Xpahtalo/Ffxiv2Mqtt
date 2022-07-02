@@ -36,6 +36,15 @@ namespace Ffxiv2Mqtt.Topic.Data
             PublishIfNeeded();
         }
 
+        internal override void PublishIfNeeded(bool retained = false)
+        {
+            if (needsPublishing)
+            {
+                Publish();
+                needsPublishing = false;
+            }
+        }
+        
         internal override void Publish()
         {
             mqttManager.PublishMessage(topic, JsonSerializer.Serialize(DalamudServices.ClientState.LocalPlayer.StatusList as IReadOnlyCollection<Status>, serializerOptions));
