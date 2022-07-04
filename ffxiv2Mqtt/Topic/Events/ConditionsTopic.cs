@@ -1,13 +1,11 @@
-﻿using System.Text.Json;
+﻿using System;
+using System.Text.Json;
 using Dalamud.Game.ClientState.Conditions;
-using Ffxiv2Mqtt.Topic.Interfaces;
 
 namespace Ffxiv2Mqtt.Topic.Events
 {
-    internal class ConditionsTopic : Topic, ICleanable
+    internal sealed class ConditionsTopic : Topic, IDisposable
     {
-
-        
         internal ConditionsTopic(MqttManager mqttManager) : base(mqttManager)
         {
             topic = "Player/Conditions";
@@ -25,7 +23,7 @@ namespace Ffxiv2Mqtt.Topic.Events
             mqttManager.PublishMessage($"{topic}/{flag}", JsonSerializer.Serialize(o));
         }
 
-        public void Cleanup()
+        public void Dispose()
         {
             DalamudServices.Conditions.ConditionChange -= ConditionChange;
         }

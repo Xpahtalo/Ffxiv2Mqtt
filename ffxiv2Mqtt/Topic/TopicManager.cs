@@ -1,27 +1,28 @@
-﻿using Dalamud.Logging;
+﻿using System;
+using System.Collections.Generic;
+using Dalamud.Logging;
 using Ffxiv2Mqtt.Topic.Data;
 using Ffxiv2Mqtt.Topic.Events;
 using Ffxiv2Mqtt.Topic.Interfaces;
-using System.Collections.Generic;
 
 namespace Ffxiv2Mqtt.Topic
 {
-    internal class TopicManager
+    internal class TopicManager : IDisposable
     {
-        private List<Topic> allTrackers;
+        private List<Topic> topics;
         private List<IUpdatable> updatables;
         private List<ICleanable> cleanables;
         private List<IConfigurable> configurables;
 
         internal TopicManager(MqttManager m, Configuration configuration)
         {
-            PluginLog.Verbose("Creating TrackerManager");
-            allTrackers = new List<Topic>();
+            PluginLog.Verbose($"Creating {this.GetType().Name}");
+            this.topics = new List<Topic>();
             updatables = new List<IUpdatable>();
             cleanables = new List<ICleanable>();
             configurables = new List<IConfigurable>();
 
-            var trackers = new List<Topic>
+            var topics = new List<Topic>
             {
                 new PlayerInfoTopic(m),
                 new PlayerCombatStatsTopic(m),
@@ -55,29 +56,29 @@ namespace Ffxiv2Mqtt.Topic
                 new PlayerCast(m),
             };
 
-            foreach (var tracker in trackers)
-                AddTracker(tracker);
+            foreach (var topic in topics)
+                AddTopic(topic);
 
             Configure(configuration);
-            PluginLog.Verbose("TrackerManager created");
+            PluginLog.Verbose($"{this.GetType().Name} created");
         }
 
 
-        internal void AddTracker(Topic tracker)
+        internal void AddTopic(Topic topic)
         {
             try
             {
-                allTrackers.Add(tracker);
-                if (tracker is IUpdatable)
-                    updatables.Add((IUpdatable)tracker);
-                if (tracker is ICleanable)
-                    cleanables.Add((ICleanable)tracker);
-                if (tracker is IConfigurable)
-                    configurables.Add((IConfigurable)tracker);
+                topics.Add(topic);
+                if (topic is IUpdatable)
+                    updatables.Add((IUpdatable)topic);
+                if (topic is ICleanable)
+                    cleanables.Add((ICleanable)topic);
+                if (topic is IConfigurable)
+                    configurables.Add((IConfigurable)topic);
             }
             catch (System.NullReferenceException)
             {
-                PluginLog.Error("Tried to add null tracker");
+                PluginLog.Error("Tried to add null topic");
             }
         }
         
@@ -102,6 +103,14 @@ namespace Ffxiv2Mqtt.Topic
             foreach(IConfigurable configurable in configurables)
             {
                 configurable.Configure(configuration);
+            }
+        }
+
+        public void Dispose()
+        {
+            foreach(Topic topic in topics)
+            {
+                (topic as IDisposable)?.Dispose();
             }
         }
     }

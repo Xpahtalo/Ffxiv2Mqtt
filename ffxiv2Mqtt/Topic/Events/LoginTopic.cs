@@ -1,10 +1,11 @@
-﻿using Ffxiv2Mqtt.Topic.Interfaces;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Ffxiv2Mqtt.Topic.Interfaces;
 
 namespace Ffxiv2Mqtt.Topic.Events
 {
-    internal class LoginTopic : Topic, ICleanable
+    internal sealed class LoginTopic : Topic, ICleanable, IDisposable
     {
         public bool LoggedIn { get; set; }
         public string Character { get; set; }
@@ -42,6 +43,10 @@ namespace Ffxiv2Mqtt.Topic.Events
         public void Cleanup()
         {
             mqttManager.PublishMessage(topic, "");
+        }
+
+        public void Dispose()
+        {
             DalamudServices.ClientState.Login -= Login;
             DalamudServices.ClientState.Logout -= Logout;
         }

@@ -100,6 +100,7 @@ namespace Ffxiv2Mqtt
         public void Dispose()
         {
             topicManager.Clean();
+            topicManager.Dispose();
 
             DalamudServices.Framework.Update -= Update;
 

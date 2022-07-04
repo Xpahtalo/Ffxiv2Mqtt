@@ -11,7 +11,7 @@ namespace Ffxiv2Mqtt
     {
         private Configuration configuration;
         private MqttManager mqttManager;
-        private TopicManager trackerManager;
+        private TopicManager topicManager;
 
         // this extra bool exists for ImGui, since you can't ref a property
         private bool visible = false;
@@ -28,11 +28,11 @@ namespace Ffxiv2Mqtt
             set { this.settingsVisible = value; }
         }
 
-        public PluginUI(Configuration configuration, MqttManager mqttManager, TopicManager trackerManager)
+        public PluginUI(Configuration configuration, MqttManager mqttManager, TopicManager topicManager)
         {
             this.configuration = configuration;
             this.mqttManager = mqttManager;
-            this.trackerManager = trackerManager;
+            this.topicManager = topicManager;
         }
 
         public void Draw()
@@ -131,7 +131,7 @@ namespace Ffxiv2Mqtt
                 HelpMarker("This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
 
                 if (ImGui.Button("Save"))
-                    trackerManager.Configure(configuration);
+                    topicManager.Configure(configuration);
                 configuration.Save();
             }
             ImGui.End();

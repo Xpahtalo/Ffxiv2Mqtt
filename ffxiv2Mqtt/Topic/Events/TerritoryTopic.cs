@@ -1,8 +1,9 @@
-﻿using Ffxiv2Mqtt.Topic.Interfaces;
+﻿using System;
+using Ffxiv2Mqtt.Topic.Interfaces;
 
 namespace Ffxiv2Mqtt.Topic.Events
 {
-    internal class TerritoryTopic : Topic, ICleanable
+    internal sealed class TerritoryTopic : Topic,ICleanable, IDisposable
     {
         public string Name
         {
@@ -34,6 +35,10 @@ namespace Ffxiv2Mqtt.Topic.Events
         public void Cleanup()
         {
             mqttManager.PublishMessage(topic, "");
+        }
+
+        public void Dispose()
+        {
             DalamudServices.ClientState.TerritoryChanged -= TerritoryChanged;
         }
     }
