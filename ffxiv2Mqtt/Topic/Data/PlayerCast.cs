@@ -7,7 +7,6 @@ namespace Ffxiv2Mqtt.Topic.Data
         public bool IsCasting { get => isCasting; }
         public uint CastId { get => DalamudServices.ClientState.LocalPlayer.CastActionId; }
         public float CastTime { get => DalamudServices.ClientState.LocalPlayer.TotalCastTime; }
-        public float RemainingTime { get => CastTime - DalamudServices.ClientState.LocalPlayer.CurrentCastTime; }
 
 
         bool isCasting;

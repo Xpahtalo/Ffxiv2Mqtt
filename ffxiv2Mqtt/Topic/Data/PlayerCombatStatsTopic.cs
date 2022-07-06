@@ -7,7 +7,7 @@ namespace Ffxiv2Mqtt.Topic.Data
     {
         public uint HP { get => hp; }
         public uint MP { get => mp; }
-        public byte Shield { get => shield; }
+        public byte ShieldPct { get => shield; }
 
         uint hp;
         uint mp;
