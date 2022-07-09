@@ -2,7 +2,7 @@
 {
     public enum Job : uint
     {
-        Adventurer = 0,
+        Unknown = 0,
         Gladiator = 1,
         Pugilist = 2,
         Marauder = 3,
@@ -72,6 +72,19 @@
                 Job.Culinarian => true,
                 _ => false,
             };
+        }
+
+        public static Job ToJob(this uint? jobId)
+        {
+            if (jobId is null)
+            {
+                return Job.Unknown;
+            }
+            if (typeof(Job).IsEnumDefined(jobId))
+            {
+                return (Job)jobId;
+            }
+            return Job.Unknown;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Ffxiv2Mqtt.Topic.Interfaces
+﻿namespace Ffxiv2Mqtt.Topics.Interfaces
 {
     internal interface ICleanable
     {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Logging;
@@ -13,17 +14,25 @@ namespace Ffxiv2Mqtt
     public class MqttManager
     {
         private IManagedMqttClient mqttClient;
-        private Configuration configuration;
-        public bool IsConnected { get => mqttClient.IsConnected; }
-        public bool IsStarted { get => mqttClient.IsStarted; }
+        private Configuration      configuration;
+
+        public bool IsConnected
+        {
+            get => mqttClient.IsConnected;
+        }
+
+        public bool IsStarted
+        {
+            get => mqttClient.IsStarted;
+        }
 
 
         public MqttManager(Configuration configuration)
         {
             PluginLog.Information("Initializing MQTTManager");
-           
+
             this.configuration = configuration;
-            mqttClient = new MqttFactory().CreateManagedMqttClient();
+            mqttClient         = new MqttFactory().CreateManagedMqttClient();
 #if DEBUG
             PluginLog.Debug("Hooking ConnectedAsync");
 #endif
@@ -45,11 +54,13 @@ namespace Ffxiv2Mqtt
             PluginLog.Information("Connected to MQTT broker");
             return Task.CompletedTask;
         }
+
         public Task LogConnectingFailedAsync(ConnectingFailedEventArgs e)
         {
             PluginLog.Warning($"Failed to connect: {e.Exception}");
             return Task.CompletedTask;
         }
+
         public Task LogDisconnectedAsync(MqttClientDisconnectedEventArgs e)
         {
             if (e.Reason == MqttClientDisconnectReason.NormalDisconnection)
@@ -64,57 +75,57 @@ namespace Ffxiv2Mqtt
             PluginLog.Information("Connecting to MQTT broker...");
 
             var options = new ManagedMqttClientOptionsBuilder()
-                .WithClientOptions(new MqttClientOptionsBuilder()
-                    .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
-                    .WithClientId(configuration.ClientId)
-                    .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
-                    .WithCredentials(configuration.User, configuration.Password)
-                    .WithWillTopic(BuildTopic("connected"))
-                    .WithWillPayload("false")
-                    .WithWillRetain(true)
-                    .Build())
-                .Build();
+                         .WithClientOptions(new MqttClientOptionsBuilder()
+                                           .WithProtocolVersion(MQTTnet.Formatter.MqttProtocolVersion.V500)
+                                           .WithClientId(configuration.ClientId)
+                                           .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
+                                           .WithCredentials(configuration.User, configuration.Password)
+                                           .WithWillTopic(BuildTopic("connected"))
+                                           .WithWillPayload("false")
+                                           .WithWillRetain(true)
+                                           .Build())
+                         .Build();
 
             mqttClient.StartAsync(options);
             mqttClient.EnqueueAsync(ConnectedMessage());
         }
-        
+
         public void DisconnectFromBroker()
         {
             mqttClient.EnqueueAsync(DisconnectedMessage());
             mqttClient.StopAsync();
         }
 
+
         public void PublishMessage(string topic, string payload, bool retain = false)
         {
             var messageBuilder = new MqttApplicationMessageBuilder()
-               .WithTopic(BuildTopic(topic))
-               .WithPayload(payload);
+                                .WithTopic(BuildTopic(topic))
+                                .WithPayload(payload);
 
-            if (retain) messageBuilder.WithRetainFlag().WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce);
+            if (retain)
+                messageBuilder.WithRetainFlag().WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce);
 
             var message = messageBuilder.Build();
 
-            try
-            {
+            try {
                 mqttClient.EnqueueAsync(message);
             }
-            catch (ArgumentNullException e)
-            {
+            catch (ArgumentNullException e) {
                 PluginLog.Error($"Failed to publish message: {e.Message}");
             }
-
         }
+
         public string BuildTopic(string topic)
         {
             var sb = new StringBuilder(100);
             sb.Append(configuration.BaseTopic);
             sb.Append('/');
-            if (configuration.IncludeClientId)
-            {
+            if (configuration.IncludeClientId) {
                 sb.Append(configuration.ClientId);
                 sb.Append('/');
             }
+
             sb.Append(topic);
 
             return sb.ToString();
@@ -124,29 +135,29 @@ namespace Ffxiv2Mqtt
         private MqttApplicationMessage ConnectedMessage()
         {
             return new MqttApplicationMessageBuilder()
-                   .WithTopic(BuildTopic("connected"))
-                   .WithPayload("true")
-                   .WithRetainFlag()
-                   .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                   .Build();
+                  .WithTopic(BuildTopic("connected"))
+                  .WithPayload("true")
+                  .WithRetainFlag()
+                  .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                  .Build();
         }
 
         private MqttApplicationMessage DisconnectedMessage()
         {
             return new MqttApplicationMessageBuilder()
-                   .WithTopic(BuildTopic("connected"))
-                   .WithPayload("false")
-                   .WithRetainFlag()
-                   .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-                   .Build();
+                  .WithTopic(BuildTopic("connected"))
+                  .WithPayload("false")
+                  .WithRetainFlag()
+                  .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                  .Build();
         }
 
         public void Dispose()
         {
             this.DisconnectFromBroker();
 
-            mqttClient.ConnectedAsync -= LogConnectedAsync;
-            mqttClient.ConnectingFailedAsync -= LogConnectingFailedAsync;
+            mqttClient.ConnectedAsync                   -= LogConnectedAsync;
+            mqttClient.ConnectingFailedAsync            -= LogConnectingFailedAsync;
             mqttClient.InternalClient.DisconnectedAsync -= LogDisconnectedAsync;
 
             mqttClient.Dispose();

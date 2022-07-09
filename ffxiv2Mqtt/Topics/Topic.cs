@@ -1,0 +1,161 @@
+﻿using System;
+using Dalamud.Logging;
+using Dalamud.IoC;
+
+namespace Ffxiv2Mqtt.Topics
+{
+    internal abstract class Topic
+    {
+        [PluginService] public MqttManager MqttManager     { get; set; }
+        protected              bool        NeedsPublishing { get; set; }
+        protected abstract     string      TopicPath       { get; }
+        protected abstract     bool        Retained        { get; }
+
+        public abstract    void   Initialize();
+        protected void Publish(string payload)
+        {
+            #if DEBUG
+            PluginLog.Debug($"{this.GetType().Name}: {TopicPath}: {payload}");
+            #endif
+            MqttManager.PublishMessage(TopicPath, payload, Retained);
+        }
+
+        // In .NET 6 and C# 11, these can be simplified down to a single method with generics using INumber.
+        private protected void TestCountUp(short current, ref short previous, int interval)
+        {
+            bool reachedZero      = (previous == 0) && (current != 0);
+            bool noLongerZero     = (previous != 0) && (current == 0);
+            bool wentLower        = current              < previous;
+            bool exceededInterval = (current - previous) >= interval;
+
+            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+
+            if (reachedZero || noLongerZero || wentLower) {
+                previous        = current;
+                NeedsPublishing = true;
+                return;
+            }
+            else {
+                if (interval >= 0) {
+                    if (exceededInterval) {
+                        previous        = current;
+                        NeedsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                {
+                    previous = current;
+                }
+            }
+        }
+
+        private protected void TestCountDown(ushort current, ref ushort previous, int interval)
+        {
+            bool reachedZero      = (previous == 0) && (current != 0);
+            bool noLongerZero     = (previous != 0) && (current == 0);
+            bool wentHigher       = current              > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+
+            if (reachedZero || noLongerZero || wentHigher) {
+                previous        = current;
+                NeedsPublishing = true;
+                return;
+            }
+            else {
+                if (interval >= 0) {
+                    if (exceededInterval) {
+                        previous        = current;
+                        NeedsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                {
+                    previous = current;
+                }
+            }
+        }
+
+        private protected void TestCountDown(short current, ref short previous, int interval)
+        {
+            bool reachedZero      = (previous == 0) && (current != 0);
+            bool noLongerZero     = (previous != 0) && (current == 0);
+            bool wentHigher       = current              > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+
+            if (reachedZero || noLongerZero || wentHigher) {
+                previous        = current;
+                NeedsPublishing = true;
+                return;
+            }
+            else {
+                if (interval >= 0) {
+                    if (exceededInterval) {
+                        previous        = current;
+                        NeedsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                {
+                    previous = current;
+                }
+            }
+        }
+
+        private protected void TestCountDown(int current, ref int previous, int interval)
+        {
+            bool reachedZero      = (previous == 0) && (current != 0);
+            bool noLongerZero     = (previous != 0) && (current == 0);
+            bool wentHigher       = current              > previous;
+            bool exceededInterval = (previous - current) >= interval;
+
+            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
+            {
+                previous = current;
+                return;
+            }
+
+            if (reachedZero || noLongerZero || wentHigher) {
+                previous        = current;
+                NeedsPublishing = true;
+                return;
+            }
+            else {
+                if (interval >= 0) {
+                    if (exceededInterval) {
+                        previous        = current;
+                        NeedsPublishing = true;
+                    }
+                }
+                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                {
+                    previous = current;
+                }
+            }
+        }
+
+        private protected void TestValue<T>(T current, ref T previous, out bool updated) where T : IEquatable<T>
+        {
+            if (!current.Equals(previous)) {
+                previous = current;
+                updated  = true;
+            }
+            else updated = false;
+        }
+    }
+}
