@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.Json;
 using Dalamud.Logging;
 using Dalamud.IoC;
 
@@ -6,17 +7,34 @@ namespace Ffxiv2Mqtt.Topics
 {
     internal abstract class Topic
     {
-        [PluginService] public MqttManager MqttManager     { get; set; }
-        protected              bool        NeedsPublishing { get; set; }
-        protected abstract     string      TopicPath       { get; }
-        protected abstract     bool        Retained        { get; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        [PluginService] public MqttManager MqttManager { get; set; }
 
-        public abstract    void   Initialize();
+        private            bool   NeedsPublishing { get; set; }
+        protected abstract string TopicPath       { get; }
+        protected abstract bool   Retained        { get; }
+
+        // Perform setup after injection e.g. subscribe to events.
+        public abstract void Initialize();
+
+        // Serializes the object into a JSON payload and publishes it to the topic.
+        protected void Publish(object o)
+        {
+            Publish(TopicPath, JsonSerializer.Serialize(o));
+        }
+        // Publish the payload to the TopicPath 
         protected void Publish(string payload)
         {
-            #if DEBUG
-            PluginLog.Debug($"{this.GetType().Name}: {TopicPath}: {payload}");
-            #endif
+            Publish(TopicPath, payload);
+        }
+
+        // Publish the payload to the given topicPath.
+        // Should only be used if the topic needs to be customized separately from TopicPath.
+        protected void Publish(string topicPath, string payload)
+        {
+#if DEBUG
+            PluginLog.Debug($"{this.GetType().Name}: {topicPath}: {payload}");
+#endif
             MqttManager.PublishMessage(TopicPath, payload, Retained);
         }
 
@@ -38,15 +56,13 @@ namespace Ffxiv2Mqtt.Topics
                 previous        = current;
                 NeedsPublishing = true;
                 return;
-            }
-            else {
+            } else {
                 if (interval >= 0) {
                     if (exceededInterval) {
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                }
-                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
                 }
@@ -70,15 +86,13 @@ namespace Ffxiv2Mqtt.Topics
                 previous        = current;
                 NeedsPublishing = true;
                 return;
-            }
-            else {
+            } else {
                 if (interval >= 0) {
                     if (exceededInterval) {
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                }
-                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
                 }
@@ -102,15 +116,13 @@ namespace Ffxiv2Mqtt.Topics
                 previous        = current;
                 NeedsPublishing = true;
                 return;
-            }
-            else {
+            } else {
                 if (interval >= 0) {
                     if (exceededInterval) {
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                }
-                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
                 }
@@ -134,28 +146,25 @@ namespace Ffxiv2Mqtt.Topics
                 previous        = current;
                 NeedsPublishing = true;
                 return;
-            }
-            else {
+            } else {
                 if (interval >= 0) {
                     if (exceededInterval) {
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                }
-                else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
+                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                 {
                     previous = current;
                 }
             }
         }
 
-        private protected void TestValue<T>(T current, ref T previous, out bool updated) where T : IEquatable<T>
+        private protected void TestValue<T>(T current, ref T previous, ref bool updated) where T : IEquatable<T>
         {
             if (!current.Equals(previous)) {
                 previous = current;
                 updated  = true;
             }
-            else updated = false;
         }
     }
 }

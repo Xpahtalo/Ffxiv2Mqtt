@@ -7,9 +7,10 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 namespace Ffxiv2Mqtt.Topics.Data
 {
-    internal unsafe class PlayerCombatStatsTopic : Topic, IDisposable
+    internal unsafe class PlayerCombatStats : Topic, IDisposable
     {
-        [PluginService] private PlayerEvents? PlayerEvents { get; set; }
+        // ReSharper disable once MemberCanBePrivate.Global
+        [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
         private uint hp;
         private uint mp;
@@ -29,9 +30,9 @@ namespace Ffxiv2Mqtt.Topics.Data
             var shouldPublish      = false;
             var localPlayerShields = ((Character*)localPlayer.Address)->ShieldValue;
 
-            TestValue(localPlayer.CurrentHp, ref hp,     out shouldPublish);
-            TestValue(localPlayer.CurrentMp, ref mp,     out shouldPublish);
-            TestValue(localPlayerShields,    ref shield, out shouldPublish);
+            TestValue(localPlayer.CurrentHp, ref hp,     ref shouldPublish);
+            TestValue(localPlayer.CurrentMp, ref mp,     ref shouldPublish);
+            TestValue(localPlayerShields,    ref shield, ref shouldPublish);
 
             if (shouldPublish) {
                 Publish(JsonSerializer.Serialize(new

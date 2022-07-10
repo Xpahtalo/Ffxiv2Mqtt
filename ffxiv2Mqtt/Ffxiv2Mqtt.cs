@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Game;
@@ -81,7 +80,7 @@ namespace Ffxiv2Mqtt
 
         private void OnCommand(string command, string args)
         {
-            PluginLog.Information($"Recieved command: {command}, with the args: {args}");
+            PluginLog.Information($"Received command: {command}, with the args: {args}");
             if (command == configCommandName) {
                 this.PluginUi.Visible = true;
             } else if (command == testCommandName) {
@@ -123,11 +122,11 @@ namespace Ffxiv2Mqtt
 
             DalamudServices.Framework.Update -= Update;
 
-            PluginUi?.Dispose();
+            PluginUi.Dispose();
             DalamudServices.CommandManager.RemoveHandler(configCommandName);
             DalamudServices.CommandManager.RemoveHandler(testCommandName);
             DalamudServices.CommandManager.RemoveHandler(customCommandName);
-            mqttManager?.Dispose();
+            mqttManager.Dispose();
         }
     }
 }

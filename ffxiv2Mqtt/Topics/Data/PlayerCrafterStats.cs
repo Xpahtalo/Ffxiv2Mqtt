@@ -1,39 +1,36 @@
 ﻿using System;
 using System.Text.Json;
-using Dalamud.IoC;
 using Dalamud.Game.ClientState.Objects.SubKinds;
+using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics.Data
 {
-    internal class PlayerCast : Topic, IDisposable
+    internal class PlayerCrafterStats : Topic, IDisposable
     {
-        // ReSharper disable once MemberCanBePrivate.Global
         [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
-        protected override string TopicPath => "Player/Casting";
+        protected override string TopicPath => "Player/Crafter/CurrentStats";
         protected override bool   Retained  => false;
 
-        private bool isCasting;
+        private uint cp;
 
         public override void Initialize()
         {
             PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
         }
 
-        // Publish a message if the player either starts or stops casting.
+        // Send a message when the player's CP changes.
         private void PlayerUpdated(PlayerCharacter localPlayer)
         {
-            var shouldPublish = false;
+            var shouldUpdate = false;
 
-            TestValue(localPlayer.IsCasting, ref isCasting, ref shouldPublish);
+            TestValue(localPlayer.CurrentCp, ref cp, ref shouldUpdate);
 
-            if (shouldPublish) {
+            if (shouldUpdate) {
                 Publish(JsonSerializer.Serialize(new
                                                  {
-                                                     IsCasting = isCasting,
-                                                     CastId    = localPlayer.CastActionId,
-                                                     CastTime  = localPlayer.TotalCastTime,
+                                                     CP = cp,
                                                  }));
             }
         }
