@@ -58,10 +58,10 @@ namespace Ffxiv2Mqtt
             playerEvents = pluginInterface.Create<PlayerEvents>()!;
             topicManager = new TopicManager(mqttManager, Configuration);
 
-            foreach (Type t in GetType().Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Topic)))) {
+            foreach (var t in GetType().Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Topic)))) {
                 try {
                     PluginLog.Debug($"Adding {t.Name}");
-                    var topic = (Topic)Activator.CreateInstance(t);
+                    var topic = (Topic?)Activator.CreateInstance(t);
                     if (topic is null) return;
                     pluginInterface.Inject(topic, mqttManager, playerEvents);
                     topic.Initialize();
@@ -81,20 +81,26 @@ namespace Ffxiv2Mqtt
         private void OnCommand(string command, string args)
         {
             PluginLog.Information($"Received command: {command}, with the args: {args}");
-            if (command == configCommandName) {
-                this.PluginUi.Visible = true;
-            } else if (command == testCommandName) {
-                mqttManager.PublishMessage("test", "success");
-            } else if (command == customCommandName) {
-                var argsList = args.Split(' ');
+            switch (command) {
+                case configCommandName:
+                    this.PluginUi.Visible = true;
+                    break;
+                case testCommandName:
+                    mqttManager.PublishMessage("test", "success");
+                    break;
+                case customCommandName:
+                {
+                    var argsList = args.Split(' ');
 
-                if (argsList.Length < 2) {
-                    PluginLog.LogError("Not enough arguments.");
-                    return;
+                    if (argsList.Length < 2) {
+                        PluginLog.LogError("Not enough arguments.");
+                        return;
+                    }
+
+                    PluginLog.Information($"Publishing a custom message. topic: {argsList[0]} payload: {argsList[1]}");
+                    mqttManager.PublishMessage(argsList[0], argsList[1]);
+                    break;
                 }
-
-                PluginLog.Information($"Publishing a custom message. topic: {argsList[0]} payload: {argsList[1]}");
-                mqttManager.PublishMessage(argsList[0], argsList[1]);
             }
         }
 

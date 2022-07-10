@@ -38,6 +38,14 @@ namespace Ffxiv2Mqtt.Topics
             MqttManager.PublishMessage(TopicPath, payload, Retained);
         }
 
+        private protected static void TestValue<T>(T current, ref T previous, ref bool updated) where T : IEquatable<T>
+        {
+            if (!current.Equals(previous)) {
+                previous = current;
+                updated  = true;
+            }
+        }
+        
         // In .NET 6 and C# 11, these can be simplified down to a single method with generics using INumber.
         private protected void TestCountUp(short current, ref short previous, int interval)
         {
@@ -46,8 +54,8 @@ namespace Ffxiv2Mqtt.Topics
             bool wentLower        = current              < previous;
             bool exceededInterval = (current - previous) >= interval;
 
-            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
-            {
+            // If something else has caused an update, we should also update the timer value
+            if (NeedsPublishing) {
                 previous = current;
                 return;
             }
@@ -62,8 +70,8 @@ namespace Ffxiv2Mqtt.Topics
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                {
+                } else {
+                    // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                     previous = current;
                 }
             }
@@ -76,8 +84,8 @@ namespace Ffxiv2Mqtt.Topics
             bool wentHigher       = current              > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
-            {
+            // If something else has caused an update, we should also update the timer value
+            if (NeedsPublishing) {
                 previous = current;
                 return;
             }
@@ -85,15 +93,14 @@ namespace Ffxiv2Mqtt.Topics
             if (reachedZero || noLongerZero || wentHigher) {
                 previous        = current;
                 NeedsPublishing = true;
-                return;
             } else {
                 if (interval >= 0) {
                     if (exceededInterval) {
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                {
+                } else {
+                    // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                     previous = current;
                 }
             }
@@ -106,8 +113,8 @@ namespace Ffxiv2Mqtt.Topics
             bool wentHigher       = current              > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
-            {
+            // If something else has caused an update, we should also update the timer value
+            if (NeedsPublishing) {
                 previous = current;
                 return;
             }
@@ -122,8 +129,8 @@ namespace Ffxiv2Mqtt.Topics
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                {
+                } else {
+                    // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                     previous = current;
                 }
             }
@@ -136,8 +143,8 @@ namespace Ffxiv2Mqtt.Topics
             bool wentHigher       = current              > previous;
             bool exceededInterval = (previous - current) >= interval;
 
-            if (NeedsPublishing) // If something else has caused an update, we should also update the timer value
-            {
+            // If something else has caused an update, we should also update the timer value
+            if (NeedsPublishing) {
                 previous = current;
                 return;
             }
@@ -152,18 +159,10 @@ namespace Ffxiv2Mqtt.Topics
                         previous        = current;
                         NeedsPublishing = true;
                     }
-                } else // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                {
+                } else {
+                    // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
                     previous = current;
                 }
-            }
-        }
-
-        private protected void TestValue<T>(T current, ref T previous, ref bool updated) where T : IEquatable<T>
-        {
-            if (!current.Equals(previous)) {
-                previous = current;
-                updated  = true;
             }
         }
     }
