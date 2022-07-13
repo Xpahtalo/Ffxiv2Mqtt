@@ -1,7 +1,6 @@
-﻿namespace Ffxiv2Mqtt.Topics.Interfaces
+﻿namespace Ffxiv2Mqtt.Topics.Interfaces;
+
+internal interface IUpdatable
 {
-    internal interface IUpdatable
-    {
-        void Update();
-    }
+    void Update();
 }

@@ -1,49 +1,45 @@
 ﻿using System;
-using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data
+namespace Ffxiv2Mqtt.Topics.Data;
+
+internal class WorldInfoTopic : Topic, IDisposable
 {
-    internal class WorldInfoTopic : Topic, IDisposable
+    private uint previousWorldId;
+
+    protected override     string        TopicPath    => "Event/WorldChanged";
+    protected override     bool          Retained     => true;
+    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+
+
+    public override void Initialize()
     {
-        [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
+    }
 
-        protected override string TopicPath => "Event/WorldChanged";
-        protected override bool   Retained  => true;
+    // Publish a message whenever the player changes worlds.
+    public void PlayerUpdated(PlayerCharacter localPlayer)
+    {
+        var shouldPublish = false;
 
-        private uint previousWorldId = 0;
+        var currentWorld = localPlayer.CurrentWorld;
+        var homeWorld    = localPlayer.HomeWorld;
 
+        TestValue(currentWorld.Id, ref previousWorldId, ref shouldPublish);
 
-        public override void Initialize()
-        {
-            PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-        }
+        if (shouldPublish)
+            Publish(new
+                    {
+                        World      = currentWorld?.GameData?.Name.ToString(),
+                        WorldId    = currentWorld?.Id,
+                        Datacenter = currentWorld?.GameData?.DataCenter?.Value?.Name.ToString(),
+                    });
+    }
 
-        // Publish a message whenever the player changes worlds.
-        public void PlayerUpdated(PlayerCharacter localPlayer)
-        {
-            var shouldPublish = false;
-
-            var currentWorld = localPlayer.CurrentWorld;
-            var homeWorld    = localPlayer.HomeWorld;
-
-            TestValue(currentWorld.Id, ref previousWorldId, ref shouldPublish);
-
-            if (shouldPublish) {
-                Publish(new
-                        {
-                            World      = currentWorld?.GameData?.Name.ToString(),
-                            WorldId    = currentWorld?.Id,
-                            Datacenter = currentWorld?.GameData?.DataCenter?.Value?.Name.ToString(),
-                        });
-            }
-        }
-
-        public void Dispose()
-        {
-            PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-        }
+    public void Dispose()
+    {
+        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
     }
 }

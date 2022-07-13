@@ -1,57 +1,52 @@
 ﻿using System;
-using System.Text.Json;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data
+namespace Ffxiv2Mqtt.Topics.Data;
+
+internal class PlayerGathererStatsTopic : Topic, IDisposable
 {
-    internal class PlayerGathererStatsTopic : Topic, IDisposable
+    private uint gp;
+    private bool forcePublish;
+
+    protected override     string        TopicPath    => "Player/Gatherer/CurrentStats";
+    protected override     bool          Retained     => false;
+    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+
+    public override void Initialize()
     {
-        [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
+        PlayerEvents!.OnJobChange        += JobChanged;
+    }
 
-        protected override string TopicPath => "Player/Gatherer/CurrentStats";
-        protected override bool   Retained  => false;
+    // Publish a message if GP changes.
+    private void PlayerUpdated(PlayerCharacter localPlayer)
+    {
+        var shouldPublish = false;
 
-        private uint gp;
-        private bool forcePublish;
+        if (localPlayer.MaxGp != 0)
+            TestValue(localPlayer.CurrentGp, ref gp, ref shouldPublish);
 
-        public override void Initialize()
-        {
-            PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-            PlayerEvents!.OnJobChange        += JobChanged;
+        if (shouldPublish || forcePublish) {
+            forcePublish = false;
+            Publish(new
+                    {
+                        GP = gp,
+                    });
         }
+    }
 
-        // Publish a message if GP changes.
-        private void PlayerUpdated(PlayerCharacter localPlayer)
-        {
-            var shouldPublish = false;
+    // Publish current GP if the player changes to a gatherer.
+    private void JobChanged(Job previousJob, Job currentJob)
+    {
+        if (currentJob.IsGatherer()) forcePublish = true;
+    }
 
-            if (localPlayer.MaxGp != 0)
-                TestValue(localPlayer.CurrentGp, ref gp, ref shouldPublish);
-
-            if (shouldPublish || forcePublish) {
-                forcePublish = false;
-                Publish(new
-                        {
-                            GP = gp,
-                        });
-            }
-        }
-
-        // Publish current GP if the player changes to a gatherer.
-        private void JobChanged(Job previousJob, Job currentJob)
-        {
-            if (currentJob.IsGatherer()) {
-                forcePublish = true;
-            }
-        }
-
-        public void Dispose()
-        {
-            PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-            PlayerEvents!.OnJobChange        -= JobChanged;
-        }
+    public void Dispose()
+    {
+        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
+        PlayerEvents!.OnJobChange        -= JobChanged;
     }
 }

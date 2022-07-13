@@ -1,7 +1,6 @@
-﻿namespace Ffxiv2Mqtt.Topics.Interfaces
+﻿namespace Ffxiv2Mqtt.Topics.Interfaces;
+
+internal interface IConfigurable
 {
-    internal interface IConfigurable
-    {
-        public void Configure();
-    }
+    public void Configure();
 }

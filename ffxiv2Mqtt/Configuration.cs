@@ -1,40 +1,38 @@
-﻿using Dalamud.Configuration;
+﻿using System;
+using Dalamud.Configuration;
 using Dalamud.Plugin;
-using System;
 
-namespace Ffxiv2Mqtt
+namespace Ffxiv2Mqtt;
+
+[Serializable]
+public class Configuration : IPluginConfiguration
 {
-    [Serializable]
-    public class Configuration : IPluginConfiguration
+    // the below exist just to make saving less cumbersome
+    [NonSerialized]
+    private DalamudPluginInterface? pluginInterface;
+
+    public int Version { get; set; } = 1;
+
+    // MQTT Settings
+    public string ClientId         { get; set; } = "FFXIV";
+    public bool   IncludeClientId  { get; set; } = false;
+    public string BrokerAddress    { get; set; } = string.Empty;
+    public int    BrokerPort       { get; set; }
+    public string User             { get; set; } = string.Empty;
+    public string Password         { get; set; } = string.Empty;
+    public string BaseTopic        { get; set; } = "ffxiv";
+    public bool   ConnectAtStartup { get; set; } = false;
+
+    // Topic Settings
+    public int Interval { get; set; } = 5000;
+
+    public void Initialize(DalamudPluginInterface pluginInterface)
     {
-        public int Version { get; set; } = 1;
+        this.pluginInterface = pluginInterface;
+    }
 
-        // MQTT Settings
-        public string ClientId { get; set; } = "FFXIV";
-        public bool IncludeClientId { get; set; } = false;
-        public string BrokerAddress { get; set; } = string.Empty;
-        public int BrokerPort { get; set; }
-        public string User { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
-        public string BaseTopic { get; set; } = "ffxiv";
-        public bool ConnectAtStartup { get; set; } = false;
-
-        // Topic Settings
-        public int Interval { get; set; } = 5000;
-
-
-        // the below exist just to make saving less cumbersome
-        [NonSerialized]
-        private DalamudPluginInterface? pluginInterface;
-
-        public void Initialize(DalamudPluginInterface pluginInterface)
-        {
-            this.pluginInterface = pluginInterface;
-        }
-
-        public void Save()
-        {
-            this.pluginInterface!.SavePluginConfig(this);
-        }
+    public void Save()
+    {
+        pluginInterface!.SavePluginConfig(this);
     }
 }

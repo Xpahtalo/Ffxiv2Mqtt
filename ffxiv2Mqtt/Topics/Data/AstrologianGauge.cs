@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.Json;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.ClientState.JobGauge.Enums;
@@ -9,62 +8,57 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data
+namespace Ffxiv2Mqtt.Topics.Data;
+
+internal class AstrologianGauge : Topic, IDisposable
 {
-    internal class AstrologianGauge : Topic, IDisposable
+    private          CardType   drawnCard;
+    private          CardType   drawnCrownType;
+    private readonly SealType[] seals;
+
+    protected override     string        TopicPath    => "Player/JobGauge/AST";
+    protected override     bool          Retained     => false;
+    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+    [PluginService] public JobGauges?    JobGauges    { get; set; }
+    [PluginService] public ClientState?  ClientState  { get; set; }
+
+    public AstrologianGauge()
     {
-        [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
-        [PluginService] public JobGauges?     JobGauges     { get; set; }
-        [PluginService] public ClientState?   ClientState   { get; set; }
+        seals = new SealType[3];
+    }
 
-        protected override string TopicPath => "Player/JobGauge/AST";
-        protected override bool   Retained  => false;
+    public override void Initialize()
+    {
+        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
+    }
 
-        private CardType   drawnCard;
-        private CardType   drawnCrownType;
-        private SealType[] seals;
+    private void PlayerUpdated(PlayerCharacter localPlayer)
+    {
+        if (ClientState!.IsPvP)
+            return;
+        if ((Job)localPlayer.ClassJob.Id != Job.Astrologian)
+            return;
+        var gauge = JobGauges?.Get<ASTGauge>();
+        if (gauge is null)
+            return;
 
-        public AstrologianGauge()
-        {
-            seals = new SealType[3];
-        }
+        var shouldPublish = false;
+        TestValue(gauge.DrawnCard,      ref drawnCard,      ref shouldPublish);
+        TestValue(gauge.DrawnCrownCard, ref drawnCrownType, ref shouldPublish);
+        for (var i = 0; i < seals.Length; i++) TestValue(gauge.Seals[i], ref seals[i], ref shouldPublish);
 
-        public override void Initialize()
-        {
-            PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-        }
-
-        private void PlayerUpdated(PlayerCharacter localPlayer)
-        {
-            if (ClientState!.IsPvP)
-                return;
-            if ((Job)localPlayer.ClassJob.Id != Job.Astrologian)
-                return;
-            var gauge = JobGauges?.Get<ASTGauge>();
-            if (gauge is null)
-                return;
-
-            var shouldPublish = false;
-            TestValue(gauge.DrawnCard,      ref drawnCard,      ref shouldPublish);
-            TestValue(gauge.DrawnCrownCard, ref drawnCrownType, ref shouldPublish);
-            for (var i = 0; i < seals.Length; i++) {
-                TestValue(gauge.Seals[i], ref seals[i], ref shouldPublish);
-            }
-
-            if (shouldPublish) {
-                Publish(new
-                        {
-                            gauge.DrawnCard,
-                            gauge.DrawnCrownCard,
-                            gauge.Seals,
-                        });
-            }
-        }
+        if (shouldPublish)
+            Publish(new
+                    {
+                        gauge.DrawnCard,
+                        gauge.DrawnCrownCard,
+                        gauge.Seals,
+                    });
+    }
 
 
-        public void Dispose()
-        {
-            PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-        }
+    public void Dispose()
+    {
+        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
     }
 }

@@ -1,7 +1,6 @@
-﻿namespace Ffxiv2Mqtt.Topics.Interfaces
+﻿namespace Ffxiv2Mqtt.Topics.Interfaces;
+
+internal interface ICleanable
 {
-    internal interface ICleanable
-    {
-        void Cleanup();
-    }
+    void Cleanup();
 }
