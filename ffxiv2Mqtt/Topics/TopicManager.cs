@@ -8,7 +8,6 @@ namespace Ffxiv2Mqtt.Topics
     internal class TopicManager : IDisposable
     {
         private List<Topic>         topics;
-        private List<IUpdatable>    updatables;
         private List<ICleanable>    cleanables;
         private List<IConfigurable> configurables;
 
@@ -16,7 +15,6 @@ namespace Ffxiv2Mqtt.Topics
         {
             PluginLog.Verbose($"Creating {this.GetType().Name}");
             this.topics   = new List<Topic>();
-            updatables    = new List<IUpdatable>();
             cleanables    = new List<ICleanable>();
             configurables = new List<IConfigurable>();
 
@@ -29,21 +27,12 @@ namespace Ffxiv2Mqtt.Topics
         {
             try {
                 topics.Add(topic);
-                if (topic is IUpdatable)
-                    updatables.Add((IUpdatable)topic);
                 if (topic is ICleanable)
                     cleanables.Add((ICleanable)topic);
                 if (topic is IConfigurable)
                     configurables.Add((IConfigurable)topic);
             } catch (System.NullReferenceException) {
                 PluginLog.Error("Tried to add null topic");
-            }
-        }
-
-        internal void Update()
-        {
-            foreach (IUpdatable updatable in updatables) {
-                updatable.Update();
             }
         }
 
@@ -57,7 +46,7 @@ namespace Ffxiv2Mqtt.Topics
         internal void Configure(Configuration configuration)
         {
             foreach (IConfigurable configurable in configurables) {
-                configurable.Configure(configuration);
+                configurable.Configure();
             }
         }
 

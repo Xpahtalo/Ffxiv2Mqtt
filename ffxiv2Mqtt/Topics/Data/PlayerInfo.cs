@@ -40,16 +40,25 @@ namespace Ffxiv2Mqtt.Topics.Data
 
             if (shouldPublish || forcePublish) {
                 forcePublish = false;
-                Publish(new
-                        {
-                            Class   = localPlayer.ClassJob.GameData?.Abbreviation ?? "",
-                            ClassId = localPlayer.ClassJob.Id,
-                            localPlayer.Level,
-                            MaxHP   = localPlayer.MaxHp,
-                            MaxMP   = localPlayer.MaxMp,
-                            MaxCP   = localPlayer.MaxCp,
-                            MaxGP   = localPlayer.MaxGp,
-                        });
+                var payload =
+                    $"{{\"Class\":\"{localPlayer.ClassJob.GameData?.Abbreviation ?? ""}\"," +
+                    $"\"ClassId\":{localPlayer.ClassJob.Id},"                               +
+                    $"\"Level\":{localPlayer.Level},"                                       +
+                    $"\"MaxHP\":{localPlayer.MaxHp},"                                       +
+                    $"\"MaxMP\":{localPlayer.MaxMp},"                                       +
+                    $"\"MaxCP\":{localPlayer.MaxCp},"                                       +
+                    $"\"MaxGP\":{localPlayer.MaxGp}}}";
+                Publish(payload);
+                // Publish(new
+                //         {
+                //             Class   = localPlayer.ClassJob.GameData?.Abbreviation ?? "",
+                //             ClassId = localPlayer.ClassJob.Id,
+                //             localPlayer.Level,
+                //             MaxHP   = localPlayer.MaxHp,
+                //             MaxMP   = localPlayer.MaxMp,
+                //             MaxCP   = localPlayer.MaxCp,
+                //             MaxGP   = localPlayer.MaxGp,
+                //         });
             }
         }
 

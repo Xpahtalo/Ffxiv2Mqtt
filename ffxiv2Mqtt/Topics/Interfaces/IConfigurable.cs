@@ -2,6 +2,6 @@
 {
     internal interface IConfigurable
     {
-        public void Configure(Configuration configuration);
+        public void Configure();
     }
 }

@@ -63,7 +63,7 @@ namespace Ffxiv2Mqtt
                     PluginLog.Debug($"Adding {t.Name}");
                     var topic = (Topic?)Activator.CreateInstance(t);
                     if (topic is null) return;
-                    pluginInterface.Inject(topic, mqttManager, playerEvents);
+                    pluginInterface.Inject(topic, mqttManager, playerEvents, Configuration);
                     topic.Initialize();
                     topicManager.AddTopic(topic);
                 } catch (Exception e) {
@@ -75,7 +75,6 @@ namespace Ffxiv2Mqtt
             this.PluginUi                                          =  new PluginUI(this.Configuration, mqttManager, topicManager);
             DalamudServices.PluginInterface.UiBuilder.Draw         += DrawUI;
             DalamudServices.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-            DalamudServices.Framework.Update                       += Update;
         }
 
         private void OnCommand(string command, string args)
@@ -114,19 +113,12 @@ namespace Ffxiv2Mqtt
             this.PluginUi.SettingsVisible = true;
         }
 
-        private void Update(Framework framework)
-        {
-            topicManager.Update();
-        }
-
         public void Dispose()
         {
             playerEvents.Dispose();
             
             topicManager.Clean();
             topicManager.Dispose();
-
-            DalamudServices.Framework.Update -= Update;
 
             PluginUi.Dispose();
             DalamudServices.CommandManager.RemoveHandler(configCommandName);

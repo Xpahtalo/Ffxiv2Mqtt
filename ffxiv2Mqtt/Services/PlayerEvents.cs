@@ -46,8 +46,6 @@ namespace Ffxiv2Mqtt.Services
             var localPlayer = ClientState.LocalPlayer;
             if (localPlayer == null) return;
 
-            LocalPlayerUpdated?.Invoke(localPlayer);
-
             var currentJob = (Job)localPlayer.ClassJob.Id;
             if (currentJob != previousJob) {
 #if DEBUG
@@ -55,8 +53,10 @@ namespace Ffxiv2Mqtt.Services
 #endif
                 OnJobChange?.Invoke(previousJob, currentJob);
             }
-
             previousJob = currentJob;
+
+            
+            LocalPlayerUpdated?.Invoke(localPlayer);
         }
 
         public void Dispose()

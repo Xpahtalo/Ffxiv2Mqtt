@@ -18,6 +18,7 @@ namespace Ffxiv2Mqtt.Topics.Data
 
         private readonly JsonSerializerOptions serializerOptions;
         private          int                   statusCount;
+        private          int                   stackCount;
 
         protected override string TopicPath => "Player/Status";
         protected override bool   Retained  => false;
@@ -39,12 +40,21 @@ namespace Ffxiv2Mqtt.Topics.Data
         // Publish a message if the number of statuses on the player has changed.
         private void PlayerUpdated(PlayerCharacter localPlayer)
         {
-            var shouldPublish = false;
+            bool shouldPublish     = false;
+            int  activeStatusCount = 0;
+            int  stacks            = 0;
 
-            var activeStatusCount = localPlayer.StatusList.Count<Status>(status => status.Address != IntPtr.Zero);
+            foreach (var status in localPlayer.StatusList) {
+                if (status.Address == IntPtr.Zero) continue;
+                activeStatusCount++;
+                stacks += status.StackCount;
+            }
+
             TestValue(activeStatusCount, ref statusCount, ref shouldPublish);
+            TestValue(stacks,            ref stackCount,  ref shouldPublish);
             if (shouldPublish) {
-                Publish(JsonSerializer.Serialize(localPlayer.StatusList as IReadOnlyCollection<Status>, serializerOptions));
+                //Publish(JsonSerializer.Serialize(localPlayer.StatusList as IReadOnlyCollection<Status>, serializerOptions));
+                Publish(JsonSerializer.Serialize(localPlayer.StatusList, serializerOptions));
             }
         }
 

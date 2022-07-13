@@ -16,7 +16,7 @@ namespace Ffxiv2Mqtt.Topics.Data
         private uint mp;
         private byte shield;
 
-        protected override string TopicPath => "Player/Combat/Casting";
+        protected override string TopicPath => "Player/Combat/Stats";
         protected override bool   Retained  => false;
 
 
