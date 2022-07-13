@@ -29,9 +29,9 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     {
         Task.Run(() =>
         {
-            while (DalamudServices.ClientState?.LocalPlayer?.Name is null)
+            while (ClientState?.LocalPlayer?.Name is null)
                 Thread.Sleep(1000);
-            characterName = DalamudServices.ClientState.LocalPlayer.Name.ToString();
+            characterName = ClientState!.LocalPlayer!.Name.ToString();
             Publish(JsonSerializer.Serialize(new
                                              {
                                                  LoggedIn  = true,

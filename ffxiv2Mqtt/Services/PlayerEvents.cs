@@ -13,11 +13,9 @@ internal class PlayerEvents : IDisposable
 {
     private Job previousJob;
 
-    [PluginService]
-    public static ClientState ClientState { get; } = null!;
+    [PluginService] public static ClientState ClientState { get; set; }
 
-    [PluginService]
-    public static Framework Framework { get; } = null!;
+    [PluginService] public static Framework Framework { get; set; }
 
     // A delegate type used with the OnJobChange event.
     public delegate void OnJobChangeDelegate(Job previousJob, Job currentJob);
@@ -30,18 +28,6 @@ internal class PlayerEvents : IDisposable
 
     // Event that gets fired on evey framework update when the ClientState.LocalPlayer is not null.
     public event LocalPlayerUpdatedDelegate? LocalPlayerUpdated;
-
-
-    public static void Initialize(DalamudPluginInterface pluginInterface)
-    {
-        pluginInterface.Create<PlayerEvents>();
-    }
-
-    public PlayerEvents(DalamudPluginInterface pluginInterface)
-    {
-        PluginLog.Debug("PlayerEvents.Initialize: Framework.Update += Update");
-        Framework.Update += Update;
-    }
 
 
     private void Update(Framework framework)

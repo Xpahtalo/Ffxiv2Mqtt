@@ -19,7 +19,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="icon.png"/>
+        <None Remove="icon.png" />
     </ItemGroup>
 
     <ItemGroup>
@@ -34,14 +34,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="lib\** "/>
+        <Compile Remove="lib\** " />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudLinter" Version="1.0.3"/>
-        <PackageReference Include="DalamudPackager" Version="2.1.7"/>
-        <PackageReference Include="MQTTnet" Version="4.0.1.184"/>
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.1.184"/>
+        <PackageReference Include="DalamudLinter" Version="1.0.3" />
+        <PackageReference Include="DalamudPackager" Version="2.1.7" />
+        <PackageReference Include="MQTTnet" Version="4.0.1.184" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.1.184" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>
             <Private>true</Private>
@@ -69,6 +69,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="icon.png" Link="images\icon.png" CopyToOutputDirectory="Always"/>
+        <Content Include="icon.png" Link="images\icon.png" CopyToOutputDirectory="Always" />
     </ItemGroup>
 </Project>

@@ -24,36 +24,39 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private const string configCommandName = "/mqtt";
     private const string testCommandName   = "/mtest";
     private const string customCommandName = "/mqttcustom";
-
+    
+    private DalamudPluginInterface PluginInterface { get; init; }
+    private CommandManager         CommandManager  { get; init; }
 
     public Ffxiv2Mqtt(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface)
+        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
+        [RequiredVersion("1.0")] CommandManager commandManager)
     {
-        DalamudServices.Initialize(pluginInterface);
-        Configuration = DalamudServices.PluginInterface.GetPluginConfig() as Configuration ??
-                        new Configuration();
-        Configuration.Initialize(DalamudServices.PluginInterface);
+        PluginInterface = pluginInterface;
+        CommandManager  = commandManager;
+
+        Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
 
         mqttManager = new MqttManager(Configuration);
         if (Configuration.ConnectAtStartup)
             mqttManager.ConnectToBroker();
 
-        DalamudServices.CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
                                                                      {
                                                                          HelpMessage = "Display MQTT Client Info",
                                                                      });
-        DalamudServices.CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
                                                                    {
                                                                        HelpMessage = "Test",
                                                                        ShowInHelp  = false,
                                                                    });
-        DalamudServices.CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
                                                                      {
                                                                          HelpMessage =
                                                                              "Send a custom MQTT message with the given topic and payload.",
                                                                      });
 
-        playerEvents = pluginInterface.Create<PlayerEvents>()!;
+        playerEvents = PluginInterface.Create<PlayerEvents>()!;
         topicManager = new TopicManager(mqttManager, Configuration);
 
         foreach (var t in GetType().Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Topic))))
@@ -70,8 +73,8 @@ public class Ffxiv2Mqtt : IDalamudPlugin
 
 
         PluginUi                                               =  new PluginUI(Configuration, mqttManager, topicManager);
-        DalamudServices.PluginInterface.UiBuilder.Draw         += DrawUI;
-        DalamudServices.PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        PluginInterface.UiBuilder.Draw         += DrawUI;
+        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
     }
 
     private void OnCommand(string command, string args)
@@ -118,9 +121,9 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         topicManager.Dispose();
 
         PluginUi.Dispose();
-        DalamudServices.CommandManager.RemoveHandler(configCommandName);
-        DalamudServices.CommandManager.RemoveHandler(testCommandName);
-        DalamudServices.CommandManager.RemoveHandler(customCommandName);
+        CommandManager.RemoveHandler(configCommandName);
+        CommandManager.RemoveHandler(testCommandName);
+        CommandManager.RemoveHandler(customCommandName);
         mqttManager.Dispose();
     }
 }
