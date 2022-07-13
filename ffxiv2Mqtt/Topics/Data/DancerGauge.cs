@@ -35,7 +35,7 @@ internal class DancerGauge : Topic, IDisposable
         PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
     }
 
-    public void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         if (ClientState!.IsPvP)
             return;

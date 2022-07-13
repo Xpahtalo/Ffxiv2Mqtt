@@ -40,7 +40,7 @@ internal class BlackMageJob : Topic, IDisposable, IConfigurable
         if (Configuration is not null) syncTimer = Configuration.Interval;
     }
 
-    public void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         if (ClientState!.IsPvP)
             return;

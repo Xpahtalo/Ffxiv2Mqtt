@@ -11,17 +11,14 @@ using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data;
 
-internal class BardGauge : Topic, IDisposable, IConfigurable
+internal class MonkGauge : Topic, IDisposable, IConfigurable
 {
-    private readonly Song[] coda;
-    private          Song   lastSong;
-    private          byte   repertoire;
-    private          Song   song;
-    private          ushort songTimer;
-    private          byte   soulVoice;
-    private          int    syncTimer;
+    private          byte          chakra;
+    private readonly BeastChakra[] beastChakra;
+    private          ushort        blitzTimeRemaining;
+    private          int           syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/BRD";
+    protected override string TopicPath => "Player/JobGauge/MNK";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
@@ -29,9 +26,10 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
 
-    public BardGauge()
+
+    public MonkGauge()
     {
-        coda = new Song[3];
+        beastChakra = new BeastChakra[3];
     }
 
     public override void Initialize()
@@ -49,30 +47,23 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Bard)
+        if ((Job)localPlayer.ClassJob.Id != Job.Monk)
             return;
-        var gauge = JobGauges?.Get<BRDGauge>();
+        var gauge = JobGauges?.Get<MNKGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        for (var i = 0; i < coda.Length; i++) TestValue(gauge.Coda[i], ref coda[i], ref shouldPublish);
-
-        TestValue(gauge.LastSong,   ref lastSong,   ref shouldPublish);
-        TestValue(gauge.Repertoire, ref repertoire, ref shouldPublish);
-        TestValue(gauge.Song,       ref song,       ref shouldPublish);
-        TestCountDown(gauge.SongTimer, ref songTimer, syncTimer, ref shouldPublish);
-        TestValue(gauge.SoulVoice, ref soulVoice, ref shouldPublish);
+        TestValue(gauge.Chakra, ref chakra, ref shouldPublish);
+        for (var i = 0; i < 3; i++) TestValue(gauge.BeastChakra[i], ref beastChakra[i], ref shouldPublish);
+        TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Song,
-                        gauge.SongTimer,
-                        gauge.SoulVoice,
-                        gauge.Coda,
-                        gauge.Repertoire,
-                        gauge.LastSong,
+                        gauge.Chakra,
+                        gauge.BeastChakra,
+                        gauge.BlitzTimeRemaining,
                     });
     }
 

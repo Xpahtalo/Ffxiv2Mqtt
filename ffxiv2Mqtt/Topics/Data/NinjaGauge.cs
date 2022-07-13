@@ -1,7 +1,6 @@
 ﻿using System;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.JobGauge;
-using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
@@ -11,28 +10,20 @@ using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data;
 
-internal class BardGauge : Topic, IDisposable, IConfigurable
+internal class NinjaGauge : Topic, IDisposable, IConfigurable
 {
-    private readonly Song[] coda;
-    private          Song   lastSong;
-    private          byte   repertoire;
-    private          Song   song;
-    private          ushort songTimer;
-    private          byte   soulVoice;
-    private          int    syncTimer;
+    private byte hutonManualCasts;
+    private int  hutonTimer;
+    private byte ninki;
+    private int  syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/BRD";
+    protected override string TopicPath => "Player/JobGauge/NIN";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
     [PluginService] public JobGauges?     JobGauges     { get; set; }
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
-
-    public BardGauge()
-    {
-        coda = new Song[3];
-    }
 
     public override void Initialize()
     {
@@ -49,30 +40,23 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Bard)
+        if ((Job)localPlayer.ClassJob.Id != Job.Ninja)
             return;
-        var gauge = JobGauges?.Get<BRDGauge>();
+        var gauge = JobGauges?.Get<NINGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        for (var i = 0; i < coda.Length; i++) TestValue(gauge.Coda[i], ref coda[i], ref shouldPublish);
-
-        TestValue(gauge.LastSong,   ref lastSong,   ref shouldPublish);
-        TestValue(gauge.Repertoire, ref repertoire, ref shouldPublish);
-        TestValue(gauge.Song,       ref song,       ref shouldPublish);
-        TestCountDown(gauge.SongTimer, ref songTimer, syncTimer, ref shouldPublish);
-        TestValue(gauge.SoulVoice, ref soulVoice, ref shouldPublish);
+        TestValue(gauge.HutonManualCasts, ref hutonManualCasts, ref shouldPublish);
+        TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer, ref shouldPublish);
+        TestValue(gauge.Ninki, ref ninki, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Song,
-                        gauge.SongTimer,
-                        gauge.SoulVoice,
-                        gauge.Coda,
-                        gauge.Repertoire,
-                        gauge.LastSong,
+                        gauge.Ninki,
+                        gauge.HutonTimer,
+                        gauge.HutonManualCasts,
                     });
     }
 

@@ -26,7 +26,7 @@ internal class PlayerInfo : Topic, IDisposable
         PlayerEvents!.OnJobChange        += JobChanged;
     }
 
-    public void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         var shouldPublish = false;
         TestValue(localPlayer.ClassJob.Id, ref classJobId, ref shouldPublish);
@@ -60,7 +60,7 @@ internal class PlayerInfo : Topic, IDisposable
         }
     }
 
-    public void JobChanged(Job previousJob, Job currentJob)
+    private void JobChanged(Job previousJob, Job currentJob)
     {
         forcePublish = true;
     }

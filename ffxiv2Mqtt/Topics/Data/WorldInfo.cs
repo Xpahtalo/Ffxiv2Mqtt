@@ -20,7 +20,7 @@ internal class WorldInfoTopic : Topic, IDisposable
     }
 
     // Publish a message whenever the player changes worlds.
-    public void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         var shouldPublish = false;
 

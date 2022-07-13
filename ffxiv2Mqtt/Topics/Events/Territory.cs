@@ -21,7 +21,7 @@ internal sealed class Territory : Topic, ICleanable, IDisposable
     }
 
     // Publish a message whenever the player changes territories.
-    internal void TerritoryChanged(object? o, ushort territoryId)
+    private void TerritoryChanged(object? o, ushort territoryId)
     {
         var territoryRow = DataManager?.Excel.GetSheet<TerritoryType>()?.GetRow(territoryId);
         if (territoryRow is null) return;

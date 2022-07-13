@@ -26,7 +26,6 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
 
-
     public override void Initialize()
     {
         Configure();
@@ -38,7 +37,7 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
         if (Configuration is not null) syncTimer = Configuration.Interval;
     }
 
-    public void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         if (ClientState!.IsPvP)
             return;
