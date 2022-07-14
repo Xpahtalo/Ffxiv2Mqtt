@@ -30,6 +30,13 @@ internal class PlayerEvents : IDisposable
     public event LocalPlayerUpdatedDelegate? LocalPlayerUpdated;
 
 
+    
+    public PlayerEvents(DalamudPluginInterface pluginInterface)
+    {
+        PluginLog.Debug("PlayerEvents.Initialize: Framework.Update += Update");
+        Framework.Update += Update;
+    }
+    
     private void Update(Framework framework)
     {
         var localPlayer = ClientState.LocalPlayer;
