@@ -48,10 +48,10 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Blood, ref blood, ref shouldPublish);
-        TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer, ref shouldPublish);
+        TestValue(gauge.Blood,       ref blood,       ref shouldPublish);
         TestValue(gauge.HasDarkArts, ref hasDarkArts, ref shouldPublish);
-        TestCountDown(gauge.ShadowTimeRemaining, ref shadowTimeRemaining, syncTimer, ref shouldPublish);
+        TestCountDown(gauge.ShadowTimeRemaining,   ref shadowTimeRemaining,   syncTimer, ref shouldPublish);
+        TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new

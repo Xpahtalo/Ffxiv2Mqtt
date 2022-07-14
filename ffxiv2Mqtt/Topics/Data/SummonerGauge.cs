@@ -58,16 +58,16 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
         var shouldPublish = false;
         TestValue(gauge.AetherflowStacks, ref aetherflowStacks, ref shouldPublish);
         TestValue(gauge.Attunement,       ref attunement,       ref shouldPublish);
+        TestValue(gauge.IsBahamutReady,   ref isBahamutReady,   ref shouldPublish);
+        TestValue(gauge.IsPhoenixReady,   ref isPhoenixReady,   ref shouldPublish);
+        TestValue(gauge.IsGarudaReady,    ref isGarudaReady,    ref shouldPublish);
+        TestValue(gauge.IsGarudaAttuned,  ref isGarudaAttuned,  ref shouldPublish);
+        TestValue(gauge.IsIfritReady,     ref isIfritReady,     ref shouldPublish);
+        TestValue(gauge.IsIfritAttuned,   ref isIfritAttuned,   ref shouldPublish);
+        TestValue(gauge.IsTitanReady,     ref isTitanReady,     ref shouldPublish);
+        TestValue(gauge.IsTitanAttuned,   ref isTitanAttuned,   ref shouldPublish);
         TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, syncTimer, ref shouldPublish);
-        TestValue(gauge.IsBahamutReady,  ref isBahamutReady,  ref shouldPublish);
-        TestValue(gauge.IsPhoenixReady,  ref isPhoenixReady,  ref shouldPublish);
-        TestValue(gauge.IsGarudaReady,   ref isGarudaReady,   ref shouldPublish);
-        TestValue(gauge.IsGarudaAttuned, ref isGarudaAttuned, ref shouldPublish);
-        TestValue(gauge.IsIfritReady,    ref isIfritReady,    ref shouldPublish);
-        TestValue(gauge.IsIfritAttuned,  ref isIfritAttuned,  ref shouldPublish);
-        TestValue(gauge.IsTitanReady,    ref isTitanReady,    ref shouldPublish);
-        TestValue(gauge.IsTitanAttuned,  ref isTitanAttuned,  ref shouldPublish);
-        TestCountDown(gauge.SummonTimerRemaining, ref summonTimeRemaining, syncTimer, ref shouldPublish);
+        TestCountDown(gauge.SummonTimerRemaining,    ref summonTimeRemaining,     syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new

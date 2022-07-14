@@ -49,9 +49,9 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
 
         var shouldPublish = false;
         TestValue(gauge.Addersgall, ref addersgall, ref shouldPublish);
-        TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, syncTimer, ref shouldPublish);
         TestValue(gauge.Addersting, ref addersting, ref shouldPublish);
         TestValue(gauge.Eukrasia,   ref eukrasia,   ref shouldPublish);
+        TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new

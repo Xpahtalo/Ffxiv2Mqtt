@@ -55,10 +55,10 @@ internal class BlackMageJob : Topic, IDisposable, IConfigurable
         TestValue(gauge.IsParadoxActive,  ref isParadoxActive,  ref shouldPublish);
         TestValue(gauge.AstralFireStacks, ref astralFireStacks, ref shouldPublish);
         TestValue(gauge.UmbralIceStacks,  ref umbralIceStacks,  ref shouldPublish);
+        TestValue(gauge.UmbralHearts,     ref umbralHearts,     ref shouldPublish);
+        TestValue(gauge.PolyglotStacks,   ref polyglotStacks,   ref shouldPublish);
         TestCountDown(gauge.ElementTimeRemaining, ref elementTimeRemaining,  syncTimer, ref shouldPublish);
         TestCountDown(gauge.EnochianTimer,        ref enochianTimeRemaining, syncTimer, ref shouldPublish);
-        TestValue(gauge.UmbralHearts,   ref umbralHearts,   ref shouldPublish);
-        TestValue(gauge.PolyglotStacks, ref polyglotStacks, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new

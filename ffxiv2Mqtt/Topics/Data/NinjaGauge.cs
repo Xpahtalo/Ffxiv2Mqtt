@@ -48,8 +48,9 @@ internal class NinjaGauge : Topic, IDisposable, IConfigurable
 
         var shouldPublish = false;
         TestValue(gauge.HutonManualCasts, ref hutonManualCasts, ref shouldPublish);
+        TestValue(gauge.Ninki,            ref ninki,            ref shouldPublish);
         TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer, ref shouldPublish);
-        TestValue(gauge.Ninki, ref ninki, ref shouldPublish);
+
 
         if (shouldPublish)
             Publish(new

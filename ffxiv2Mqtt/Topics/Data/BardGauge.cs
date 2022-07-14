@@ -61,8 +61,8 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
         TestValue(gauge.LastSong,   ref lastSong,   ref shouldPublish);
         TestValue(gauge.Repertoire, ref repertoire, ref shouldPublish);
         TestValue(gauge.Song,       ref song,       ref shouldPublish);
+        TestValue(gauge.SoulVoice,  ref soulVoice,  ref shouldPublish);
         TestCountDown(gauge.SongTimer, ref songTimer, syncTimer, ref shouldPublish);
-        TestValue(gauge.SoulVoice, ref soulVoice, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
