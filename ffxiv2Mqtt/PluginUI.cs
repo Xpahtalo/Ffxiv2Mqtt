@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using Ffxiv2Mqtt.Topics;
 using ImGuiNET;
 
@@ -8,7 +9,7 @@ namespace Ffxiv2Mqtt;
 // to do any cleanup
 internal class PluginUI : IDisposable
 {
-    private readonly Configuration configuration;
+    private Configuration configuration;
     private readonly MqttManager   mqttManager;
     private readonly TopicManager  topicManager;
 
@@ -42,7 +43,7 @@ internal class PluginUI : IDisposable
         DrawSettingsWindow();
     }
 
-    public void DrawMainWindow()
+    private void DrawMainWindow()
     {
         if (!Visible) return;
 
@@ -63,61 +64,72 @@ internal class PluginUI : IDisposable
         ImGui.End();
     }
 
-    public void DrawSettingsWindow()
+    private void DrawSettingsWindow()
     {
         if (!SettingsVisible) return;
 
-        if (ImGui.Begin("Config", ref settingsVisible,
-                        ImGuiWindowFlags.AlwaysAutoResize)) {
+        if (ImGui.Begin("Config", ref settingsVisible, ImGuiWindowFlags.AlwaysAutoResize)) {
             var clientId = configuration.ClientId;
-            if (ImGui.InputText("Client ID", ref clientId, 256))
+            if (ImGui.InputText("Client ID", ref clientId, 256)) {
                 configuration.ClientId = clientId;
+            }
 
             var includeClientId = configuration.IncludeClientId;
-            if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId))
+            if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId)) {
                 configuration.IncludeClientId = includeClientId;
+            }
             HelpMarker("This is useful if you have multiple computers connected to the same broker, so you can differentiate between them. Otherwise, leave it off.");
 
             var user = configuration.User;
-            if (ImGui.InputText("User", ref user, 256))
+            if (ImGui.InputText("User", ref user, 256)) {
                 configuration.User = user;
+            }
 
             var password = configuration.Password;
-            if (ImGui.InputText("Password", ref password, 256, ImGuiInputTextFlags.Password))
+            if (ImGui.InputText("Password", ref password, 256, ImGuiInputTextFlags.Password)) {
                 configuration.Password = password;
-            HelpMarker("Password is stored in plaintext. It is not secure, so please use a unique password for your user.");
+            }
+            ColoredMarker(new Vector4(1, 0, 0, 1),
+                          "(!)",
+                          "Password is stored in plaintext. It is not secure, so please use a unique password for your user.");
 
 
             var brokerAddress = configuration.BrokerAddress;
-            if (ImGui.InputText("Broker Address", ref brokerAddress, 2000))
+            if (ImGui.InputText("Broker Address", ref brokerAddress, 2000)) {
                 configuration.BrokerAddress = brokerAddress;
+            }
 
             var brokerPort = configuration.BrokerPort;
-            if (ImGui.InputInt("Broker Port", ref brokerPort))
+            if (ImGui.InputInt("Broker Port", ref brokerPort)) {
                 configuration.BrokerPort = brokerPort;
+            }
 
             var baseTopic = configuration.BaseTopic;
-            if (ImGui.InputText("Base Topic", ref baseTopic, 256))
+            if (ImGui.InputText("Base Topic", ref baseTopic, 256)) {
                 configuration.BaseTopic = baseTopic;
+            }
 
             var fullTopic = baseTopic;
-            if (includeClientId)
+            if (includeClientId) {
                 fullTopic += "/" + clientId;
-
+            }
             ImGui.Text($"All topics will be preceded by: {fullTopic}");
 
             var connectAtStartup = configuration.ConnectAtStartup;
-            if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup))
+            if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup)) {
                 configuration.ConnectAtStartup = connectAtStartup;
+            }
 
             var interval = configuration.Interval;
-            if (ImGui.InputInt("Sync Interval", ref interval))
+            if (ImGui.InputInt("Sync Interval", ref interval)) {
                 configuration.Interval = interval;
+            }
             HelpMarker("This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
 
-            if (ImGui.Button("Save"))
+            if (ImGui.Button("Save")) {
                 topicManager.Configure(configuration);
-            configuration.Save();
+                configuration.Save();
+            }
         }
 
         ImGui.End();
@@ -125,14 +137,23 @@ internal class PluginUI : IDisposable
 
     public void Dispose() { }
 
-    public static void HelpMarker(string text)
+    private static void HelpMarker(string text)
     {
         ImGui.SameLine();
         ImGui.TextDisabled("(?)");
-        if (ImGui.IsItemHovered()) {
-            ImGui.BeginTooltip();
-            ImGui.TextUnformatted(text);
-            ImGui.EndTooltip();
-        }
+        if (!ImGui.IsItemHovered()) return;
+        ImGui.BeginTooltip();
+        ImGui.TextUnformatted(text);
+        ImGui.EndTooltip();
+    }
+
+    private static void ColoredMarker(Vector4 color, string markerText, string tooltipText)
+    {
+        ImGui.SameLine();
+        ImGui.TextColored(color, markerText);
+        if (!ImGui.IsItemHovered()) return;
+        ImGui.BeginTooltip();
+        ImGui.TextUnformatted(tooltipText);
+        ImGui.EndTooltip();
     }
 }
