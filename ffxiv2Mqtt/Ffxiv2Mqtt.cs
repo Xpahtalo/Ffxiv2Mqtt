@@ -13,13 +13,14 @@ namespace Ffxiv2Mqtt;
 
 public class Ffxiv2Mqtt : IDalamudPlugin
 {
-    private Configuration Configuration { get; }
-    private PluginUI      PluginUi      { get; }
+    private const string        InternalName = "FFXIV2MQTT"; // Do not change this ever.
+    private       Configuration Configuration { get; }
+    private       PluginUI      PluginUi      { get; }
 
     private readonly MqttManager  mqttManager;
     private readonly TopicManager topicManager;
     private readonly PlayerEvents playerEvents;
-    public           string       Name => "FFXIV2MQTT";
+    public           string       Name => InternalName;
 
     private const string configCommandName = "/mqtt";
     private const string testCommandName   = "/mtest";
@@ -36,6 +37,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         CommandManager  = commandManager;
 
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
+        Configuration.Initialize(PluginInterface);
 
         mqttManager = new MqttManager(Configuration);
         if (Configuration.ConnectAtStartup)
@@ -72,7 +74,8 @@ public class Ffxiv2Mqtt : IDalamudPlugin
             }
 
 
-        PluginUi                                               =  new PluginUI(Configuration, mqttManager, topicManager);
+        PluginUi = new PluginUI(Configuration, mqttManager, topicManager);
+        
         PluginInterface.UiBuilder.Draw         += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
     }
