@@ -8,7 +8,7 @@ using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
 
-namespace Ffxiv2Mqtt;
+namespace Ffxiv2Mqtt.Services;
 
 public class MqttManager
 {
