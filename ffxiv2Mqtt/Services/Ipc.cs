@@ -11,7 +11,7 @@ public sealed class Ipc : IDisposable
     public const string LabelProviderReady          = "Ffxiv2Mqtt.Ready";
     public const string LabelProviderPublishMessage = "Ffxiv2Mqtt.Publish";
 
-    // Always returns ready so that other plugins can check without having to do odd Dalamud checks
+    // Returns if the MQTT service is started.
     public ICallGateProvider<bool>? ProviderReady;
 
     // Publish a message.
@@ -52,7 +52,7 @@ public sealed class Ipc : IDisposable
     private bool Ready()
     {
         PluginLog.Information("Received IPC ready request.");
-        return true;
+        return MqttManager?.IsStarted ?? false;
     }
 
     private bool Publish(string topic, string payload)
