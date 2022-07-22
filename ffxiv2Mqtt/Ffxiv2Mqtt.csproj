@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Version>1.0.1.5</Version>
+        <Version>1.0.2.5</Version>
         <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release</Configurations>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
@@ -43,8 +43,8 @@
         <PackageReference Include="MQTTnet" Version="4.0.1.184" />
         <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.1.184" />
         <Reference Include="FFXIVClientStructs">
-            <HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>
             <Private>true</Private>
+            <HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>
         </Reference>
         <Reference Include="Newtonsoft.Json">
             <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>

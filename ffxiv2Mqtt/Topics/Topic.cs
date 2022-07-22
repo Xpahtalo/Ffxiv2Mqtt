@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Dalamud.IoC;
 using Dalamud.Logging;
+using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics;
 

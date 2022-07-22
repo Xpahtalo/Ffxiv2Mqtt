@@ -8,7 +8,7 @@ using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Formatter;
 using MQTTnet.Protocol;
 
-namespace Ffxiv2Mqtt;
+namespace Ffxiv2Mqtt.Services;
 
 public class MqttManager
 {
@@ -102,7 +102,7 @@ public class MqttManager
         var message = messageBuilder.Build();
 
         try {
-            mqttClient.EnqueueAsync(message);
+            mqttClient.EnqueueAsync(message).Start();
         } catch (ArgumentNullException e) {
             PluginLog.Error($"Failed to publish message: {e.Message}");
         }

@@ -5,7 +5,7 @@
                 ProjectDir="$(ProjectDir)"
                 OutputPath="$(OutputPath)"
                 AssemblyName="$(AssemblyName)"
-                MakeZip="false"/>
+                MakeZip="true"/>
     </Target>
 
     <Target Name="PackagePlugin" AfterTargets="Build" Condition="'$(Configuration)' == 'Release'">

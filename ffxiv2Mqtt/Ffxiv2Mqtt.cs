@@ -20,6 +20,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private readonly MqttManager  mqttManager;
     private readonly TopicManager topicManager;
     private readonly PlayerEvents playerEvents;
+    private readonly Ipc          ipc;
     public           string       Name => InternalName;
 
     private const string configCommandName = "/mqtt";
@@ -42,7 +43,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         mqttManager = new MqttManager(Configuration);
         if (Configuration.ConnectAtStartup)
             mqttManager.ConnectToBroker();
-
+        
         CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
                                                                      {
                                                                          HelpMessage = "Display MQTT Client Info",
@@ -60,6 +61,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
 
         playerEvents = PluginInterface.Create<PlayerEvents>()!;
         topicManager = new TopicManager(mqttManager, Configuration);
+        ipc          = PluginInterface.Create<Ipc>(mqttManager)!;
 
         foreach (var t in GetType().Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Topic))))
             try {
