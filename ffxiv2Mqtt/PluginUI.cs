@@ -106,7 +106,7 @@ internal class PluginUI : IDisposable
             }
 
             var baseTopic = configuration.BaseTopic;
-            if (ImGui.InputText("Base Topic", ref baseTopic, 256)) {
+            if (ImGui.InputText("Base Path", ref baseTopic, 256)) {
                 configuration.BaseTopic = baseTopic;
             }
 

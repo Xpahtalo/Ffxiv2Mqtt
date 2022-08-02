@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Version>1.0.2.5</Version>
+        <Version>1.0.3.1</Version>
         <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release</Configurations>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net5.0-windows</TargetFramework>
+        <TargetFramework>net6.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -38,10 +38,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudLinter" Version="1.0.3" />
         <PackageReference Include="DalamudPackager" Version="2.1.7" />
-        <PackageReference Include="MQTTnet" Version="4.0.1.184" />
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.1.184" />
+        <PackageReference Include="MQTTnet" Version="4.0.2.221" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.2.221" />
         <Reference Include="FFXIVClientStructs">
             <Private>true</Private>
             <HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>

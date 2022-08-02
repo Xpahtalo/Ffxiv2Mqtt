@@ -27,10 +27,11 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     // Publish the login state and character name when logging in.
     private void Login(object? s, EventArgs e)
     {
-        Task.Run(() =>
+        Task.Run(async () =>
         {
             while (ClientState?.LocalPlayer?.Name is null)
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
+                //Thread.Sleep(1000);
             characterName = ClientState!.LocalPlayer!.Name.ToString();
             Publish(JsonSerializer.Serialize(new
                                              {

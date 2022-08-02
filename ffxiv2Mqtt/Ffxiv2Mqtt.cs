@@ -40,24 +40,10 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
 
-        mqttManager = new MqttManager(Configuration);
+        //mqttManager = new MqttManager(Configuration);
+        mqttManager = PluginInterface.Create<MqttManager>(Configuration)!;
         if (Configuration.ConnectAtStartup)
             mqttManager.ConnectToBroker();
-        
-        CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
-                                                                     {
-                                                                         HelpMessage = "Display MQTT Client Info",
-                                                                     });
-        CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
-                                                                   {
-                                                                       HelpMessage = "Test",
-                                                                       ShowInHelp  = false,
-                                                                   });
-        CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
-                                                                     {
-                                                                         HelpMessage =
-                                                                             "Send a custom MQTT message with the given topic and payload.",
-                                                                     });
 
         playerEvents = PluginInterface.Create<PlayerEvents>()!;
         topicManager = new TopicManager(mqttManager, Configuration);
@@ -75,11 +61,26 @@ public class Ffxiv2Mqtt : IDalamudPlugin
                 PluginLog.Error($"Failed to create {t.Name}: {e}");
             }
 
-
         PluginUi = new PluginUI(Configuration, mqttManager, topicManager);
         
         PluginInterface.UiBuilder.Draw         += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        
+        CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
+                                                     {
+                                                         HelpMessage = "Display MQTT Client Info",
+                                                     });
+        CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
+                                                   {
+                                                       HelpMessage = "Test",
+                                                       ShowInHelp  = false,
+                                                   });
+        CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+                                                     {
+                                                         HelpMessage =
+                                                             "Send a custom MQTT message with the given topic and payload.",
+                                                     });
+
     }
 
     private void OnCommand(string command, string args)
