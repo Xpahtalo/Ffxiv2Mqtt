@@ -1,3 +1,0 @@
-[submodule "ffxiv2Mqtt/lib/FFXIVClientStructs"]
-	path = ffxiv2Mqtt/lib/FFXIVClientStructs
-	url = https://github.com/aers/FFXIVClientStructs
