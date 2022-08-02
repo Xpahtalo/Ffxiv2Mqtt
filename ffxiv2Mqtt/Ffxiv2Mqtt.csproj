@@ -32,18 +32,14 @@
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Remove="lib\** " />
-    </ItemGroup>
-
+    
     <ItemGroup>
         <PackageReference Include="DalamudPackager" Version="2.1.7" />
         <PackageReference Include="MQTTnet" Version="4.0.2.221" />
         <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.0.2.221" />
         <Reference Include="FFXIVClientStructs">
-            <Private>true</Private>
-            <HintPath>$(SolutionDir)\lib\FFXIVClientStructs\bin\$(ConfigurationName)\FFXIVClientStructs.dll</HintPath>
+            <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+            <Private>false</Private>
         </Reference>
         <Reference Include="Newtonsoft.Json">
             <HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
