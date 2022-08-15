@@ -10,7 +10,7 @@ namespace Ffxiv2Mqtt;
 // to do any cleanup
 internal class PluginUI : IDisposable
 {
-    private Configuration configuration;
+    private readonly Configuration configuration;
     private readonly MqttManager   mqttManager;
     private readonly TopicManager  topicManager;
 
@@ -70,61 +70,41 @@ internal class PluginUI : IDisposable
         if (!SettingsVisible) return;
 
         if (ImGui.Begin("Config", ref settingsVisible, ImGuiWindowFlags.AlwaysAutoResize)) {
-            var clientId = configuration.ClientId;
-            if (ImGui.InputText("Client ID", ref clientId, 256)) {
-                configuration.ClientId = clientId;
-            }
+            var clientId                                                                = configuration.ClientId;
+            if (ImGui.InputText("Client ID", ref clientId, 256)) configuration.ClientId = clientId;
 
-            var includeClientId = configuration.IncludeClientId;
-            if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId)) {
-                configuration.IncludeClientId = includeClientId;
-            }
+            var includeClientId                                                                                   = configuration.IncludeClientId;
+            if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId)) configuration.IncludeClientId = includeClientId;
             HelpMarker("This is useful if you have multiple computers connected to the same broker, so you can differentiate between them. Otherwise, leave it off.");
 
-            var user = configuration.User;
-            if (ImGui.InputText("User", ref user, 256)) {
-                configuration.User = user;
-            }
+            var user                                                       = configuration.User;
+            if (ImGui.InputText("User", ref user, 256)) configuration.User = user;
 
-            var password = configuration.Password;
-            if (ImGui.InputText("Password", ref password, 256, ImGuiInputTextFlags.Password)) {
-                configuration.Password = password;
-            }
+            var password                                                                                             = configuration.Password;
+            if (ImGui.InputText("Password", ref password, 256, ImGuiInputTextFlags.Password)) configuration.Password = password;
             ColoredMarker(new Vector4(1, 0, 0, 1),
                           "(!)",
                           "Password is stored in plaintext. It is not secure, so please use a unique password for your user.");
 
 
-            var brokerAddress = configuration.BrokerAddress;
-            if (ImGui.InputText("Broker Address", ref brokerAddress, 2000)) {
-                configuration.BrokerAddress = brokerAddress;
-            }
+            var brokerAddress                                                                           = configuration.BrokerAddress;
+            if (ImGui.InputText("Broker Address", ref brokerAddress, 2000)) configuration.BrokerAddress = brokerAddress;
 
-            var brokerPort = configuration.BrokerPort;
-            if (ImGui.InputInt("Broker Port", ref brokerPort)) {
-                configuration.BrokerPort = brokerPort;
-            }
+            var brokerPort                                                              = configuration.BrokerPort;
+            if (ImGui.InputInt("Broker Port", ref brokerPort)) configuration.BrokerPort = brokerPort;
 
-            var baseTopic = configuration.BaseTopic;
-            if (ImGui.InputText("Base Path", ref baseTopic, 256)) {
-                configuration.BaseTopic = baseTopic;
-            }
+            var baseTopic                                                                 = configuration.BaseTopic;
+            if (ImGui.InputText("Base Path", ref baseTopic, 256)) configuration.BaseTopic = baseTopic;
 
-            var fullTopic = baseTopic;
-            if (includeClientId) {
-                fullTopic += "/" + clientId;
-            }
+            var fullTopic                  = baseTopic;
+            if (includeClientId) fullTopic += "/" + clientId;
             ImGui.Text($"All topics will be preceded by: {fullTopic}");
 
-            var connectAtStartup = configuration.ConnectAtStartup;
-            if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup)) {
-                configuration.ConnectAtStartup = connectAtStartup;
-            }
+            var connectAtStartup                                                                            = configuration.ConnectAtStartup;
+            if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup)) configuration.ConnectAtStartup = connectAtStartup;
 
-            var interval = configuration.Interval;
-            if (ImGui.InputInt("Sync Interval", ref interval)) {
-                configuration.Interval = interval;
-            }
+            var interval                                                              = configuration.Interval;
+            if (ImGui.InputInt("Sync Interval", ref interval)) configuration.Interval = interval;
             HelpMarker("This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
 
             if (ImGui.Button("Save")) {

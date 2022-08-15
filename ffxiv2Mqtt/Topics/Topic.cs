@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using System.Numerics;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Ffxiv2Mqtt.Services;
@@ -48,7 +49,7 @@ internal abstract class Topic
         }
     }
 
-    // In .NET 6 and C# 11, these can be simplified down to a single method with generics using INumber.
+    // In .NET 7 and C# 11, these can be simplified down to a single method with generics using INumber.
     private protected static void TestCountUp(short current, ref short previous, int interval, ref bool updated)
     {
         var reachedZero      = previous == 0 && current != 0;

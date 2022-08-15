@@ -27,8 +27,8 @@ internal unsafe class PlayerCombatStats : Topic, IDisposable
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
-        var shouldPublish      = false;
-        
+        var shouldPublish = false;
+
         var localPlayerShields = ((Character*)localPlayer.Address)->ShieldValue;
 
         TestValue(localPlayer.CurrentHp, ref hp,     ref shouldPublish);

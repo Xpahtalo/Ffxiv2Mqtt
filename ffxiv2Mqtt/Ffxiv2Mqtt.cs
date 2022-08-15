@@ -13,26 +13,26 @@ namespace Ffxiv2Mqtt;
 
 public class Ffxiv2Mqtt : IDalamudPlugin
 {
-    private const string        InternalName = "FFXIV2MQTT"; // Do not change this ever.
-    private       Configuration Configuration { get; }
-    private       PluginUI      PluginUi      { get; }
+    private Configuration Configuration { get; }
+    private PluginUI      PluginUi      { get; }
 
     private readonly MqttManager  mqttManager;
     private readonly TopicManager topicManager;
     private readonly PlayerEvents playerEvents;
     private readonly Ipc          ipc;
-    public           string       Name => InternalName;
+
+    private       DalamudPluginInterface PluginInterface { get; }
+    private       CommandManager         CommandManager  { get; }
+    public        string                 Name            => InternalName;
+    private const string                 InternalName = "FFXIV2MQTT"; // Do not change this ever.
 
     private const string configCommandName = "/mqtt";
     private const string testCommandName   = "/mtest";
     private const string customCommandName = "/mqttcustom";
-    
-    private DalamudPluginInterface PluginInterface { get; init; }
-    private CommandManager         CommandManager  { get; init; }
 
     public Ffxiv2Mqtt(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] CommandManager commandManager)
+        [RequiredVersion("1.0")] CommandManager         commandManager)
     {
         PluginInterface = pluginInterface;
         CommandManager  = commandManager;
@@ -62,10 +62,10 @@ public class Ffxiv2Mqtt : IDalamudPlugin
             }
 
         PluginUi = new PluginUI(Configuration, mqttManager, topicManager);
-        
+
         PluginInterface.UiBuilder.Draw         += DrawUI;
         PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
-        
+
         CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
                                                      {
                                                          HelpMessage = "Display MQTT Client Info",
@@ -80,7 +80,6 @@ public class Ffxiv2Mqtt : IDalamudPlugin
                                                          HelpMessage =
                                                              "Send a custom MQTT message with the given topic and payload.",
                                                      });
-
     }
 
     private void OnCommand(string command, string args)
@@ -122,7 +121,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     public void Dispose()
     {
         ipc.Dispose();
-        
+
         playerEvents.Dispose();
 
         topicManager.Clean();

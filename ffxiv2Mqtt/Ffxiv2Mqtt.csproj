@@ -32,7 +32,7 @@
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="DalamudPackager" Version="2.1.7" />
         <PackageReference Include="MQTTnet" Version="4.0.2.221" />

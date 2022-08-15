@@ -1,29 +1,28 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.Gui;
+using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Ffxiv2Mqtt.Enums;
-using FFXIVClientStructs.FFXIV.Client.System.String;
 using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Extensions.ManagedClient;
 using MQTTnet.Formatter;
-using MQTTnet.Packets;
 using MQTTnet.Protocol;
-using System.Linq;
 
 namespace Ffxiv2Mqtt.Services;
 
 public class MqttManager
 {
     private readonly IManagedMqttClient mqttClient;
-    private Configuration      configuration;
+    private readonly Configuration      configuration;
 
-    private ChatGui ChatGui { get; init; }
+    private ChatGui  ChatGui  { get; }
+    private ToastGui ToastGui { get; }
 
     public bool IsConnected => mqttClient.IsConnected;
 
@@ -31,12 +30,14 @@ public class MqttManager
 
 
     public MqttManager([RequiredVersion("1.0")] Configuration configuration,
-                       [RequiredVersion("1.0")] ChatGui chatGui)
+                       [RequiredVersion("1.0")] ChatGui       chatGui,
+                       [RequiredVersion("1.0")] ToastGui      toastGui)
     {
         PluginLog.Information("Initializing MQTTManager");
 
         this.configuration = configuration;
         ChatGui            = chatGui;
+        ToastGui           = toastGui;
 
         var mqttFactory = new MqttFactory();
         mqttClient = mqttFactory.CreateManagedMqttClient();
@@ -45,11 +46,9 @@ public class MqttManager
         mqttClient.ConnectingFailedAsync            += LogConnectingFailedAsync;
         mqttClient.InternalClient.DisconnectedAsync += LogDisconnectedAsync;
 
-        mqttClient.ApplicationMessageReceivedAsync += MessageReceived;
+        AddMessageReceivedHandler(ConfiguredMessageReceivedHandler);
 
-        foreach (var topic in configuration.OutputChannels) {
-            mqttClient.SubscribeAsync(topic.Path);
-        }
+        foreach (var topic in configuration.OutputChannels) mqttClient.SubscribeAsync(topic.Path);
 
         PluginLog.Information("MqttManager Initialized");
     }
@@ -75,10 +74,10 @@ public class MqttManager
         return Task.CompletedTask;
     }
 
-    private Task MessageReceived(MqttApplicationMessageReceivedEventArgs e)
+    private Task ConfiguredMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs e)
     {
         PluginLog.Information("Message received");
-        
+
         var channelList = configuration.OutputChannels.AsReadOnly();
 
         var channelQuery =
@@ -87,29 +86,33 @@ public class MqttManager
             select channel;
 
         foreach (var channel in channelQuery) {
+            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload, 0, e.ApplicationMessage.Payload.Length);
+
             switch (channel.ChannelType) {
                 case OutputChannelType.ChatBox:
-                    var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload, 0, e.ApplicationMessage.Payload.Length);
-
                     var chatMessage = new SeStringBuilder()
-                                     .AddText(e.ApplicationMessage.Topic.ToString())
+                                     .AddText(e.ApplicationMessage.Topic)
                                      .Append(" => ")
                                      .Append(payload)
                                      .Build();
                     ChatGui.Print(chatMessage);
                     break;
-                case OutputChannelType.Ipc:
-                    PluginLog.Information("IPC not implemented");
+                case OutputChannelType.Toast:
+                    var toast = new StringBuilder()
+                               .Append(e.ApplicationMessage.Topic)
+                               .Append(" => ")
+                               .Append(payload);
+                    ToastGui.ShowNormal(toast.ToString());
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    throw new ArgumentOutOfRangeException($"{channel} is out of range.");
             }
         }
-        
+
         return Task.CompletedTask;
     }
-    
-    
+
+
     public void ConnectToBroker()
     {
         PluginLog.Information("Connecting to MQTT broker...");
@@ -136,15 +139,33 @@ public class MqttManager
         mqttClient.StopAsync();
     }
 
+    public bool AddMessageReceivedHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler)
+    {
+        try {
+            mqttClient.ApplicationMessageReceivedAsync += handler;
+        } catch (Exception ex) {
+            PluginLog.Error($"Failed to add MessageReceivedHandler:/n{ex}");
+            return false;
+        }
 
-    public void PublishMessage(string topic, string payload, bool retain = false)
+        return true;
+    }
+
+    public bool PublishMessage(string topic, string payload, bool retain = false)
+    {
+        var qos = retain ? MqttQualityOfServiceLevel.AtLeastOnce : MqttQualityOfServiceLevel.ExactlyOnce;
+        return PublishMessage(topic, payload, retain, qos);
+    }
+
+    public bool PublishMessage(string topic, string payload, bool retain, MqttQualityOfServiceLevel qos)
     {
         var messageBuilder = new MqttApplicationMessageBuilder()
                             .WithTopic(BuildTopic(topic))
-                            .WithPayload(payload);
+                            .WithPayload(payload)
+                            .WithQualityOfServiceLevel(qos);
 
         if (retain)
-            messageBuilder.WithRetainFlag().WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce);
+            messageBuilder.WithRetainFlag();
 
         var message = messageBuilder.Build();
 
@@ -152,7 +173,10 @@ public class MqttManager
             mqttClient.EnqueueAsync(message);
         } catch (ArgumentNullException e) {
             PluginLog.Error($"Failed to publish message: {e.Message}");
+            return false;
         }
+
+        return true;
     }
 
     private string BuildTopic(string topic)
