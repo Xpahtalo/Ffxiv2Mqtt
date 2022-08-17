@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Version>1.0.3.1</Version>
+        <Version>1.0.3.2</Version>
         <LangVersion>latest</LangVersion>
         <Configurations>Debug;Release</Configurations>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>

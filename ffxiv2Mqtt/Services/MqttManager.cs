@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ public class MqttManager
     private ChatGui  ChatGui  { get; }
     private ToastGui ToastGui { get; }
 
+    private HashSet<string> currentSubscriptions;
+
     public bool IsConnected => mqttClient.IsConnected;
 
     public bool IsStarted => mqttClient.IsStarted;
@@ -48,7 +51,8 @@ public class MqttManager
 
         AddMessageReceivedHandler(ConfiguredMessageReceivedHandler);
 
-        foreach (var topic in configuration.OutputChannels) mqttClient.SubscribeAsync(topic.Path);
+        currentSubscriptions = new HashSet<string>();
+        ConfigureSubscribedTopics();
 
         PluginLog.Information("MqttManager Initialized");
     }
@@ -110,6 +114,30 @@ public class MqttManager
         }
 
         return Task.CompletedTask;
+    }
+
+    public void ConfigureSubscribedTopics()
+    {
+        var topicsToAdd =
+            from topic in configuration.OutputChannels
+            where topic.ChannelType != OutputChannelType.Disabled
+            where !currentSubscriptions.Contains(topic.Path)
+            select topic;
+
+        foreach (var topic in topicsToAdd) {
+            mqttClient.SubscribeAsync(topic.Path);
+            currentSubscriptions.Add(topic.Path);
+        }
+        
+        var topicsToRemove =
+            from topic in currentSubscriptions
+            where configuration.OutputChannels.All(s => s.Path != topic)
+            select topic;
+
+        foreach (var topic in topicsToRemove) {
+            mqttClient.UnsubscribeAsync(topic);
+            currentSubscriptions.Remove(topic);
+        }
     }
 
 
@@ -193,7 +221,6 @@ public class MqttManager
 
         return sb.ToString();
     }
-
 
     private MqttApplicationMessage ConnectedMessage()
     {

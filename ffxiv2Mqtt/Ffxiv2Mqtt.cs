@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Dalamud.Game.Command;
+using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Ffxiv2Mqtt.Interface;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics;
 
@@ -14,7 +16,9 @@ namespace Ffxiv2Mqtt;
 public class Ffxiv2Mqtt : IDalamudPlugin
 {
     private Configuration Configuration { get; }
-    private PluginUI      PluginUi      { get; }
+
+    private readonly WindowSystem windowSystem;
+    private readonly MainWindow   mainWindow;
 
     private readonly MqttManager  mqttManager;
     private readonly TopicManager topicManager;
@@ -40,7 +44,6 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
 
-        //mqttManager = new MqttManager(Configuration);
         mqttManager = PluginInterface.Create<MqttManager>(Configuration)!;
         if (Configuration.ConnectAtStartup)
             mqttManager.ConnectToBroker();
@@ -61,10 +64,11 @@ public class Ffxiv2Mqtt : IDalamudPlugin
                 PluginLog.Error($"Failed to create {t.Name}: {e}");
             }
 
-        PluginUi = new PluginUI(Configuration, mqttManager, topicManager);
+        windowSystem = new WindowSystem("Ffxiv2Mqtt");
+        windowSystem.AddWindow(mainWindow = new MainWindow(Configuration, mqttManager, topicManager));
 
-        PluginInterface.UiBuilder.Draw         += DrawUI;
-        PluginInterface.UiBuilder.OpenConfigUi += DrawConfigUI;
+        PluginInterface.UiBuilder.Draw         += DrawMainWindow;
+        PluginInterface.UiBuilder.OpenConfigUi += OpenMainWindow;
 
         CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
                                                      {
@@ -87,7 +91,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         PluginLog.Information($"Received command: {command}, with the args: {args}");
         switch (command) {
             case configCommandName:
-                PluginUi.Visible = true;
+                mainWindow.IsOpen = true;
                 break;
             case testCommandName:
                 mqttManager.PublishMessage("test", "success");
@@ -108,14 +112,14 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         }
     }
 
-    private void DrawUI()
+    private void DrawMainWindow()
     {
-        PluginUi.Draw();
+        windowSystem.Draw();
     }
 
-    private void DrawConfigUI()
+    private void OpenMainWindow()
     {
-        PluginUi.SettingsVisible = true;
+        mainWindow.IsOpen = true;
     }
 
     public void Dispose()
@@ -127,7 +131,8 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         topicManager.Clean();
         topicManager.Dispose();
 
-        PluginUi.Dispose();
+        //PluginUi.Dispose();
+        //MainWindow.Dispose();
         CommandManager.RemoveHandler(configCommandName);
         CommandManager.RemoveHandler(testCommandName);
         CommandManager.RemoveHandler(customCommandName);

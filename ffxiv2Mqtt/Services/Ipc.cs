@@ -22,17 +22,10 @@ public sealed class Ipc : IDisposable
     // Return is if it was successfully added to the queue, NOT if it was successfully published.
     private readonly ICallGateProvider<string, string, bool>? providerPublishMessage;
 
-    // This exposes some extra MQTT message options for publishing messages. It's a bit hacky right now, but I will 
-    // clean it up and make it nicer to use if anyone reaches out to me.
-    // First argument is the topic path.
-    // Second argument is the payload.
-    // Third argument is if it just have the retained flag.
-    // Fourth argument is the QoL level.
-    // - 0 is At Most Once
-    // - 1 is At Least Once
-    // - 2 is Exactly Once
+    // Publish a message. This is the preferred methode of publishing messages. The previous may be removed at some point.
+    // First argument is a message object.
     // Return is if it was successfully added to the queue, NOT if it was successfully published.
-    private readonly ICallGateProvider<string, string, bool, int, bool>? providerPublishMessageWithOptions;
+    private readonly ICallGateProvider<Message, bool>? providerPublishMessageV2;
 
     // Requests a subscription.
     // The first string is the IPC label of your ICallGateProvider that FFXIV2MQTT will send it's messages to.
@@ -45,10 +38,10 @@ public sealed class Ipc : IDisposable
 
     [PluginService] public MqttManager?            MqttManager     { get; set; }
     [PluginService] public DalamudPluginInterface? PluginInterface { get; set; }
-    
+
     private const string LabelProviderReady                 = "Ffxiv2Mqtt.Ready";
     private const string LabelProviderPublishMessage        = "Ffxiv2Mqtt.Publish";
-    private const string LabelProviderPublishMessageOptions = "Ffxiv2Mqtt.PublishWithOptions";
+    private const string LabelProviderPublishMessageV2      = "Ffxiv2Mqtt.PublishV2";
     private const string LabelProviderRequestSubscription   = "Ffxiv2Mqtt.RequestSubscription";
 
 
@@ -71,10 +64,10 @@ public sealed class Ipc : IDisposable
         }
 
         try {
-            providerPublishMessageWithOptions = PluginInterface!.GetIpcProvider<string, string, bool, int, bool>(LabelProviderPublishMessageOptions);
-            providerPublishMessageWithOptions.RegisterFunc(PublishWithOptions);
+            providerPublishMessageV2 = PluginInterface!.GetIpcProvider<Message, bool>(LabelProviderPublishMessageV2);
+            providerPublishMessageV2.RegisterFunc(PublishV2);
         } catch (Exception ex) {
-            PluginLog.Error($"Failed to register IPC provider for {LabelProviderPublishMessageOptions}: {ex}");
+            PluginLog.Error($"Failed to register IPC provider for {LabelProviderPublishMessage}: {ex}");
         }
 
         try {
@@ -85,7 +78,7 @@ public sealed class Ipc : IDisposable
         }
 
         callGateSubscribers = new Dictionary<string, ICallGateSubscriber<string, bool>>();
-        
+
         MqttManager!.AddMessageReceivedHandler(IpcMessageReceivedHandler);
     }
 
@@ -93,6 +86,8 @@ public sealed class Ipc : IDisposable
     {
         providerReady?.UnregisterFunc();
         providerPublishMessage?.UnregisterFunc();
+        providerPublishMessageV2?.UnregisterFunc();
+        providerRequestSubscription?.UnregisterFunc();
     }
 
     private bool Ready()
@@ -104,35 +99,15 @@ public sealed class Ipc : IDisposable
     private bool Publish(string topic, string payload)
     {
         PluginLog.Verbose($"{LabelProviderPublishMessage} received message. Publishing {payload} to {topic}");
-        MqttManager!.PublishMessage(topic, payload);
-        return true;
+        return MqttManager!.PublishMessage(topic, payload);
     }
 
-    private bool PublishWithOptions(string topic, string payload, bool retained, int qos)
+    private bool PublishV2(Message message)
     {
-        PluginLog.Verbose($"{LabelProviderPublishMessageOptions} received message. Publishing {payload} to {topic}");
-
-        MqttQualityOfServiceLevel qosLevel;
-        
-        try {
-            qosLevel = ToQolLevel(qos);
-        } catch (ArgumentOutOfRangeException ex) {
-            PluginLog.Error($"Invalid Arguments. Will not publish message./n{ex.Message}");
-            return false;
-        }
-
-        MqttManager!.PublishMessage(topic, payload, retained, qosLevel);
-        return true;
+        PluginLog.Verbose($"{LabelProviderPublishMessageV2} recieved message. Publishing:/n{message.ToString()}");
+        return MqttManager!.PublishMessage(message.Path, message.Payload, message.Retained, ToQolLevel(message.QualityOfServiceLevel));
     }
 
-    private MqttQualityOfServiceLevel ToQolLevel(int qos) =>
-        qos switch
-        {
-            0 => MqttQualityOfServiceLevel.AtMostOnce,
-            1 => MqttQualityOfServiceLevel.AtLeastOnce,
-            2 => MqttQualityOfServiceLevel.ExactlyOnce,
-            _ => throw new ArgumentOutOfRangeException($"{qos} out of range of MqttQualityOfServiceLevel"),
-        };
     private bool RequestSubscription(string label, string topic)
     {
         try {
@@ -154,5 +129,36 @@ public sealed class Ipc : IDisposable
         callGateSubscribers[topic].InvokeFunc(payload);
 
         return Task.CompletedTask;
+    }
+
+    private MqttQualityOfServiceLevel ToQolLevel(QualityOfService qos) =>
+        qos switch
+        {
+            QualityOfService.AtMostOnce  => MqttQualityOfServiceLevel.AtMostOnce,
+            QualityOfService.AtLeastOnce => MqttQualityOfServiceLevel.AtLeastOnce,
+            QualityOfService.ExactlyOnce => MqttQualityOfServiceLevel.ExactlyOnce,
+            _                            => throw new ArgumentOutOfRangeException($"{qos} out of range of MqttQualityOfServiceLevel"),
+        };
+
+    // Copy these into your plugin for use with IPC.
+    public struct Message
+    {
+        public string           Path                  { get; set; }
+        public string           Payload               { get; set; }
+        public bool             Retained              { get; set; } = false;
+        public QualityOfService QualityOfServiceLevel { get; set; } = QualityOfService.AtMostOnce;
+
+        public Message(string path, string payload)
+        {
+            Path    = path;
+            Payload = payload;
+        }
+    }
+
+    public enum QualityOfService
+    {
+        AtMostOnce,
+        AtLeastOnce,
+        ExactlyOnce,
     }
 }

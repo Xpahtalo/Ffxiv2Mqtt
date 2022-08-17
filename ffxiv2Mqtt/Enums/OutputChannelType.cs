@@ -4,4 +4,5 @@ public enum OutputChannelType
 {
     ChatBox,
     Toast,
+    Disabled,
 }
