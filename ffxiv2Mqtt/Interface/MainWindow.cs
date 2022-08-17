@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Numerics;
-using Dalamud.Interface;
 using Dalamud.Interface.Windowing;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
@@ -25,7 +24,7 @@ internal class MainWindow : Window
 
     public override void Draw()
     {
-        if (ImGui.BeginTabBar("Options")) {
+        if (ImGui.BeginTabBar("TabBar")) {
             DisplayStatusTab();
             DisplayMqttSettingsTab();
             DisplaySubscriptionSettingsTab();
@@ -53,6 +52,15 @@ internal class MainWindow : Window
                 mqttManager.ConnectToBroker();
             }
         }
+        
+        #if DEBUG
+        ImGui.Separator();
+        ImGui.Text("Debug");
+        ImGui.Text("Current Subscriptions:");
+        foreach (var subscription in mqttManager.CurrentSubscriptions) {
+            ImGui.Text(subscription);
+        }
+        #endif
 
         ImGui.EndTabItem();
     }
@@ -150,9 +158,10 @@ internal class MainWindow : Window
             
             ImGui.Text($"Path: ");
             ImGui.SameLine();
-            if (ImGui.InputText($"##Path{i}", ref path, 2000))
+            if (ImGui.InputText($"##{i}", ref path, 2000)) {
                 outputChannel.Path = path;
-            
+            }
+
             ImGui.Text($"Output: ");
             ImGui.SameLine();
             if (ImGui.BeginCombo($"##Output{i}", channelType.ToString())) {

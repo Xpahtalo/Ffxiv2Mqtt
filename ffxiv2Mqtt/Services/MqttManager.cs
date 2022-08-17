@@ -25,7 +25,7 @@ public class MqttManager
     private ChatGui  ChatGui  { get; }
     private ToastGui ToastGui { get; }
 
-    private HashSet<string> currentSubscriptions;
+    public readonly HashSet<string> CurrentSubscriptions;
 
     public bool IsConnected => mqttClient.IsConnected;
 
@@ -51,7 +51,7 @@ public class MqttManager
 
         AddMessageReceivedHandler(ConfiguredMessageReceivedHandler);
 
-        currentSubscriptions = new HashSet<string>();
+        CurrentSubscriptions = new HashSet<string>();
         ConfigureSubscribedTopics();
 
         PluginLog.Information("MqttManager Initialized");
@@ -82,11 +82,14 @@ public class MqttManager
     {
         PluginLog.Information("Message received");
 
+
+        var messagePattern = e.ApplicationMessage.Topic.Split('/');
+        
         var channelList = configuration.OutputChannels.AsReadOnly();
 
         var channelQuery =
             from channel in channelList
-            where channel.Path == e.ApplicationMessage.Topic
+            where ComparePattern(messagePattern, channel.Path)
             select channel;
 
         foreach (var channel in channelQuery) {
@@ -108,6 +111,8 @@ public class MqttManager
                                .Append(payload);
                     ToastGui.ShowNormal(toast.ToString());
                     break;
+                case OutputChannelType.Disabled:
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException($"{channel} is out of range.");
             }
@@ -116,30 +121,54 @@ public class MqttManager
         return Task.CompletedTask;
     }
 
+    private static bool ComparePattern(IReadOnlyList<string> pattern, string pattern2)
+    {
+        var compare = pattern2.Split('/');
+        for (var i = 0; i < pattern.Count; i++) {
+            if (i > compare.Length) {
+                return false;
+            }
+            
+            if (pattern[i] == compare[i]) {
+                continue;
+            }
+
+            switch (compare[i]) {
+                case "#":
+                    return true;
+                case "+":
+                    continue;
+                default:
+                    return false;
+            }
+        }
+        return true;
+    }
+
+
     public void ConfigureSubscribedTopics()
     {
         var topicsToAdd =
             from topic in configuration.OutputChannels
             where topic.ChannelType != OutputChannelType.Disabled
-            where !currentSubscriptions.Contains(topic.Path)
+            where !CurrentSubscriptions.Contains(topic.Path)
             select topic;
 
         foreach (var topic in topicsToAdd) {
             mqttClient.SubscribeAsync(topic.Path);
-            currentSubscriptions.Add(topic.Path);
+            CurrentSubscriptions.Add(topic.Path);
         }
         
         var topicsToRemove =
-            from topic in currentSubscriptions
+            from topic in CurrentSubscriptions
             where configuration.OutputChannels.All(s => s.Path != topic)
             select topic;
 
         foreach (var topic in topicsToRemove) {
             mqttClient.UnsubscribeAsync(topic);
-            currentSubscriptions.Remove(topic);
+            CurrentSubscriptions.Remove(topic);
         }
     }
-
 
     public void ConnectToBroker()
     {
