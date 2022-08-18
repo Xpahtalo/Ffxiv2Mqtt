@@ -156,15 +156,11 @@ internal class MainWindow : Window
             var channelType = outputChannel.ChannelType;
 
             
-            ImGui.Text($"Path: ");
-            ImGui.SameLine();
-            if (ImGui.InputText($"##{i}", ref path, 2000)) {
+            if (ImGui.InputText($"Topic##{i}", ref path, 2000)) {
                 outputChannel.Path = path;
             }
 
-            ImGui.Text($"Output: ");
-            ImGui.SameLine();
-            if (ImGui.BeginCombo($"##Output{i}", channelType.ToString())) {
+            if (ImGui.BeginCombo($"Output##{i}", channelType.ToString())) {
                 foreach (var test in Enum.GetValues(typeof(OutputChannelType))) {
                     if (!ImGui.Selectable($"{test.ToString()}##{i}")) {
                         continue;

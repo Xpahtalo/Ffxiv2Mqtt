@@ -131,8 +131,6 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         topicManager.Clean();
         topicManager.Dispose();
 
-        //PluginUi.Dispose();
-        //MainWindow.Dispose();
         CommandManager.RemoveHandler(configCommandName);
         CommandManager.RemoveHandler(testCommandName);
         CommandManager.RemoveHandler(customCommandName);
