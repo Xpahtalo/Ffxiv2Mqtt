@@ -74,7 +74,7 @@ internal class PlayerStatuses : Topic, IDisposable
             writer.WriteNumber("StatusId",      value.StatusId);
             writer.WriteNumber("Param",         value.Param);
             writer.WriteNumber("RemainingTime", value.RemainingTime);
-            writer.WriteNumber("SourceID",      value.SourceID);
+            writer.WriteNumber("SourceID",      value.SourceId);
             writer.WriteNumber("StackCount",    value.StackCount);
             writer.WriteEndObject();
         }
