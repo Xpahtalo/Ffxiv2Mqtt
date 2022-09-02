@@ -121,7 +121,7 @@ public class MqttManager
         return Task.CompletedTask;
     }
 
-    private static bool ComparePattern(IReadOnlyList<string> pattern, string pattern2)
+    public static bool ComparePattern(IReadOnlyList<string> pattern, string pattern2)
     {
         var compare = pattern2.Split('/');
         for (var i = 0; i < pattern.Count; i++) {

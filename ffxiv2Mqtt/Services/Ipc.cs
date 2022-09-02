@@ -121,6 +121,7 @@ public sealed class Ipc : IDisposable
         return true;
     }
 
+    // This is why I need to comment things. Need to figure out how this works again so I can support wildcards in IPC.
     private Task IpcMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs e)
     {
         var topic   = e.ApplicationMessage.Topic;
