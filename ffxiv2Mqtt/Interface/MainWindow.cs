@@ -151,11 +151,13 @@ internal class MainWindow : Window
         int i = 0;
         foreach (var outputChannel in configuration.OutputChannels.ToArray()) {
             ImGui.PushID(i++);
-            
-            var path        = outputChannel.Path;
-            var channelType = outputChannel.ChannelType;
 
-            
+            var path         = outputChannel.Path;
+            var channelType  = outputChannel.ChannelType;
+            var includeTopic = outputChannel.IncludeTopic;
+            var delimiter    = outputChannel.Delimiter;
+
+
             if (ImGui.InputText($"Topic##{i}", ref path, 2000)) {
                 outputChannel.Path = path;
             }
@@ -169,18 +171,27 @@ internal class MainWindow : Window
                     OutputChannelType.TryParse(test.ToString(), out channelType);
                     outputChannel.ChannelType = channelType;
                 }
-                
-                
+
+
                 ImGui.EndCombo();
             }
-            
-            
+
+            if (ImGui.Checkbox($"Include Topic?##{i}", ref includeTopic)) {
+                outputChannel.IncludeTopic = includeTopic;
+            }
+
+            if (ImGui.InputText($"Delimiter##{i}", ref delimiter, 10)) {
+                outputChannel.Delimiter = delimiter;
+            }
+
             if (ImGui.Button("Remove")) {
                 configuration.OutputChannels.Remove(outputChannel);
             }
+
             ImGui.PopID();
         }
     }
+
     #endregion
 
     #region Helpers

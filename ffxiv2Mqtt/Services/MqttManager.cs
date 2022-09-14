@@ -84,7 +84,7 @@ public class MqttManager
 
 
         var messagePattern = e.ApplicationMessage.Topic.Split('/');
-        
+
         var channelList = configuration.OutputChannels.AsReadOnly();
 
         var channelQuery =
@@ -97,18 +97,23 @@ public class MqttManager
 
             switch (channel.ChannelType) {
                 case OutputChannelType.ChatBox:
-                    var chatMessage = new SeStringBuilder()
-                                     .AddText(e.ApplicationMessage.Topic)
-                                     .Append(" => ")
-                                     .Append(payload)
-                                     .Build();
-                    ChatGui.Print(chatMessage);
+                    var chatMessage = new SeStringBuilder();
+                    if (channel.IncludeTopic) {
+                        chatMessage.Append(e.ApplicationMessage.Topic)
+                                   .Append(channel.Delimiter);
+                    }
+
+                    chatMessage.AddText(payload);
+                    ChatGui.Print(chatMessage.Build());
                     break;
                 case OutputChannelType.Toast:
-                    var toast = new StringBuilder()
-                               .Append(e.ApplicationMessage.Topic)
-                               .Append(" => ")
-                               .Append(payload);
+                    var toast = new StringBuilder();
+                    if (channel.IncludeTopic) {
+                        toast.Append(e.ApplicationMessage.Topic)
+                             .Append(channel.Delimiter);
+                    }
+
+                    toast.Append(payload);
                     ToastGui.ShowNormal(toast.ToString());
                     break;
                 case OutputChannelType.Disabled:
