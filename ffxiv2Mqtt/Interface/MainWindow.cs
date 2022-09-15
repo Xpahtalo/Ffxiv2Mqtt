@@ -96,11 +96,11 @@ internal class MainWindow : Window
         if (ImGui.InputInt("Broker Port", ref brokerPort)) configuration.BrokerPort = brokerPort;
 
         var baseTopic                                                                 = configuration.BaseTopic;
-        if (ImGui.InputText("Base Path", ref baseTopic, 256)) configuration.BaseTopic = baseTopic;
+        if (ImGui.InputText("Base Topic", ref baseTopic, 256)) configuration.BaseTopic = baseTopic;
 
         var fullTopic                  = baseTopic;
         if (includeClientId) fullTopic += "/" + clientId;
-        ImGui.Text($"All topics will be preceded by: {fullTopic}");
+        ImGui.Text($"All topics will be preceded by: {fullTopic}/");
 
         var connectAtStartup                                                                            = configuration.ConnectAtStartup;
         if (ImGui.Checkbox("Connect at startup?", ref connectAtStartup)) configuration.ConnectAtStartup = connectAtStartup;
