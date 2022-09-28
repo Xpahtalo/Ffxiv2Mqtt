@@ -177,22 +177,26 @@ public class MqttManager
 
     public void ConnectToBroker()
     {
-        PluginLog.Information("Connecting to MQTT broker...");
+        if (configuration.BrokerAddress != String.Empty) {
+            PluginLog.Information("Connecting to MQTT broker...");
 
-        var options = new ManagedMqttClientOptionsBuilder()
-                     .WithClientOptions(new MqttClientOptionsBuilder()
-                                       .WithProtocolVersion(MqttProtocolVersion.V500)
-                                       .WithClientId(configuration.ClientId)
-                                       .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
-                                       .WithCredentials(configuration.User, configuration.Password)
-                                       .WithWillTopic(BuildTopic("connected"))
-                                       .WithWillPayload("false")
-                                       .WithWillRetain()
-                                       .Build())
-                     .Build();
+            var options = new ManagedMqttClientOptionsBuilder()
+                         .WithClientOptions(new MqttClientOptionsBuilder()
+                                           .WithProtocolVersion(MqttProtocolVersion.V500)
+                                           .WithClientId(configuration.ClientId)
+                                           .WithTcpServer(configuration.BrokerAddress, configuration.BrokerPort)
+                                           .WithCredentials(configuration.User, configuration.Password)
+                                           .WithWillTopic(BuildTopic("connected"))
+                                           .WithWillPayload("false")
+                                           .WithWillRetain()
+                                           .Build())
+                         .Build();
 
-        mqttClient.StartAsync(options);
-        mqttClient.EnqueueAsync(ConnectedMessage());
+            mqttClient.StartAsync(options);
+            mqttClient.EnqueueAsync(ConnectedMessage());
+        } else {
+            PluginLog.Warning("No broker address has been set. Will not attempt to connect.");
+        }
     }
 
     public void DisconnectFromBroker()
@@ -221,6 +225,9 @@ public class MqttManager
 
     public bool PublishMessage(string topic, string payload, bool retain, MqttQualityOfServiceLevel qos)
     {
+        if (IsConnected == false) {
+            return false;
+        }
         var messageBuilder = new MqttApplicationMessageBuilder()
                             .WithTopic(BuildTopic(topic))
                             .WithPayload(payload)
@@ -278,7 +285,9 @@ public class MqttManager
 
     public void Dispose()
     {
-        DisconnectFromBroker();
+        if (IsConnected) {
+            DisconnectFromBroker();
+        }
 
         mqttClient.ConnectedAsync                   -= LogConnectedAsync;
         mqttClient.ConnectingFailedAsync            -= LogConnectingFailedAsync;

@@ -16,13 +16,13 @@ public class Configuration : IPluginConfiguration
 
     // MQTT Settings
     public string              ClientId         { get; set; } = "FFXIV";
-    public bool                IncludeClientId  { get; set; }
+    public bool                IncludeClientId  { get; set; } = false;
     public string              BrokerAddress    { get; set; } = string.Empty;
     public int                 BrokerPort       { get; set; } = 1883;
     public string              User             { get; set; } = string.Empty;
     public string              Password         { get; set; } = string.Empty;
     public string              BaseTopic        { get; set; } = "ffxiv";
-    public bool                ConnectAtStartup { get; set; }
+    public bool                ConnectAtStartup { get; set; } = false;
     public List<OutputChannel> OutputChannels   { get; set; } = new();
 
     // Path Settings
