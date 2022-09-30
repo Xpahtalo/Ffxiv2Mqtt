@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Numerics;
+using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
@@ -8,14 +9,14 @@ using ImGuiNET;
 
 namespace Ffxiv2Mqtt.Interface;
 
-internal class MainWindow : Window 
+internal class MainWindow : Window
 {
     private readonly Configuration configuration;
     private readonly MqttManager   mqttManager;
     private readonly TopicManager  topicManager;
 
     public MainWindow(Configuration configuration, MqttManager mqttManager, TopicManager topicManager)
-        : base("FFXIV 2 MQTT")
+        : base("FFXIV2MQTT")
     {
         this.configuration = configuration;
         this.mqttManager   = mqttManager;
@@ -28,8 +29,9 @@ internal class MainWindow : Window
             DisplayStatusTab();
             DisplayMqttSettingsTab();
             DisplaySubscriptionSettingsTab();
-            ImGui.EndTabBar();
         }
+
+        ImGui.EndTabBar();
     }
 
     #region Status
@@ -38,35 +40,43 @@ internal class MainWindow : Window
         if (!ImGui.BeginTabItem("Status"))
             return;
 
-        ImGui.Text("Client Started: " + mqttManager.IsStarted);
-        ImGui.Text("Connection Status: " + mqttManager.IsConnected);
-        
-        ImGui.Spacing();
 
-        if (mqttManager.IsConnected) {
-            if (ImGui.Button("Disconnect")) {
-                mqttManager.DisconnectFromBroker();
-            }
+        if (configuration.BrokerAddress == string.Empty ||
+            configuration.User          == string.Empty ||
+            configuration.Password      == string.Empty) {
+            ImGui.TextColored(ImGuiColors.HealerGreen,"Please configure your client settings to connect.");
         } else {
-            if (ImGui.Button("Connect")) {
-                mqttManager.ConnectToBroker();
+            ImGui.Text("Client Started: "    + mqttManager.IsStarted);
+            ImGui.Text("Connection Status: " + mqttManager.IsConnected);
+
+            ImGui.Spacing();
+
+            if (mqttManager.IsStarted) {
+                if (ImGui.Button("Disconnect")) {
+                    mqttManager.DisconnectFromBroker();
+                }
+            } else {
+                if (ImGui.Button("Connect")) {
+                    mqttManager.ConnectToBroker();
+                }
             }
         }
-        
-        #if DEBUG
+
+#if DEBUG
         ImGui.Separator();
         ImGui.Text("Debug");
         ImGui.Text("Current Subscriptions:");
         foreach (var subscription in mqttManager.CurrentSubscriptions) {
             ImGui.Text(subscription);
         }
-        #endif
+#endif
 
         ImGui.EndTabItem();
     }
     #endregion
 
     #region Settings
+
     private void DisplayMqttSettingsTab()
     {
         if (!ImGui.BeginTabItem("Settings"))
@@ -95,7 +105,7 @@ internal class MainWindow : Window
         var brokerPort                                                              = configuration.BrokerPort;
         if (ImGui.InputInt("Broker Port", ref brokerPort)) configuration.BrokerPort = brokerPort;
 
-        var baseTopic                                                                 = configuration.BaseTopic;
+        var baseTopic                                                                  = configuration.BaseTopic;
         if (ImGui.InputText("Base Topic", ref baseTopic, 256)) configuration.BaseTopic = baseTopic;
 
         var fullTopic                  = baseTopic;
@@ -116,28 +126,30 @@ internal class MainWindow : Window
 
         ImGui.EndTabItem();
     }
+
     #endregion
 
     #region Subscriptions
+
     private void DisplaySubscriptionSettingsTab()
     {
         if (!ImGui.BeginTabItem("Subscriptions"))
             return;
 
-        DrawSubscriptionButtons();
+        DrawAddSubscriptionButton();
         DrawSubscriptions();
 
         if (ImGui.Button("Save")) {
             configuration.Save();
             mqttManager.ConfigureSubscribedTopics();
         }
-        
+
         ImGui.EndTabItem();
     }
 
-    private void DrawSubscriptionButtons()
+    private void DrawAddSubscriptionButton()
     {
-        if (ImGui.Button("+")) {
+        if (ImGui.Button("Add New Subscription")) {
             configuration.OutputChannels.Add(new OutputChannel
                                              {
                                                  Path        = "",
@@ -184,7 +196,7 @@ internal class MainWindow : Window
                 outputChannel.Delimiter = delimiter;
             }
 
-            if (ImGui.Button("Remove")) {
+            if (ImGui.Button($"Remove##{i}")) {
                 configuration.OutputChannels.Remove(outputChannel);
             }
 
@@ -195,6 +207,7 @@ internal class MainWindow : Window
     #endregion
 
     #region Helpers
+
     private static void HelpMarker(string text)
     {
         ImGui.SameLine();
@@ -214,6 +227,7 @@ internal class MainWindow : Window
         ImGui.TextUnformatted(tooltipText);
         ImGui.EndTooltip();
     }
+
     #endregion
 
 }

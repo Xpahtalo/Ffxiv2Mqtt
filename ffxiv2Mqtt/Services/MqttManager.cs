@@ -177,7 +177,7 @@ public class MqttManager
 
     public void ConnectToBroker()
     {
-        if (configuration.BrokerAddress != String.Empty) {
+        if (configuration.BrokerAddress != string.Empty) {
             PluginLog.Information("Connecting to MQTT broker...");
 
             var options = new ManagedMqttClientOptionsBuilder()
