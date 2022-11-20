@@ -39,7 +39,7 @@ internal class DancerGauge : Topic, IDisposable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Bard)
+        if ((Job)localPlayer.ClassJob.Id != Job.Dancer)
             return;
         var gauge = JobGauges?.Get<DNCGauge>();
         if (gauge is null)
