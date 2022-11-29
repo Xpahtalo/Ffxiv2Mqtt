@@ -3,7 +3,7 @@ using System.Text.Json;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.IoC;
 
-namespace Ffxiv2Mqtt.Topics.Events;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal sealed class PlayerConditions : Topic, IDisposable
 {

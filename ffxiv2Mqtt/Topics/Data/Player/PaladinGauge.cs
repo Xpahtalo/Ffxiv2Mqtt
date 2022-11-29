@@ -7,18 +7,19 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class WarriorGauge : Topic, IDisposable
+internal class PaladinGauge : Topic, IDisposable
 {
-    private byte beastGauge;
+    private byte oathGauge;
 
-    protected override string TopicPath => "Player/JobGauge/WAR";
+    protected override string TopicPath => "Player/JobGauge/PLD";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
     [PluginService] public JobGauges?    JobGauges    { get; set; }
     [PluginService] public ClientState?  ClientState  { get; set; }
+
 
     public override void Initialize()
     {
@@ -29,19 +30,19 @@ internal class WarriorGauge : Topic, IDisposable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Warrior)
+        if ((Job)localPlayer.ClassJob.Id != Job.Paladin)
             return;
-        var gauge = JobGauges?.Get<WARGauge>();
+        var gauge = JobGauges?.Get<PLDGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.BeastGauge, ref beastGauge, ref shouldPublish);
+        TestValue(gauge.OathGauge, ref oathGauge, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.BeastGauge,
+                        gauge.OathGauge,
                     });
     }
 

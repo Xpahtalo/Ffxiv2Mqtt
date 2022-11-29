@@ -7,15 +7,15 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class RedMageGauge : Topic, IDisposable
+internal class GunbreakerGauge : Topic, IDisposable
 {
-    private byte blackMana;
-    private byte whiteMana;
-    private byte manaStacks;
+    private short ammo;
+    private byte  ammoComboStep;
+    private short maxTimerDuration;
 
-    protected override string TopicPath => "Player/JobGauge/RDM";
+    protected override string TopicPath => "Player/JobGauge/GNB";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
@@ -27,27 +27,28 @@ internal class RedMageGauge : Topic, IDisposable
         PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
     }
 
+
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.RedMage)
+        if ((Job)localPlayer.ClassJob.Id != Job.Gunbreaker)
             return;
-        var gauge = JobGauges?.Get<RDMGauge>();
+        var gauge = JobGauges?.Get<GNBGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.ManaStacks, ref manaStacks, ref shouldPublish);
-        TestValue(gauge.BlackMana,  ref blackMana,  ref shouldPublish);
-        TestValue(gauge.WhiteMana,  ref whiteMana,  ref shouldPublish);
+        TestValue(gauge.Ammo,             ref ammo,             ref shouldPublish);
+        TestValue(gauge.AmmoComboStep,    ref ammoComboStep,    ref shouldPublish);
+        TestValue(gauge.MaxTimerDuration, ref maxTimerDuration, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.BlackMana,
-                        gauge.WhiteMana,
-                        gauge.ManaStacks,
+                        gauge.Ammo,
+                        gauge.AmmoComboStep,
+                        gauge.MaxTimerDuration,
                     });
     }
 

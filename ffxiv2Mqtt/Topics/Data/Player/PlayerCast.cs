@@ -4,7 +4,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal class PlayerCast : Topic, IDisposable
 {

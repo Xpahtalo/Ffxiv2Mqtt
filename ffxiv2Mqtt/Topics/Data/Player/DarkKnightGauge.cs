@@ -8,16 +8,17 @@ using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
+internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
 {
-    private byte  lily;
-    private byte  bloodLily;
-    private short lilyTimer;
-    private int   syncTimer;
+    private byte   blood;
+    private ushort darksideTimeRemaining;
+    private bool   hasDarkArts;
+    private ushort shadowTimeRemaining;
+    private int    syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/WHM";
+    protected override string TopicPath => "Player/JobGauge/DRK";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
@@ -40,23 +41,25 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.WhiteMage)
+        if ((Job)localPlayer.ClassJob.Id != Job.DarkKnight)
             return;
-        var gauge = JobGauges?.Get<WHMGauge>();
+        var gauge = JobGauges?.Get<DRKGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Lily,      ref lily,      ref shouldPublish);
-        TestValue(gauge.BloodLily, ref bloodLily, ref shouldPublish);
-        TestCountUp(gauge.LilyTimer, ref lilyTimer, syncTimer, ref shouldPublish);
+        TestValue(gauge.Blood,       ref blood,       ref shouldPublish);
+        TestValue(gauge.HasDarkArts, ref hasDarkArts, ref shouldPublish);
+        TestCountDown(gauge.ShadowTimeRemaining,   ref shadowTimeRemaining,   syncTimer, ref shouldPublish);
+        TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Lily,
-                        gauge.BloodLily,
-                        gauge.LilyTimer,
+                        gauge.Blood,
+                        DarkArts = gauge.HasDarkArts,
+                        gauge.DarksideTimeRemaining,
+                        gauge.ShadowTimeRemaining,
                     });
     }
 

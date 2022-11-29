@@ -1,6 +1,7 @@
 ﻿using System;
 using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.JobGauge;
+using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
@@ -8,23 +9,28 @@ using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
+internal class MonkGauge : Topic, IDisposable, IConfigurable
 {
-    private byte   blood;
-    private ushort darksideTimeRemaining;
-    private bool   hasDarkArts;
-    private ushort shadowTimeRemaining;
-    private int    syncTimer;
+    private          byte          chakra;
+    private readonly BeastChakra[] beastChakra;
+    private          ushort        blitzTimeRemaining;
+    private          int           syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/DRK";
+    protected override string TopicPath => "Player/JobGauge/MNK";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
     [PluginService] public JobGauges?     JobGauges     { get; set; }
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
+
+
+    public MonkGauge()
+    {
+        beastChakra = new BeastChakra[3];
+    }
 
     public override void Initialize()
     {
@@ -41,25 +47,23 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.DarkKnight)
+        if ((Job)localPlayer.ClassJob.Id != Job.Monk)
             return;
-        var gauge = JobGauges?.Get<DRKGauge>();
+        var gauge = JobGauges?.Get<MNKGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Blood,       ref blood,       ref shouldPublish);
-        TestValue(gauge.HasDarkArts, ref hasDarkArts, ref shouldPublish);
-        TestCountDown(gauge.ShadowTimeRemaining,   ref shadowTimeRemaining,   syncTimer, ref shouldPublish);
-        TestCountDown(gauge.DarksideTimeRemaining, ref darksideTimeRemaining, syncTimer, ref shouldPublish);
+        TestValue(gauge.Chakra, ref chakra, ref shouldPublish);
+        for (var i = 0; i < 3; i++) TestValue(gauge.BeastChakra[i], ref beastChakra[i], ref shouldPublish);
+        TestCountDown(gauge.BlitzTimeRemaining, ref blitzTimeRemaining, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Blood,
-                        DarkArts = gauge.HasDarkArts,
-                        gauge.DarksideTimeRemaining,
-                        gauge.ShadowTimeRemaining,
+                        gauge.Chakra,
+                        gauge.BeastChakra,
+                        gauge.BlitzTimeRemaining,
                     });
     }
 

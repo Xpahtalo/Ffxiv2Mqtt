@@ -5,7 +5,7 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal unsafe class PlayerCombatStats : Topic, IDisposable
 {

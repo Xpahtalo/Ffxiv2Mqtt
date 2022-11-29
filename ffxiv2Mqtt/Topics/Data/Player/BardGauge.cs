@@ -9,23 +9,30 @@ using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class ScholarGauge : Topic, IDisposable, IConfigurable
+internal class BardGauge : Topic, IDisposable, IConfigurable
 {
-    private byte           aetherflow;
-    private DismissedFairy dismissedFairy;
-    private byte           fairyGauge;
-    private short          seraphTimer;
-    private int            syncTimer;
+    private readonly Song[] coda;
+    private          Song   lastSong;
+    private          byte   repertoire;
+    private          Song   song;
+    private          ushort songTimer;
+    private          byte   soulVoice;
+    private          int    syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/SCH";
+    protected override string TopicPath => "Player/JobGauge/BRD";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
     [PluginService] public JobGauges?     JobGauges     { get; set; }
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
+
+    public BardGauge()
+    {
+        coda = new Song[3];
+    }
 
     public override void Initialize()
     {
@@ -42,25 +49,30 @@ internal class ScholarGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Scholar)
+        if ((Job)localPlayer.ClassJob.Id != Job.Bard)
             return;
-        var gauge = JobGauges?.Get<SCHGauge>();
+        var gauge = JobGauges?.Get<BRDGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Aetherflow,     ref aetherflow,     ref shouldPublish);
-        TestValue(gauge.DismissedFairy, ref dismissedFairy, ref shouldPublish);
-        TestValue(gauge.FairyGauge,     ref fairyGauge,     ref shouldPublish);
-        TestCountDown(gauge.SeraphTimer, ref seraphTimer, syncTimer, ref shouldPublish);
+        for (var i = 0; i < coda.Length; i++) TestValue(gauge.Coda[i], ref coda[i], ref shouldPublish);
+
+        TestValue(gauge.LastSong,   ref lastSong,   ref shouldPublish);
+        TestValue(gauge.Repertoire, ref repertoire, ref shouldPublish);
+        TestValue(gauge.Song,       ref song,       ref shouldPublish);
+        TestValue(gauge.SoulVoice,  ref soulVoice,  ref shouldPublish);
+        TestCountDown(gauge.SongTimer, ref songTimer, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Aetherflow,
-                        gauge.DismissedFairy,
-                        gauge.FairyGauge,
-                        gauge.SeraphTimer,
+                        gauge.Song,
+                        gauge.SongTimer,
+                        gauge.SoulVoice,
+                        gauge.Coda,
+                        gauge.Repertoire,
+                        gauge.LastSong,
                     });
     }
 

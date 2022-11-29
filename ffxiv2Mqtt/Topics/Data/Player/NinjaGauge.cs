@@ -8,17 +8,16 @@ using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class SageGauge : Topic, IDisposable, IConfigurable
+internal class NinjaGauge : Topic, IDisposable, IConfigurable
 {
-    private byte  addersgall;
-    private short addersgallTimer;
-    private byte  addersting;
-    private bool  eukrasia;
-    private int   syncTimer;
+    private byte hutonManualCasts;
+    private int  hutonTimer;
+    private byte ninki;
+    private int  syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/SGE";
+    protected override string TopicPath => "Player/JobGauge/NIN";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
@@ -41,25 +40,24 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Sage)
+        if ((Job)localPlayer.ClassJob.Id != Job.Ninja)
             return;
-        var gauge = JobGauges?.Get<SGEGauge>();
+        var gauge = JobGauges?.Get<NINGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Addersgall, ref addersgall, ref shouldPublish);
-        TestValue(gauge.Addersting, ref addersting, ref shouldPublish);
-        TestValue(gauge.Eukrasia,   ref eukrasia,   ref shouldPublish);
-        TestCountUp(gauge.AddersgallTimer, ref addersgallTimer, syncTimer, ref shouldPublish);
+        TestValue(gauge.HutonManualCasts, ref hutonManualCasts, ref shouldPublish);
+        TestValue(gauge.Ninki,            ref ninki,            ref shouldPublish);
+        TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer, ref shouldPublish);
+
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Addersgall,
-                        gauge.AddersgallTimer,
-                        gauge.Addersting,
-                        gauge.Eukrasia,
+                        gauge.Ninki,
+                        gauge.HutonTimer,
+                        gauge.HutonManualCasts,
                     });
     }
 

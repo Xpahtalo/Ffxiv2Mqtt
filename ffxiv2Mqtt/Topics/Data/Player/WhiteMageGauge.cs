@@ -8,24 +8,22 @@ using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class DragoonGauge : Topic, IDisposable, IConfigurable
+internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
 {
-    private byte  eyeCount;
-    private byte  firstmindsFocusCount;
-    private bool  isLotdActive;
-    private short lotdTimer;
+    private byte  lily;
+    private byte  bloodLily;
+    private short lilyTimer;
     private int   syncTimer;
 
-    protected override string TopicPath => "Player/JobGauge/DRG";
+    protected override string TopicPath => "Player/JobGauge/WHM";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
     [PluginService] public JobGauges?     JobGauges     { get; set; }
     [PluginService] public ClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
-
 
     public override void Initialize()
     {
@@ -42,25 +40,23 @@ internal class DragoonGauge : Topic, IDisposable, IConfigurable
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Dragoon)
+        if ((Job)localPlayer.ClassJob.Id != Job.WhiteMage)
             return;
-        var gauge = JobGauges?.Get<DRGGauge>();
+        var gauge = JobGauges?.Get<WHMGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.EyeCount,             ref eyeCount,             ref shouldPublish);
-        TestValue(gauge.FirstmindsFocusCount, ref firstmindsFocusCount, ref shouldPublish);
-        TestValue(gauge.IsLOTDActive,         ref isLotdActive,         ref shouldPublish);
-        TestCountDown(gauge.LOTDTimer, ref lotdTimer, syncTimer, ref shouldPublish);
+        TestValue(gauge.Lily,      ref lily,      ref shouldPublish);
+        TestValue(gauge.BloodLily, ref bloodLily, ref shouldPublish);
+        TestCountUp(gauge.LilyTimer, ref lilyTimer, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.EyeCount,
-                        gauge.FirstmindsFocusCount,
-                        LOTDActive = gauge.IsLOTDActive,
-                        gauge.LOTDTimer,
+                        gauge.Lily,
+                        gauge.BloodLily,
+                        gauge.LilyTimer,
                     });
     }
 

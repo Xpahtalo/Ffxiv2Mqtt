@@ -6,13 +6,13 @@ using Dalamud.Game.ClientState.Statuses;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal class PlayerStatuses : Topic, IDisposable
 {
-    private readonly JsonSerializerOptions serializerOptions;
     private          int                   statusCount;
     private          int                   stackCount;
+    private readonly JsonSerializerOptions serializerOptions;
 
     protected override string TopicPath => "Player/Status";
     protected override bool   Retained  => false;
@@ -50,7 +50,7 @@ internal class PlayerStatuses : Topic, IDisposable
 
         TestValue(activeStatusCount, ref statusCount, ref shouldPublish);
         TestValue(stacks,            ref stackCount,  ref shouldPublish);
-        if (shouldPublish) //Publish(JsonSerializer.Serialize(localPlayer.StatusList as IReadOnlyCollection<Status>, serializerOptions));
+        if (shouldPublish)
             Publish(JsonSerializer.Serialize(localPlayer.StatusList, serializerOptions));
     }
 

@@ -8,7 +8,7 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal class SamuraiGauge : Topic, IDisposable
 {

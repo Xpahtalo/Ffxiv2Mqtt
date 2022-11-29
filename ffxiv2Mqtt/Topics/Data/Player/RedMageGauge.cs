@@ -7,15 +7,15 @@ using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
-namespace Ffxiv2Mqtt.Topics.Data;
+namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class GunbreakerGauge : Topic, IDisposable
+internal class RedMageGauge : Topic, IDisposable
 {
-    private short ammo;
-    private byte  ammoComboStep;
-    private short maxTimerDuration;
+    private byte blackMana;
+    private byte whiteMana;
+    private byte manaStacks;
 
-    protected override string TopicPath => "Player/JobGauge/GNB";
+    protected override string TopicPath => "Player/JobGauge/RDM";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
@@ -27,28 +27,27 @@ internal class GunbreakerGauge : Topic, IDisposable
         PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
     }
 
-
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         if (ClientState!.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Gunbreaker)
+        if ((Job)localPlayer.ClassJob.Id != Job.RedMage)
             return;
-        var gauge = JobGauges?.Get<GNBGauge>();
+        var gauge = JobGauges?.Get<RDMGauge>();
         if (gauge is null)
             return;
 
         var shouldPublish = false;
-        TestValue(gauge.Ammo,             ref ammo,             ref shouldPublish);
-        TestValue(gauge.AmmoComboStep,    ref ammoComboStep,    ref shouldPublish);
-        TestValue(gauge.MaxTimerDuration, ref maxTimerDuration, ref shouldPublish);
+        TestValue(gauge.ManaStacks, ref manaStacks, ref shouldPublish);
+        TestValue(gauge.BlackMana,  ref blackMana,  ref shouldPublish);
+        TestValue(gauge.WhiteMana,  ref whiteMana,  ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        gauge.Ammo,
-                        gauge.AmmoComboStep,
-                        gauge.MaxTimerDuration,
+                        gauge.BlackMana,
+                        gauge.WhiteMana,
+                        gauge.ManaStacks,
                     });
     }
 
