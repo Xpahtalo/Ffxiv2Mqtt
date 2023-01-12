@@ -1,26 +1,26 @@
 {
   "version": 1,
   "dependencies": {
-    "net6.0-windows7.0": {
+    "net7.0-windows7.0": {
       "DalamudPackager": {
         "type": "Direct",
-        "requested": "[2.1.8, )",
-        "resolved": "2.1.8",
-        "contentHash": "YqagNXs9InxmqkXzq7kLveImxnodkBEicAhydMXVp7dFjC7xb76U6zGgAax4/BWIWfZeWzr5DJyQSev31kj81A=="
+        "requested": "[2.1.10, )",
+        "resolved": "2.1.10",
+        "contentHash": "S6NrvvOnLgT4GDdgwuKVJjbFo+8ZEj+JsEYk9ojjOR/MMfv1dIFpT8aRJQfI24rtDcw1uF+GnSSMN4WW1yt7fw=="
       },
       "MQTTnet": {
         "type": "Direct",
-        "requested": "[4.1.0.247, )",
-        "resolved": "4.1.0.247",
-        "contentHash": "Qlhj/+7AYQp0mEdisvRDAQWrpSXQ3gRa/T2XygNO4zOnk94cvamHzV/7OFLLDLNkGX7iDmFUnY5x+hIb/5HrKg=="
+        "requested": "[4.1.4.563, )",
+        "resolved": "4.1.4.563",
+        "contentHash": "gO9segUcKyQJcjV7w7OOdoAIkec7cUN65vEhYutbdWcj4rbtz/oL/RDvQVVbameXc6ChkjKx7/HbO+R8ejAUZQ=="
       },
       "MQTTnet.Extensions.ManagedClient": {
         "type": "Direct",
-        "requested": "[4.1.0.247, )",
-        "resolved": "4.1.0.247",
-        "contentHash": "OdFLLjMDmVI7gqznNWsvLLyPUib2fjRTvPI2RG6/y8EGq9pk9qCCd9N+eRFsGF0Mw4eM6sHop2SwmP11rwnINQ==",
+        "requested": "[4.1.4.563, )",
+        "resolved": "4.1.4.563",
+        "contentHash": "QgrSDz12YnVUdbV5Wu1tP9sgTRUJbN4jZUsHC2Bh93tAPf+6vPaeq2WAEPoyJ7MjCadyGSW0n4QFyCjgNG8Odg==",
         "dependencies": {
-          "MQTTnet": "4.1.0.247"
+          "MQTTnet": "4.1.4.563"
         }
       }
     }

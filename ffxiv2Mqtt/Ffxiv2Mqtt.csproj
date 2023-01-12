@@ -1,42 +1,45 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Version>1.0.4.1</Version>
-        <LangVersion>latest</LangVersion>
-        <Configurations>Debug;Release</Configurations>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <Authors>X'pahtalo</Authors>
+        <Version>1.0.4.2</Version>
+        <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>        
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net6.0-windows</TargetFramework>
+        <TargetFramework>net7.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
+    <!--
     <ItemGroup>
         <None Remove="icon.png" />
     </ItemGroup>
 
+    
     <ItemGroup>
         <Content Include=".\ffxiv2Mqtt.yaml">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
-
+    -->
+    
     <PropertyGroup>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.8" />
-        <PackageReference Include="MQTTnet" Version="4.1.0.247" />
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.1.0.247" />
+        <PackageReference Include="DalamudPackager" Version="2.1.10" />
+        <PackageReference Include="MQTTnet" Version="4.1.4.563" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.1.4.563" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>

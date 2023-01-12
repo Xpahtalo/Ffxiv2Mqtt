@@ -11,6 +11,9 @@ using Dalamud.Hooking;
 using Dalamud.Logging;
 using Dalamud.Utility.Signatures;
 
+// Adapted from NoTankYou (https://github.com/MidoriKami/NoTankYou)
+// https://github.com/MidoriKami/NoTankYou/blob/master/NoTankYou/System/DutyEventManager.cs
+
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 // ReSharper disable MemberCanBePrivate.Global
 
