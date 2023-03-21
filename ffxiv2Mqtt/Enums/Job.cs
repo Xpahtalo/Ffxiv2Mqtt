@@ -47,20 +47,17 @@ public enum Job : uint
 
 public static class JobExtensions
 {
-    public static bool IsGatherer(this Job job)
-    {
-        return job switch
+    public static bool IsGatherer(this Job job) =>
+        job switch
         {
             Job.Miner    => true,
             Job.Botanist => true,
             Job.Fisher   => true,
             _            => false,
         };
-    }
-
-    public static bool IsCrafter(this Job job)
-    {
-        return job switch
+    
+    public static bool IsCrafter(this Job job) =>
+        job switch
         {
             Job.Carpenter     => true,
             Job.Blacksmith    => true,
@@ -72,8 +69,7 @@ public static class JobExtensions
             Job.Culinarian    => true,
             _                 => false,
         };
-    }
-
+    
     public static Job ToJob(this uint? jobId)
     {
         if (jobId is null) return Job.Unknown;

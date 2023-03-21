@@ -30,9 +30,9 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     public        string                 Name            => InternalName;
     private const string                 InternalName = "FFXIV2MQTT"; // Do not change this ever.
 
-    private const string configCommandName = "/mqtt";
-    private const string testCommandName   = "/mtest";
-    private const string customCommandName = "/mqttcustom";
+    private const string ConfigCommandName = "/mqtt";
+    private const string TestCommandName   = "/mtest";
+    private const string CustomCommandName = "/mqttcustom";
 
     public Ffxiv2Mqtt(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
@@ -70,16 +70,16 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         PluginInterface.UiBuilder.Draw         += DrawMainWindow;
         PluginInterface.UiBuilder.OpenConfigUi += OpenMainWindow;
 
-        CommandManager.AddHandler(configCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(ConfigCommandName, new CommandInfo(OnCommand)
                                                      {
                                                          HelpMessage = "Display MQTT Client Info",
                                                      });
-        CommandManager.AddHandler(testCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(TestCommandName, new CommandInfo(OnCommand)
                                                    {
                                                        HelpMessage = "Test",
                                                        ShowInHelp  = false,
                                                    });
-        CommandManager.AddHandler(customCommandName, new CommandInfo(OnCommand)
+        CommandManager.AddHandler(CustomCommandName, new CommandInfo(OnCommand)
                                                      {
                                                          HelpMessage =
                                                              "Send a custom MQTT message with the given topic and payload.",
@@ -90,13 +90,13 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     {
         PluginLog.Information($"Received command: {command}, with the args: {args}");
         switch (command) {
-            case configCommandName:
+            case ConfigCommandName:
                 mainWindow.IsOpen = true;
                 break;
-            case testCommandName:
+            case TestCommandName:
                 mqttManager.PublishMessage("test", "success");
                 break;
-            case customCommandName:
+            case CustomCommandName:
             {
                 var argsList = args.Split(' ');
 
@@ -131,9 +131,9 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         topicManager.Clean();
         topicManager.Dispose();
 
-        CommandManager.RemoveHandler(configCommandName);
-        CommandManager.RemoveHandler(testCommandName);
-        CommandManager.RemoveHandler(customCommandName);
+        CommandManager.RemoveHandler(ConfigCommandName);
+        CommandManager.RemoveHandler(TestCommandName);
+        CommandManager.RemoveHandler(CustomCommandName);
         mqttManager.Dispose();
     }
 }
