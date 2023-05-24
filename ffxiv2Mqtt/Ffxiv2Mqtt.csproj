@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.4.3</Version>
+        <Version>1.0.4.4</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>        
     </PropertyGroup>
 
@@ -37,9 +37,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.10" />
-        <PackageReference Include="MQTTnet" Version="4.1.4.563" />
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.1.4.563" />
+        <PackageReference Include="DalamudPackager" Version="2.1.11" />
+        <PackageReference Include="MQTTnet" Version="4.2.0.706" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.2.0.706" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>

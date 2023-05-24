@@ -6,6 +6,7 @@ using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
+using MQTTnet;
 using MQTTnet.Client;
 using MQTTnet.Protocol;
 
@@ -125,7 +126,7 @@ public sealed class Ipc : IDisposable
     private Task IpcMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs e)
     {
         var topic   = e.ApplicationMessage.Topic;
-        var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload, 0, e.ApplicationMessage.Payload.Length);
+        var payload = e.ApplicationMessage.ConvertPayloadToString();
 
         callGateSubscribers[topic].InvokeFunc(payload);
 

@@ -93,7 +93,7 @@ public class MqttManager
             select channel;
 
         foreach (var channel in channelQuery) {
-            var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload, 0, e.ApplicationMessage.Payload.Length);
+            var payload = e.ApplicationMessage.ConvertPayloadToString();
 
             switch (channel.ChannelType) {
                 case OutputChannelType.ChatBox:
