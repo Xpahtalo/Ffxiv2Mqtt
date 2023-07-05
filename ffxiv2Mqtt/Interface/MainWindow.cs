@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Numerics;
+using Dalamud.Interface;
+using Dalamud.Interface.Raii;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Windowing;
 using Ffxiv2Mqtt.Enums;
@@ -25,16 +27,17 @@ internal class MainWindow : Window
 
     public override void Draw()
     {
-        if (ImGui.BeginTabBar("TabBar")) {
-            DisplayStatusTab();
-            DisplayMqttSettingsTab();
-            DisplaySubscriptionSettingsTab();
-        }
+        using var tabBar = ImRaii.TabBar("TabBar", ImGuiTabBarFlags.None);
 
-        ImGui.EndTabBar();
+        if (!tabBar)
+            return;
+
+        DisplayStatusTab();
+        DisplayMqttSettingsTab();
+        DisplaySubscriptionSettingsTab();
     }
 
-    #region Status
+#region Status
     private void DisplayStatusTab()
     {
         if (!ImGui.BeginTabItem("Status"))

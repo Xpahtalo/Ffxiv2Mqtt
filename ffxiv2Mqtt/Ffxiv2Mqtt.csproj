@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.4.4</Version>
+        <Version>1.0.4.5</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>        
     </PropertyGroup>
 
@@ -17,19 +17,6 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
-
-    <!--
-    <ItemGroup>
-        <None Remove="icon.png" />
-    </ItemGroup>
-
-    
-    <ItemGroup>
-        <Content Include=".\ffxiv2Mqtt.yaml">
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-    -->
     
     <PropertyGroup>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
@@ -62,6 +49,10 @@
         </Reference>
         <Reference Include="Lumina.Excel">
             <HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+            <Private>false</Private>
+        </Reference>
+        <Reference Include="Dalamud.Interface">
+            <HintPath>$(DalamudLibPath)Dalamud.Interface.dll</HintPath>
             <Private>false</Private>
         </Reference>
     </ItemGroup>
