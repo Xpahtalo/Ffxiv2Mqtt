@@ -167,47 +167,42 @@ internal class MainWindow : Window
 
     private void DrawSubscriptions()
     {
-        int i = 0;
+        var i = 0;
         foreach (var outputChannel in configuration.OutputChannels.ToArray()) {
-            ImGui.PushID(i++);
-
+            using var id = new ImRaii.Id().Push(i++);
+            
             var path         = outputChannel.Path;
             var channelType  = outputChannel.ChannelType;
             var includeTopic = outputChannel.IncludeTopic;
             var delimiter    = outputChannel.Delimiter;
 
-
-            if (ImGui.InputText($"Topic##{i}", ref path, 2000)) {
+            if (ImGui.InputText($"Topic", ref path, 2000)) {
                 outputChannel.Path = path;
             }
 
-            if (ImGui.BeginCombo($"Output##{i}", channelType.ToString())) {
-                foreach (var test in Enum.GetValues(typeof(OutputChannelType))) {
-                    if (!ImGui.Selectable($"{test.ToString()}##{i}")) {
-                        continue;
+            using (var outputCombo = ImRaii.Combo("Output", $"{channelType}")) {
+                if (outputCombo) {
+                    foreach (var outputChannelType in Enum.GetValues(typeof(OutputChannelType))) {
+                        if (!ImGui.Selectable($"{outputChannelType}"))
+                            continue;
+
+                        OutputChannelType.TryParse(outputChannelType.ToString(), out channelType);
+                        outputChannel.ChannelType = channelType;
                     }
-
-                    OutputChannelType.TryParse(test.ToString(), out channelType);
-                    outputChannel.ChannelType = channelType;
                 }
-
-
-                ImGui.EndCombo();
             }
 
-            if (ImGui.Checkbox($"Include Topic?##{i}", ref includeTopic)) {
+            if (ImGui.Checkbox($"Include Topic?", ref includeTopic)) {
                 outputChannel.IncludeTopic = includeTopic;
             }
 
-            if (ImGui.InputText($"Delimiter##{i}", ref delimiter, 10)) {
+            if (ImGui.InputText($"Delimiter", ref delimiter, 10)) {
                 outputChannel.Delimiter = delimiter;
             }
 
-            if (ImGui.Button($"Remove##{i}")) {
+            if (ImGui.Button($"Remove")) {
                 configuration.OutputChannels.Remove(outputChannel);
             }
-
-            ImGui.PopID();
         }
     }
 
@@ -219,7 +214,8 @@ internal class MainWindow : Window
     {
         ImGui.SameLine();
         ImGui.TextDisabled("(?)");
-        if (!ImGui.IsItemHovered()) return;
+        if (!ImGui.IsItemHovered())
+            return;
         ImGui.BeginTooltip();
         ImGui.TextUnformatted(text);
         ImGui.EndTooltip();
@@ -229,7 +225,8 @@ internal class MainWindow : Window
     {
         ImGui.SameLine();
         ImGui.TextColored(color, markerText);
-        if (!ImGui.IsItemHovered()) return;
+        if (!ImGui.IsItemHovered())
+            return;
         ImGui.BeginTooltip();
         ImGui.TextUnformatted(tooltipText);
         ImGui.EndTooltip();
