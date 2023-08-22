@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.4.5</Version>
+        <Version>1.0.4.6</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>        
     </PropertyGroup>
 

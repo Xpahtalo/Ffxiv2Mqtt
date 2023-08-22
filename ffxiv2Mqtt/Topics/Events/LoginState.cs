@@ -31,7 +31,6 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
         {
             while (ClientState?.LocalPlayer?.Name is null)
                 await Task.Delay(1000);
-                //Thread.Sleep(1000);
             characterName = ClientState!.LocalPlayer!.Name.ToString();
             Publish(JsonSerializer.Serialize(new
                                              {

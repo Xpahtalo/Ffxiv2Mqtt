@@ -13,9 +13,9 @@ internal class PlayerEvents : IDisposable
 {
     private Job previousJob;
 
-    [PluginService] public static ClientState ClientState { get; set; }
+    [PluginService] public static ClientState ClientState { get; set; } = null!;
 
-    [PluginService] public static Framework Framework { get; set; }
+    [PluginService] public static Framework Framework { get; set; } = null!;
 
     // A delegate type used with the OnJobChange event.
     public delegate void OnJobChangeDelegate(Job previousJob, Job currentJob);

@@ -4,6 +4,7 @@ using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -29,7 +30,8 @@ internal unsafe class PlayerCombatStats : Topic, IDisposable
     {
         var shouldPublish = false;
 
-        var localPlayerShields = ((Character*)localPlayer.Address)->ShieldValue;
+
+        var localPlayerShields = ((Character*)localPlayer.Address)->CharacterData.ShieldValue;
 
         TestValue(localPlayer.CurrentHp, ref hp,     ref shouldPublish);
         TestValue(localPlayer.CurrentMp, ref mp,     ref shouldPublish);

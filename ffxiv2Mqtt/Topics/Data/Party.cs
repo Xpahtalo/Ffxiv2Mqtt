@@ -44,14 +44,14 @@ internal class Party : Topic, IDisposable
 
     private void FrameworkUpdate(Framework framework)
     {
-        if (!DutyState.IsDutyStarted)
+        if (DutyState is { IsDutyStarted: false })
             return;
         
         // Assuming none of the previous blocking conditions are true, send party messages if the count has changed.
-        if (PartyList!.Length == partyCount)
+        if(PartyList is not null && PartyList.Length == partyCount)    
             return;
 
-        partyCount = PartyList.Length;
+        partyCount = PartyList!.Length;
         Publish($"{TopicPath}/Count",   partyCount.ToString());
         Publish($"{TopicPath}/Members", JsonSerializer.Serialize(PartyList, serializerOptions));
     }
