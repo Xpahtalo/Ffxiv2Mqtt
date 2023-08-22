@@ -14,9 +14,9 @@ namespace Ffxiv2Mqtt.Topics.Data.Player;
 internal class MonkGauge : Topic, IDisposable, IConfigurable
 {
     private          byte          chakra;
-    private readonly BeastChakra[] beastChakra;
+    private readonly BeastChakra[] beastChakra = new BeastChakra[3];
     private          ushort        blitzTimeRemaining;
-    private          int           syncTimer;
+    private          ushort        syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/MNK";
     protected override bool   Retained  => false;
@@ -27,11 +27,6 @@ internal class MonkGauge : Topic, IDisposable, IConfigurable
     [PluginService] public Configuration? Configuration { get; set; }
 
 
-    public MonkGauge()
-    {
-        beastChakra = new BeastChakra[3];
-    }
-
     public override void Initialize()
     {
         Configure();
@@ -40,7 +35,7 @@ internal class MonkGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (ushort)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -67,8 +62,5 @@ internal class MonkGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

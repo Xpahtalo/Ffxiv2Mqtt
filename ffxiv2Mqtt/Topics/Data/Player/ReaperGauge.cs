@@ -16,7 +16,7 @@ internal class ReaperGauge : Topic, IDisposable, IConfigurable
     private byte   lemureShroud;
     private byte   voidShroud;
     private ushort enshroudedTimeRemaining;
-    private int    syncTimer;
+    private ushort syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/RPR";
     protected override bool   Retained  => false;
@@ -35,7 +35,7 @@ internal class ReaperGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (ushort)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -64,8 +64,5 @@ internal class ReaperGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

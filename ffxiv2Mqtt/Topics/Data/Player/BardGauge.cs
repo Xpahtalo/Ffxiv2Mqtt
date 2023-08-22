@@ -19,7 +19,7 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
     private          Song   song;
     private          ushort songTimer;
     private          byte   soulVoice;
-    private          int    syncTimer;
+    private          ushort    syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/BRD";
     protected override bool   Retained  => false;
@@ -42,7 +42,7 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (ushort)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

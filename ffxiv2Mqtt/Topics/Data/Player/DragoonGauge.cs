@@ -16,7 +16,7 @@ internal class DragoonGauge : Topic, IDisposable, IConfigurable
     private byte  firstmindsFocusCount;
     private bool  isLotdActive;
     private short lotdTimer;
-    private int   syncTimer;
+    private short syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/DRG";
     protected override bool   Retained  => false;
@@ -35,7 +35,7 @@ internal class DragoonGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -64,8 +64,5 @@ internal class DragoonGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

@@ -19,7 +19,7 @@ internal class MachinistGauge : Topic, IDisposable, IConfigurable
     private bool  isRobotActive;
     private short summonTimeRemaining;
     private byte  lastSummonBatteryPower;
-    private int   syncTimer;
+    private short syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/MCH";
     protected override bool   Retained  => false;
@@ -38,7 +38,7 @@ internal class MachinistGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -73,8 +73,5 @@ internal class MachinistGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

@@ -24,7 +24,7 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
     private bool   isTitanReady;
     private bool   isTitanAttuned;
     private ushort summonTimeRemaining;
-    private int    syncTimer;
+    private ushort syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/SMN";
     protected override bool   Retained  => false;
@@ -42,7 +42,7 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (ushort)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -87,8 +87,5 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

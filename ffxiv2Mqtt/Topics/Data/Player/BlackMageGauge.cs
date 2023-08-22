@@ -20,7 +20,7 @@ internal class BlackMageJob : Topic, IDisposable, IConfigurable
     private short enochianTimeRemaining;
     private byte  umbralHearts;
     private byte  polyglotStacks;
-    private int   syncTimer;
+    private short syncTimer;
 
     protected override     string         TopicPath     => "Player/JobGauge/BLM";
     protected override     bool           Retained      => false;
@@ -37,7 +37,7 @@ internal class BlackMageJob : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -74,8 +74,5 @@ internal class BlackMageJob : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

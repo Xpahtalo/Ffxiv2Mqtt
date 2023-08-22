@@ -16,7 +16,7 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
     private short addersgallTimer;
     private byte  addersting;
     private bool  eukrasia;
-    private int   syncTimer;
+    private short syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/SGE";
     protected override bool   Retained  => false;
@@ -34,7 +34,7 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -63,8 +63,5 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

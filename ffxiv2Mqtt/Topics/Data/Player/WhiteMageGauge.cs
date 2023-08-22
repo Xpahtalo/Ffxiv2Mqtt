@@ -15,7 +15,7 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
     private byte  lily;
     private byte  bloodLily;
     private short lilyTimer;
-    private int   syncTimer;
+    private short syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/WHM";
     protected override bool   Retained  => false;
@@ -33,7 +33,7 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -60,8 +60,5 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
 }

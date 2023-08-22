@@ -16,7 +16,7 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
     private ushort darksideTimeRemaining;
     private bool   hasDarkArts;
     private ushort shadowTimeRemaining;
-    private int    syncTimer;
+    private ushort syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/DRK";
     protected override bool   Retained  => false;
@@ -34,7 +34,7 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
 
     public void Configure()
     {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
+        if (Configuration is not null) syncTimer = (ushort)Configuration.Interval;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

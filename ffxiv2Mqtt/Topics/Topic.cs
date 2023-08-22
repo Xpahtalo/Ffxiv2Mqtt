@@ -12,22 +12,16 @@ internal abstract class Topic
     protected abstract bool   Retained  { get; }
 
     // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public MqttManager MqttManager { get; set; }
+    [PluginService] public MqttManager MqttManager { get; set; } = null!;
 
     // Perform setup after property injection e.g. subscribe to events.
     public abstract void Initialize();
 
     // Serializes the object into a JSON payload and publishes it to the topic.
-    protected void Publish(object o)
-    {
-        Publish(TopicPath, JsonSerializer.Serialize(o));
-    }
+    protected void Publish(object o) { Publish(TopicPath, JsonSerializer.Serialize(o)); }
 
     // Publish the payload to the TopicPath 
-    protected void Publish(string payload)
-    {
-        Publish(TopicPath, payload);
-    }
+    protected void Publish(string payload) { Publish(TopicPath, payload); }
 
     // Publish the payload to the given topicPath.
     // Should only be used if the topic needs to be customized separately from TopicPath.
@@ -41,19 +35,19 @@ internal abstract class Topic
 
     private protected static void TestValue<T>(T current, ref T previous, ref bool updated)
     {
-        if (current is null)
+        if (current is null || current.Equals(previous))
             return;
-        if (!current.Equals(previous)) {
-            previous = current;
-            updated  = true;
-        }
+
+        previous = current;
+        updated  = true;
     }
 
     // In .NET 7 and C# 11, these can be simplified down to a single method with generics using INumber.
-    private protected static void TestCountUp(short current, ref short previous, int interval, ref bool updated)
+    private protected static void TestCountUp<T>(T current, ref T previous, T interval, ref bool updated)
+        where T : INumber<T>
     {
-        var reachedZero      = previous == 0 && current != 0;
-        var noLongerZero     = previous != 0 && current == 0;
+        var reachedZero      = previous == T.Zero && current != T.Zero;
+        var noLongerZero     = previous != T.Zero && current == T.Zero;
         var wentLower        = current            < previous;
         var exceededInterval = current - previous >= interval;
 
@@ -67,7 +61,7 @@ internal abstract class Topic
             previous = current;
             updated  = true;
         } else {
-            if (interval >= 0) {
+            if (interval >= T.Zero) {
                 if (exceededInterval) {
                     previous = current;
                     updated  = true;
@@ -79,10 +73,11 @@ internal abstract class Topic
         }
     }
 
-    private protected static void TestCountDown(ushort current, ref ushort previous, int interval, ref bool updated)
+    private protected static void TestCountDown<T>(T current, ref T previous, T interval, ref bool updated)
+        where T : INumber<T>
     {
-        var reachedZero      = previous == 0 && current != 0;
-        var noLongerZero     = previous != 0 && current == 0;
+        var reachedZero      = previous == T.Zero && current != T.Zero;
+        var noLongerZero     = previous != T.Zero && current == T.Zero;
         var wentHigher       = current            > previous;
         var exceededInterval = previous - current >= interval;
 
@@ -96,65 +91,7 @@ internal abstract class Topic
             previous = current;
             updated  = true;
         } else {
-            if (interval >= 0) {
-                if (exceededInterval) {
-                    previous = current;
-                    updated  = true;
-                }
-            } else {
-                // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                previous = current;
-            }
-        }
-    }
-
-    private protected static void TestCountDown(short current, ref short previous, int interval, ref bool updated)
-    {
-        var reachedZero      = previous == 0 && current != 0;
-        var noLongerZero     = previous != 0 && current == 0;
-        var wentHigher       = current            > previous;
-        var exceededInterval = previous - current >= interval;
-
-        // If something else has caused an update, we should also update the timer value
-        if (updated) {
-            previous = current;
-            return;
-        }
-
-        if (reachedZero || noLongerZero || wentHigher) {
-            previous = current;
-            updated  = true;
-        } else {
-            if (interval >= 0) {
-                if (exceededInterval) {
-                    previous = current;
-                    updated  = true;
-                }
-            } else {
-                // This is done so that the timer value will be accurate whenever the topic gets updated for any other reason
-                previous = current;
-            }
-        }
-    }
-
-    private protected static void TestCountDown(int current, ref int previous, int interval, ref bool updated)
-    {
-        var reachedZero      = previous == 0 && current != 0;
-        var noLongerZero     = previous != 0 && current == 0;
-        var wentHigher       = current            > previous;
-        var exceededInterval = previous - current >= interval;
-
-        // If something else has caused an update, we should also update the timer value
-        if (updated) {
-            previous = current;
-            return;
-        }
-
-        if (reachedZero || noLongerZero || wentHigher) {
-            previous = current;
-            updated  = true;
-        } else {
-            if (interval >= 0) {
+            if (interval >= T.Zero) {
                 if (exceededInterval) {
                     previous = current;
                     updated  = true;
