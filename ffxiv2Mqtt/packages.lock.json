@@ -10,17 +10,17 @@
       },
       "MQTTnet": {
         "type": "Direct",
-        "requested": "[4.2.0.706, )",
-        "resolved": "4.2.0.706",
-        "contentHash": "WvGqQL9PbnG8wl/uMYTVRYXiZfiJE15M6RYNboGaFMSqPNPWy3iNq0bDPFwKgKFpbriNlSsSXOZQFMvpr5N62A=="
+        "requested": "[4.2.1.781, )",
+        "resolved": "4.2.1.781",
+        "contentHash": "oKPAoW1Ynukm6ws6P3NmmMlNb3xIlPVf/89WVCkoWOJdz1dYtAdGYRdqe876pVsPru4j0uyU/hKf7iL3NU1r6w=="
       },
       "MQTTnet.Extensions.ManagedClient": {
         "type": "Direct",
-        "requested": "[4.2.0.706, )",
-        "resolved": "4.2.0.706",
-        "contentHash": "k5ai4QELBN085JloEWDFzLPeskVH+Qf4tFzYlsCgmK54QtjLSVC4A4N4OzCk5iCPbyQbzmAZ1ASnO1HkBd0QFg==",
+        "requested": "[4.2.1.781, )",
+        "resolved": "4.2.1.781",
+        "contentHash": "JkW4/p9ZgfV/w33AO1Ug5liAnQCdcXoytKx4BVgU5LznaasMDv24skMKkGyOf+/XO24OdFbbpx8kr9u13HJ/7w==",
         "dependencies": {
-          "MQTTnet": "4.2.0.706"
+          "MQTTnet": "4.2.1.781"
         }
       }
     }

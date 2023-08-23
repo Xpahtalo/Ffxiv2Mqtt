@@ -205,16 +205,13 @@ public class MqttManager
         mqttClient.StopAsync();
     }
 
-    public bool AddMessageReceivedHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler)
+    public void AddMessageReceivedHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler)
     {
         try {
             mqttClient.ApplicationMessageReceivedAsync += handler;
         } catch (Exception ex) {
             PluginLog.Error($"Failed to add MessageReceivedHandler:/n{ex}");
-            return false;
         }
-
-        return true;
     }
 
     public bool PublishMessage(string topic, string payload, bool retain = false)

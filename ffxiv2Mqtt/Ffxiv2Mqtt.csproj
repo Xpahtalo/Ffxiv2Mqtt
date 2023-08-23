@@ -25,8 +25,8 @@
 
     <ItemGroup>
         <PackageReference Include="DalamudPackager" Version="2.1.11" />
-        <PackageReference Include="MQTTnet" Version="4.2.0.706" />
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.2.0.706" />
+        <PackageReference Include="MQTTnet" Version="4.2.1.781" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.2.1.781" />
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>
