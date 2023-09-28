@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
-using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
 using MQTTnet.Client;
@@ -20,9 +19,6 @@ public class MqttManager
     private readonly IManagedMqttClient mqttClient;
     private readonly Configuration      configuration;
 
-    private IChatGui  ChatGui  { get; }
-    private IToastGui ToastGui { get; }
-
     public readonly HashSet<string> CurrentSubscriptions;
 
     public bool IsConnected => mqttClient.IsConnected;
@@ -30,23 +26,18 @@ public class MqttManager
     public bool IsStarted => mqttClient.IsStarted;
 
 
-    public MqttManager(
-        [RequiredVersion("1.0")] Configuration configuration,
-        [RequiredVersion("1.0")] IChatGui      chatGui,
-        [RequiredVersion("1.0")] IToastGui     toastGui)
+    public MqttManager([RequiredVersion("1.0")] Configuration configuration)
     {
         Service.Log.Information("Initializing MQTTManager");
 
         this.configuration = configuration;
-        ChatGui            = chatGui;
-        ToastGui           = toastGui;
 
         var mqttFactory = new MqttFactory();
         mqttClient = mqttFactory.CreateManagedMqttClient();
 
-        mqttClient.ConnectedAsync                   += LogConnectedAsync;
-        mqttClient.ConnectingFailedAsync            += LogConnectingFailedAsync;
-        mqttClient.InternalClient.DisconnectedAsync += LogDisconnectedAsync;
+        mqttClient.ConnectedAsync        += LogConnectedAsync;
+        mqttClient.ConnectingFailedAsync += LogConnectingFailedAsync;
+        mqttClient.DisconnectedAsync     += LogDisconnectedAsync;
 
         AddMessageReceivedHandler(ConfiguredMessageReceivedHandler);
 
@@ -102,7 +93,7 @@ public class MqttManager
                                    .Append(channel.Delimiter);
 
                     chatMessage.AddText(payload);
-                    ChatGui.Print(chatMessage.Build());
+                    Service.ChatGui.Print(chatMessage.Build());
                     break;
                 case OutputChannelType.Toast:
                     var toast = new StringBuilder();
@@ -111,7 +102,7 @@ public class MqttManager
                              .Append(channel.Delimiter);
 
                     toast.Append(payload);
-                    ToastGui.ShowNormal(toast.ToString());
+                    Service.ToastGui.ShowNormal(toast.ToString());
                     break;
                 case OutputChannelType.Disabled:
                     break;
@@ -276,9 +267,9 @@ public class MqttManager
     {
         if (IsConnected) DisconnectFromBroker();
 
-        mqttClient.ConnectedAsync                   -= LogConnectedAsync;
-        mqttClient.ConnectingFailedAsync            -= LogConnectingFailedAsync;
-        mqttClient.InternalClient.DisconnectedAsync -= LogDisconnectedAsync;
+        mqttClient.ConnectedAsync        -= LogConnectedAsync;
+        mqttClient.ConnectingFailedAsync -= LogConnectingFailedAsync;
+        mqttClient.DisconnectedAsync     -= LogDisconnectedAsync;
 
         mqttClient.Dispose();
     }

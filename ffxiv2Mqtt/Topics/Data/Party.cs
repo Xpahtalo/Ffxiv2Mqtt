@@ -5,12 +5,6 @@ using Dalamud.Game.ClientState.Party;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 
-// Adapted from NoTankYou (https://github.com/MidoriKami/NoTankYou)
-// https://github.com/MidoriKami/NoTankYou/blob/master/NoTankYou/System/DutyEventManager.cs
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-// ReSharper disable MemberCanBePrivate.Global
-
 namespace Ffxiv2Mqtt.Topics.Data;
 
 internal class Party : Topic, IDisposable
