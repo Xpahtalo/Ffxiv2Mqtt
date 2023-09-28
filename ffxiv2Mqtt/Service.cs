@@ -11,6 +11,7 @@ namespace Ffxiv2Mqtt;
 public class Service
 {
     internal static               PlayerEvents           PlayerEvents;
+    internal static               MqttManager            MqttManager;
     [PluginService] public static DalamudPluginInterface PluginInterface { get; private set; }
     [PluginService] public static IChatGui               ChatGui         { get; private set; }
     [PluginService] public static IToastGui              ToastGui        { get; private set; }
@@ -23,7 +24,7 @@ public class Service
     [PluginService] public static IGameGui               GameGui         { get; private set; }
     [PluginService] public static IDutyState             DutyState       { get; private set; }
     [PluginService] public static IJobGauges             JobGauges       { get; private set; }
-    [PluginService] public static ICondition             Condition      { get; private set; }
+    [PluginService] public static ICondition             Condition       { get; private set; }
     [PluginService] public static IPluginLog             Log             { get; private set; }
 }
 #pragma warning restore CS8618

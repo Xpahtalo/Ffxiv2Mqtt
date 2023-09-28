@@ -26,7 +26,7 @@ public class MqttManager
     public bool IsStarted => mqttClient.IsStarted;
 
 
-    public MqttManager([RequiredVersion("1.0")] Configuration configuration)
+    public MqttManager(Configuration configuration)
     {
         Service.Log.Information("Initializing MQTTManager");
 

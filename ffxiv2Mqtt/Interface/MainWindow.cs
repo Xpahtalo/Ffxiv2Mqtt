@@ -4,7 +4,6 @@ using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Ffxiv2Mqtt.Enums;
-using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics;
 using ImGuiNET;
 
@@ -13,14 +12,12 @@ namespace Ffxiv2Mqtt.Interface;
 internal class MainWindow : Window
 {
     private readonly Configuration configuration;
-    private readonly MqttManager   mqttManager;
     private readonly TopicManager  topicManager;
 
-    public MainWindow(Configuration configuration, MqttManager mqttManager, TopicManager topicManager)
+    public MainWindow(Configuration configuration, TopicManager topicManager)
         : base("FFXIV2MQTT")
     {
         this.configuration = configuration;
-        this.mqttManager   = mqttManager;
         this.topicManager  = topicManager;
     }
 
@@ -49,15 +46,15 @@ internal class MainWindow : Window
             configuration.Password      == string.Empty) {
             ImGui.TextColored(ImGuiColors.HealerGreen, "Please configure your client settings to connect.");
         } else {
-            ImGui.Text("Client Started: "    + mqttManager.IsStarted);
-            ImGui.Text("Connection Status: " + mqttManager.IsConnected);
+            ImGui.Text("Client Started: "    + Service.MqttManager.IsStarted);
+            ImGui.Text("Connection Status: " + Service.MqttManager.IsConnected);
 
             ImGui.Spacing();
 
-            if (mqttManager.IsStarted) {
-                if (ImGui.Button("Disconnect")) mqttManager.DisconnectFromBroker();
+            if (Service.MqttManager.IsStarted) {
+                if (ImGui.Button("Disconnect")) Service.MqttManager.DisconnectFromBroker();
             } else {
-                if (ImGui.Button("Connect")) mqttManager.ConnectToBroker();
+                if (ImGui.Button("Connect")) Service.MqttManager.ConnectToBroker();
             }
         }
 
@@ -65,7 +62,7 @@ internal class MainWindow : Window
         ImGui.Separator();
         ImGui.Text("Debug");
         ImGui.Text("Current Subscriptions:");
-        foreach (var subscription in mqttManager.CurrentSubscriptions) ImGui.Text(subscription);
+        foreach (var subscription in Service.MqttManager.CurrentSubscriptions) ImGui.Text(subscription);
 #endif
     }
 
@@ -140,7 +137,7 @@ internal class MainWindow : Window
 
         if (ImGui.Button("Save")) {
             configuration.Save();
-            mqttManager.ConfigureSubscribedTopics();
+            Service.MqttManager.ConfigureSubscribedTopics();
         }
     }
 

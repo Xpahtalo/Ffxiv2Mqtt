@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics;
@@ -11,7 +10,7 @@ internal class TopicManager : IDisposable
     private readonly List<ICleanable>    cleanables;
     private readonly List<IConfigurable> configurables;
 
-    internal TopicManager(MqttManager m, Configuration configuration)
+    internal TopicManager(Configuration configuration)
     {
         Service.Log.Verbose($"Creating {GetType().Name}");
         topics        = new List<Topic>();

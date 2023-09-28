@@ -1,8 +1,5 @@
 ﻿using System.Numerics;
 using System.Text.Json;
-using Dalamud.IoC;
-using Dalamud.Logging;
-using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics;
 
@@ -10,12 +7,6 @@ internal abstract class Topic
 {
     protected abstract string TopicPath { get; }
     protected abstract bool   Retained  { get; }
-
-    // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public MqttManager MqttManager { get; set; } = null!;
-
-    // Perform setup after property injection e.g. subscribe to events.
-    //public abstract void Initialize();
 
     // Serializes the object into a JSON payload and publishes it to the topic.
     protected void Publish(object o) { Publish(TopicPath, JsonSerializer.Serialize(o)); }
@@ -28,9 +19,9 @@ internal abstract class Topic
     protected void Publish(string topicPath, string payload)
     {
 #if DEBUG
-        PluginLog.Debug($"{GetType().Name}: {topicPath}: {payload}");
+        Service.Log.Debug($"{GetType().Name}: {topicPath}: {payload}");
 #endif
-        MqttManager.PublishMessage(topicPath, payload, Retained);
+        Service.MqttManager.PublishMessage(topicPath, payload, Retained);
     }
 
     private protected static void TestValue<T>(T current, ref T previous, ref bool updated)

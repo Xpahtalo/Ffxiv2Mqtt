@@ -22,7 +22,6 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private readonly WindowSystem windowSystem;
     private readonly MainWindow   mainWindow;
 
-    private readonly MqttManager  mqttManager;
     private readonly TopicManager topicManager;
     private readonly Ipc          ipc;
 
@@ -42,32 +41,32 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         PluginInterface = pluginInterface;
         CommandManager  = commandManager;
 
-        PluginInterface.Create<Service>();
-        Service.PlayerEvents = new PlayerEvents();
-
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
+        
+        PluginInterface.Create<Service>();
+        Service.PlayerEvents = new PlayerEvents();
+        Service.MqttManager  = new MqttManager(Configuration);
 
-        mqttManager = PluginInterface.Create<MqttManager>(Configuration)!;
         if (Configuration.ConnectAtStartup)
-            mqttManager.ConnectToBroker();
+            Service.MqttManager.ConnectToBroker();
 
-        topicManager = new TopicManager(mqttManager, Configuration);
-        ipc          = PluginInterface.Create<Ipc>(mqttManager)!;
+        topicManager = new TopicManager(Configuration);
+        ipc          = new Ipc();
 
         foreach (var t in GetType().Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Topic))))
             try {
                 Service.Log.Debug($"Adding {t.Name}");
                 var topic = (Topic?)Activator.CreateInstance(t);
                 if (topic is null) return;
-                pluginInterface.Inject(topic, mqttManager, Configuration);
+                pluginInterface.Inject(topic, Configuration);
                 topicManager.AddTopic(topic);
             } catch (Exception e) {
                 Service.Log.Error($"Failed to create {t.Name}: {e}");
             }
 
         windowSystem = new WindowSystem("Ffxiv2Mqtt");
-        windowSystem.AddWindow(mainWindow = new MainWindow(Configuration, mqttManager, topicManager));
+        windowSystem.AddWindow(mainWindow = new MainWindow(Configuration, topicManager));
 
         PluginInterface.UiBuilder.Draw         += DrawMainWindow;
         PluginInterface.UiBuilder.OpenConfigUi += OpenMainWindow;
@@ -96,7 +95,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
                 mainWindow.IsOpen = true;
                 break;
             case TestCommandName:
-                mqttManager.PublishMessage("test", "success");
+                Service.MqttManager.PublishMessage("test", "success");
                 break;
             case CustomCommandName:
             {
@@ -108,7 +107,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
                 }
 
                 Service.Log.Information($"Publishing a custom message. topic: {argsList[0]} payload: {argsList[1]}");
-                mqttManager.PublishMessage(argsList[0], argsList[1]);
+                Service.MqttManager.PublishMessage(argsList[0], argsList[1]);
                 break;
             }
         }
@@ -130,6 +129,6 @@ public class Ffxiv2Mqtt : IDalamudPlugin
         CommandManager.RemoveHandler(ConfigCommandName);
         CommandManager.RemoveHandler(TestCommandName);
         CommandManager.RemoveHandler(CustomCommandName);
-        mqttManager.Dispose();
+        Service.MqttManager.Dispose();
     }
 }

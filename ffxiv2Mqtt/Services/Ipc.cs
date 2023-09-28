@@ -35,9 +35,6 @@ public sealed class Ipc : IDisposable
 
     private readonly Dictionary<string, ICallGateSubscriber<string, bool>> callGateSubscribers;
 
-    [PluginService] public MqttManager?            MqttManager     { get; set; }
-    [PluginService] public DalamudPluginInterface? PluginInterface { get; set; }
-
     private const string LabelProviderReady               = "Ffxiv2Mqtt.Ready";
     private const string LabelProviderPublishMessage      = "Ffxiv2Mqtt.Publish";
     private const string LabelProviderPublishMessageV2    = "Ffxiv2Mqtt.PublishV2";
@@ -49,28 +46,28 @@ public sealed class Ipc : IDisposable
         Service.Log.Verbose("Registering IPC Providers.");
 
         try {
-            providerReady = PluginInterface!.GetIpcProvider<bool>(LabelProviderReady);
+            providerReady = Service.PluginInterface!.GetIpcProvider<bool>(LabelProviderReady);
             providerReady.RegisterFunc(Ready);
         } catch (Exception ex) {
             Service.Log.Error($"(Failed to register IPC provider for {LabelProviderReady}: {ex}");
         }
 
         try {
-            providerPublishMessage = PluginInterface!.GetIpcProvider<string, string, bool>(LabelProviderPublishMessage);
+            providerPublishMessage = Service.PluginInterface!.GetIpcProvider<string, string, bool>(LabelProviderPublishMessage);
             providerPublishMessage.RegisterFunc(Publish);
         } catch (Exception ex) {
             Service.Log.Error($"Failed to register IPC provider for {LabelProviderPublishMessage}: {ex}");
         }
 
         try {
-            providerPublishMessageV2 = PluginInterface!.GetIpcProvider<Message, bool>(LabelProviderPublishMessageV2);
+            providerPublishMessageV2 = Service.PluginInterface!.GetIpcProvider<Message, bool>(LabelProviderPublishMessageV2);
             providerPublishMessageV2.RegisterFunc(PublishV2);
         } catch (Exception ex) {
             Service.Log.Error($"Failed to register IPC provider for {LabelProviderPublishMessage}: {ex}");
         }
 
         try {
-            providerRequestSubscription = PluginInterface!.GetIpcProvider<string, string, bool>(LabelProviderRequestSubscription);
+            providerRequestSubscription = Service.PluginInterface!.GetIpcProvider<string, string, bool>(LabelProviderRequestSubscription);
             providerRequestSubscription.RegisterFunc(RequestSubscription);
         } catch (Exception ex) {
             Service.Log.Error($"Failed to register IPC provider for {LabelProviderRequestSubscription}: {ex}");
@@ -78,7 +75,7 @@ public sealed class Ipc : IDisposable
 
         callGateSubscribers = new Dictionary<string, ICallGateSubscriber<string, bool>>();
 
-        MqttManager!.AddMessageReceivedHandler(IpcMessageReceivedHandler);
+        Service.MqttManager.AddMessageReceivedHandler(IpcMessageReceivedHandler);
     }
 
     public void Dispose()
@@ -92,25 +89,25 @@ public sealed class Ipc : IDisposable
     private bool Ready()
     {
         Service.Log.Information("Received IPC ready request.");
-        return MqttManager?.IsStarted ?? false;
+        return Service.MqttManager.IsStarted;
     }
 
     private bool Publish(string topic, string payload)
     {
         Service.Log.Verbose($"{LabelProviderPublishMessage} received message. Publishing {payload} to {topic}");
-        return MqttManager!.PublishMessage(topic, payload);
+        return Service.MqttManager.PublishMessage(topic, payload);
     }
 
     private bool PublishV2(Message message)
     {
         Service.Log.Verbose($"{LabelProviderPublishMessageV2} recieved message. Publishing:/n{message.ToString()}");
-        return MqttManager!.PublishMessage(message.Path, message.Payload, message.Retained, ToQolLevel(message.QualityOfServiceLevel));
+        return Service.MqttManager.PublishMessage(message.Path, message.Payload, message.Retained, ToQolLevel(message.QualityOfServiceLevel));
     }
 
     private bool RequestSubscription(string label, string topic)
     {
         try {
-            var callGateSubscriber = PluginInterface!.GetIpcSubscriber<string, bool>(label);
+            var callGateSubscriber = Service.PluginInterface.GetIpcSubscriber<string, bool>(label);
             callGateSubscribers.Add(topic, callGateSubscriber);
         } catch (Exception ex) {
             Service.Log.Error($"Failed to add a new subscription from IPC:/n{ex}");

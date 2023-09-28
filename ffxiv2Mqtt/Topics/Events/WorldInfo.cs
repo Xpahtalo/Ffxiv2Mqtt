@@ -1,7 +1,5 @@
 ﻿using System;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.IoC;
-using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics.Events;
 
@@ -11,7 +9,6 @@ internal class WorldInfoTopic : Topic, IDisposable
 
     protected override     string        TopicPath    => "Event/WorldChanged";
     protected override     bool          Retained     => true;
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
 
     public WorldInfoTopic() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
