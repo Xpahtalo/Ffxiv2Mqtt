@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Text.Json;
-using Dalamud.Data;
-using Dalamud.Game.ClientState;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 using Lumina.Excel.GeneratedSheets;
 
@@ -10,10 +9,10 @@ namespace Ffxiv2Mqtt.Topics.Events;
 
 internal sealed class Territory : Topic, ICleanable, IDisposable
 {
-    protected override     string       TopicPath   => "Event/TerritoryChanged";
-    protected override     bool         Retained    => true;
-    [PluginService] public ClientState? ClientState { get; set; }
-    [PluginService] public DataManager? DataManager { get; set; }
+    protected override     string        TopicPath   => "Event/TerritoryChanged";
+    protected override     bool          Retained    => true;
+    [PluginService] public IClientState? ClientState { get; set; }
+    [PluginService] public IDataManager? DataManager { get; set; }
 
     public override void Initialize()
     {
@@ -21,7 +20,7 @@ internal sealed class Territory : Topic, ICleanable, IDisposable
     }
 
     // Publish a message whenever the player changes territories.
-    private void TerritoryChanged(object? o, ushort territoryId)
+    private void TerritoryChanged(ushort territoryId)
     {
         var territoryRow = DataManager?.Excel.GetSheet<TerritoryType>()?.GetRow(territoryId);
         if (territoryRow is null) return;

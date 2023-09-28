@@ -2,6 +2,7 @@
 using System.Text.Json;
 using Dalamud.Game.ClientState.Conditions;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -11,7 +12,7 @@ internal sealed class PlayerConditions : Topic, IDisposable
     protected override bool   Retained  => false;
 
     // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public Condition? Conditions { get; set; }
+    [PluginService] public ICondition? Conditions { get; set; }
 
     public override void Initialize()
     {

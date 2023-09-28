@@ -1,9 +1,8 @@
 ﻿using System;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
@@ -30,8 +29,8 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
-    [PluginService] public JobGauges?     JobGauges     { get; set; }
-    [PluginService] public ClientState?   ClientState   { get; set; }
+    [PluginService] public IJobGauges?     JobGauges     { get; set; }
+    [PluginService] public IClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
 
     public override void Initialize()

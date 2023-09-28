@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
-using Dalamud.Game.ClientState;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Events;
@@ -16,7 +15,7 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     protected override bool   Retained  => true;
 
     // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public ClientState? ClientState { get; set; }
+    [PluginService] public IClientState? ClientState { get; set; }
 
     public override void Initialize()
     {
@@ -25,7 +24,7 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     }
 
     // Publish the login state and character name when logging in.
-    private void Login(object? s, EventArgs e)
+    private void Login()
     {
         Task.Run(async () =>
         {
@@ -41,7 +40,7 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     }
 
     // Publish the login state and last character name when logging out.
-    private void Logout(object? s, EventArgs e)
+    private void Logout()
     {
         Publish(JsonSerializer.Serialize(new
                                          {

@@ -1,10 +1,10 @@
 ﻿using System;
 using Dalamud.Game;
-using Dalamud.Game.ClientState;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 
 namespace Ffxiv2Mqtt.Services;
@@ -13,9 +13,9 @@ internal class PlayerEvents : IDisposable
 {
     private Job previousJob;
 
-    [PluginService] public static ClientState ClientState { get; set; } = null!;
+    [PluginService] public static IClientState ClientState { get; set; } = null!;
 
-    [PluginService] public static Framework Framework { get; set; } = null!;
+    [PluginService] public static IFramework Framework { get; set; } = null!;
 
     // A delegate type used with the OnJobChange event.
     public delegate void OnJobChangeDelegate(Job previousJob, Job currentJob);
@@ -36,7 +36,7 @@ internal class PlayerEvents : IDisposable
         Framework.Update += Update;
     }
 
-    private void Update(Framework framework)
+    private void Update(IFramework framework)
     {
         var localPlayer = ClientState.LocalPlayer;
         if (localPlayer == null) return;

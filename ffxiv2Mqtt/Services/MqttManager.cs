@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Dalamud.Game.Gui;
-using Dalamud.Game.Gui.Toast;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
 using Dalamud.Logging;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
 using MQTTnet.Client;
@@ -22,8 +21,8 @@ public class MqttManager
     private readonly IManagedMqttClient mqttClient;
     private readonly Configuration      configuration;
 
-    private ChatGui  ChatGui  { get; }
-    private ToastGui ToastGui { get; }
+    private IChatGui  ChatGui  { get; }
+    private IToastGui ToastGui { get; }
 
     public readonly HashSet<string> CurrentSubscriptions;
 
@@ -33,8 +32,8 @@ public class MqttManager
 
 
     public MqttManager([RequiredVersion("1.0")] Configuration configuration,
-                       [RequiredVersion("1.0")] ChatGui       chatGui,
-                       [RequiredVersion("1.0")] ToastGui      toastGui)
+                       [RequiredVersion("1.0")] IChatGui       chatGui,
+                       [RequiredVersion("1.0")] IToastGui      toastGui)
     {
         PluginLog.Information("Initializing MQTTManager");
 

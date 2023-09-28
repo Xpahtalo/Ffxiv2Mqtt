@@ -1,9 +1,8 @@
 ﻿using System;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
@@ -12,7 +11,7 @@ namespace Ffxiv2Mqtt.Topics.Data.Player;
 internal class DancerGauge : Topic, IDisposable
 {
     private          bool   isDancing;
-    private readonly uint[] steps;
+    private readonly uint[] steps = new uint[4];
     private          uint   nextStep;
     private          byte   completedSteps;
     private          byte   esprit;
@@ -22,13 +21,8 @@ internal class DancerGauge : Topic, IDisposable
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-    [PluginService] public JobGauges?    JobGauges    { get; set; }
-    [PluginService] public ClientState?  ClientState  { get; set; }
-
-    public DancerGauge()
-    {
-        steps = new uint[4];
-    }
+    [PluginService] public IJobGauges?    JobGauges    { get; set; }
+    [PluginService] public IClientState?  ClientState  { get; set; }
 
     public override void Initialize()
     {

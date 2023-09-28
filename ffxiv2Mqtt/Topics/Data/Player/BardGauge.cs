@@ -5,6 +5,7 @@ using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
@@ -13,26 +14,21 @@ namespace Ffxiv2Mqtt.Topics.Data.Player;
 
 internal class BardGauge : Topic, IDisposable, IConfigurable
 {
-    private readonly Song[] coda;
+    private readonly Song[] coda = new Song[3];
     private          Song   lastSong;
     private          byte   repertoire;
     private          Song   song;
     private          ushort songTimer;
     private          byte   soulVoice;
-    private          ushort    syncTimer;
+    private          ushort syncTimer;
 
     protected override string TopicPath => "Player/JobGauge/BRD";
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
-    [PluginService] public JobGauges?     JobGauges     { get; set; }
-    [PluginService] public ClientState?   ClientState   { get; set; }
+    [PluginService] public IJobGauges?     JobGauges     { get; set; }
+    [PluginService] public IClientState?   ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
-
-    public BardGauge()
-    {
-        coda = new Song[3];
-    }
 
     public override void Initialize()
     {

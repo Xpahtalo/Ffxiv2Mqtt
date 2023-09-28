@@ -6,6 +6,7 @@ using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Party;
 using Dalamud.Game.DutyState;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 
 // Adapted from NoTankYou (https://github.com/MidoriKami/NoTankYou)
@@ -24,10 +25,10 @@ internal class Party : Topic, IDisposable
     protected override string TopicPath => "Party";
     protected override bool   Retained  => false;
 
-    [PluginService] public PartyList?   PartyList   { get; set; }
-    [PluginService] public Framework?   Framework   { get; set; }
-    [PluginService] public Condition?   Condition   { get; set; }
-    [PluginService] public DutyState?   DutyState   { get; set; }
+    [PluginService] public IPartyList?   PartyList   { get; set; }
+    [PluginService] public IFramework?   Framework   { get; set; }
+    [PluginService] public ICondition?   Condition   { get; set; }
+    [PluginService] public IDutyState?   DutyState   { get; set; }
 
     public Party()
     {
@@ -39,10 +40,10 @@ internal class Party : Topic, IDisposable
 
     public override void Initialize()
     {
-        if (Framework is not null) Framework.Update               += FrameworkUpdate;
+        if (Framework is not null) Framework.Update += FrameworkUpdate;
     }
 
-    private void FrameworkUpdate(Framework framework)
+    private void FrameworkUpdate(IFramework framework)
     {
         if (DutyState is { IsDutyStarted: false })
             return;

@@ -5,6 +5,7 @@ using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Interface;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics;
@@ -27,7 +28,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private readonly Ipc          ipc;
 
     private       DalamudPluginInterface PluginInterface { get; }
-    private       CommandManager         CommandManager  { get; }
+    private       ICommandManager         CommandManager  { get; }
     public        string                 Name            => InternalName;
     private const string                 InternalName = "FFXIV2MQTT"; // Do not change this ever.
 
@@ -37,7 +38,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
 
     public Ffxiv2Mqtt(
         [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] CommandManager         commandManager)
+        [RequiredVersion("1.0")] ICommandManager         commandManager)
     {
         PluginInterface = pluginInterface;
         CommandManager  = commandManager;

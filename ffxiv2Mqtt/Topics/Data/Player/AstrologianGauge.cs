@@ -1,10 +1,9 @@
 ﻿using System;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
+using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
@@ -14,18 +13,13 @@ internal class AstrologianGauge : Topic, IDisposable
 {
     private          CardType   drawnCard;
     private          CardType   drawnCrownType;
-    private readonly SealType[] seals;
+    private readonly SealType[] seals = new SealType[3];
 
     protected override     string        TopicPath    => "Player/JobGauge/AST";
     protected override     bool          Retained     => false;
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-    [PluginService] public JobGauges?    JobGauges    { get; set; }
-    [PluginService] public ClientState?  ClientState  { get; set; }
-
-    public AstrologianGauge()
-    {
-        seals = new SealType[3];
-    }
+    [PluginService] public IJobGauges?    JobGauges    { get; set; }
+    [PluginService] public IClientState?  ClientState  { get; set; }
 
     public override void Initialize()
     {
