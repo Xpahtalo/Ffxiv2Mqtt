@@ -28,13 +28,7 @@ public class Configuration : IPluginConfiguration
     // Path Settings
     public int Interval { get; set; } = 5000;
 
-    public void Initialize(DalamudPluginInterface pluginInterface)
-    {
-        this.pluginInterface = pluginInterface;
-    }
+    public void Initialize(DalamudPluginInterface pluginInterface) { this.pluginInterface = pluginInterface; }
 
-    public void Save()
-    {
-        pluginInterface!.SavePluginConfig(this);
-    }
+    public void Save() { pluginInterface!.SavePluginConfig(this); }
 }

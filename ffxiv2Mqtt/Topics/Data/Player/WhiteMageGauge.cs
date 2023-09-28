@@ -2,9 +2,7 @@
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
-using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
-using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
@@ -19,15 +17,13 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
     protected override string TopicPath => "Player/JobGauge/WHM";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
-    [PluginService] public IJobGauges?     JobGauges     { get; set; }
-    [PluginService] public IClientState?   ClientState   { get; set; }
+
     [PluginService] public Configuration? Configuration { get; set; }
 
-    public override void Initialize()
+    public WhiteMageGauge()
     {
         Configure();
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
     }
 
     public void Configure()
@@ -37,13 +33,11 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
-        if (ClientState!.IsPvP)
+        if (Service.ClientState.IsPvP)
             return;
         if ((Job)localPlayer.ClassJob.Id != Job.WhiteMage)
             return;
-        var gauge = JobGauges?.Get<WHMGauge>();
-        if (gauge is null)
-            return;
+        var gauge = Service.JobGauges.Get<WHMGauge>();
 
         var shouldPublish = false;
         TestValue(gauge.Lily,      ref lily,      ref shouldPublish);
@@ -59,5 +53,5 @@ internal class WhiteMageGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose() { PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated; }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

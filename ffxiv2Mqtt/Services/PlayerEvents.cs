@@ -1,9 +1,5 @@
 ﻿using System;
-using Dalamud.Game;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.IoC;
-using Dalamud.Logging;
-using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 
@@ -12,10 +8,6 @@ namespace Ffxiv2Mqtt.Services;
 internal class PlayerEvents : IDisposable
 {
     private Job previousJob;
-
-    [PluginService] public static IClientState ClientState { get; set; } = null!;
-
-    [PluginService] public static IFramework Framework { get; set; } = null!;
 
     // A delegate type used with the OnJobChange event.
     public delegate void OnJobChangeDelegate(Job previousJob, Job currentJob);
@@ -30,21 +22,21 @@ internal class PlayerEvents : IDisposable
     public event LocalPlayerUpdatedDelegate? LocalPlayerUpdated;
 
 
-    public PlayerEvents(DalamudPluginInterface pluginInterface)
+    public PlayerEvents()
     {
-        PluginLog.Debug("PlayerEvents.Initialize: Framework.Update += Update");
-        Framework.Update += Update;
+        Service.Log.Debug("PlayerEvents.Initialize: Framework.Update += Update");
+        Service.Framework.Update += Update;
     }
 
     private void Update(IFramework framework)
     {
-        var localPlayer = ClientState.LocalPlayer;
+        var localPlayer = Service.ClientState.LocalPlayer;
         if (localPlayer == null) return;
 
         var currentJob = (Job)localPlayer.ClassJob.Id;
         if (currentJob != previousJob) {
 #if DEBUG
-            PluginLog.Debug($"{GetType().Name}.Update: Job changed from \"{previousJob}\" to \"{currentJob}\". Firing OnJobChange event.");
+            Service.Log.Debug($"{GetType().Name}.Update: Job changed from \"{previousJob}\" to \"{currentJob}\". Firing OnJobChange event.");
 #endif
             OnJobChange?.Invoke(previousJob, currentJob);
         }
@@ -55,8 +47,5 @@ internal class PlayerEvents : IDisposable
         LocalPlayerUpdated?.Invoke(localPlayer);
     }
 
-    public void Dispose()
-    {
-        Framework.Update -= Update;
-    }
+    public void Dispose() { Service.Framework.Update -= Update; }
 }

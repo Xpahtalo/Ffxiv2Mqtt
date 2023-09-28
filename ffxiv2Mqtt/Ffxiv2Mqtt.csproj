@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
         <Version>1.0.4.6</Version>
-        <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>        
+        <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -17,16 +17,16 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
-    
+
     <PropertyGroup>
         <DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
         <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="DalamudPackager" Version="2.1.12" />
-        <PackageReference Include="MQTTnet" Version="4.3.1.873" />
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.1.873" />
+        <PackageReference Include="DalamudPackager" Version="2.1.12"/>
+        <PackageReference Include="MQTTnet" Version="4.3.1.873"/>
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.1.873"/>
         <Reference Include="FFXIVClientStructs">
             <HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
             <Private>false</Private>
@@ -54,6 +54,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="icon.png" Link="images\icon.png" CopyToOutputDirectory="Always" />
+        <Content Include="icon.png" Link="images\icon.png" CopyToOutputDirectory="Always"/>
     </ItemGroup>
 </Project>

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
@@ -31,11 +30,12 @@ public class MqttManager
     public bool IsStarted => mqttClient.IsStarted;
 
 
-    public MqttManager([RequiredVersion("1.0")] Configuration configuration,
-                       [RequiredVersion("1.0")] IChatGui       chatGui,
-                       [RequiredVersion("1.0")] IToastGui      toastGui)
+    public MqttManager(
+        [RequiredVersion("1.0")] Configuration configuration,
+        [RequiredVersion("1.0")] IChatGui      chatGui,
+        [RequiredVersion("1.0")] IToastGui     toastGui)
     {
-        PluginLog.Information("Initializing MQTTManager");
+        Service.Log.Information("Initializing MQTTManager");
 
         this.configuration = configuration;
         ChatGui            = chatGui;
@@ -53,33 +53,33 @@ public class MqttManager
         CurrentSubscriptions = new HashSet<string>();
         ConfigureSubscribedTopics();
 
-        PluginLog.Information("MqttManager Initialized");
+        Service.Log.Information("MqttManager Initialized");
     }
 
     private static Task LogConnectedAsync(EventArgs e)
     {
-        PluginLog.Information("Connected to MQTT broker");
+        Service.Log.Information("Connected to MQTT broker");
         return Task.CompletedTask;
     }
 
     private static Task LogConnectingFailedAsync(ConnectingFailedEventArgs e)
     {
-        PluginLog.Warning($"Failed to connect: {e.Exception}");
+        Service.Log.Warning($"Failed to connect: {e.Exception}");
         return Task.CompletedTask;
     }
 
     private static Task LogDisconnectedAsync(MqttClientDisconnectedEventArgs e)
     {
         if (e.Reason == MqttClientDisconnectReason.NormalDisconnection)
-            PluginLog.Information("Disconnected from MQTT broker.");
+            Service.Log.Information("Disconnected from MQTT broker.");
         else
-            PluginLog.Error($"Unexpected disconnect from MQTT broker: {e.Reason}");
+            Service.Log.Error($"Unexpected disconnect from MQTT broker: {e.Reason}");
         return Task.CompletedTask;
     }
 
     private Task ConfiguredMessageReceivedHandler(MqttApplicationMessageReceivedEventArgs e)
     {
-        PluginLog.Information("Message received");
+        Service.Log.Information("Message received");
 
 
         var messagePattern = e.ApplicationMessage.Topic.Split('/');
@@ -97,20 +97,18 @@ public class MqttManager
             switch (channel.ChannelType) {
                 case OutputChannelType.ChatBox:
                     var chatMessage = new SeStringBuilder();
-                    if (channel.IncludeTopic) {
+                    if (channel.IncludeTopic)
                         chatMessage.Append(e.ApplicationMessage.Topic)
                                    .Append(channel.Delimiter);
-                    }
 
                     chatMessage.AddText(payload);
                     ChatGui.Print(chatMessage.Build());
                     break;
                 case OutputChannelType.Toast:
                     var toast = new StringBuilder();
-                    if (channel.IncludeTopic) {
+                    if (channel.IncludeTopic)
                         toast.Append(e.ApplicationMessage.Topic)
                              .Append(channel.Delimiter);
-                    }
 
                     toast.Append(payload);
                     ToastGui.ShowNormal(toast.ToString());
@@ -129,13 +127,9 @@ public class MqttManager
     {
         var compare = pattern2.Split('/');
         for (var i = 0; i < pattern.Count; i++) {
-            if (i > compare.Length) {
-                return false;
-            }
-            
-            if (pattern[i] == compare[i]) {
-                continue;
-            }
+            if (i > compare.Length) return false;
+
+            if (pattern[i] == compare[i]) continue;
 
             switch (compare[i]) {
                 case "#":
@@ -146,6 +140,7 @@ public class MqttManager
                     return false;
             }
         }
+
         return true;
     }
 
@@ -162,7 +157,7 @@ public class MqttManager
             mqttClient.SubscribeAsync(topic.Path);
             CurrentSubscriptions.Add(topic.Path);
         }
-        
+
         var topicsToRemove =
             from topic in CurrentSubscriptions
             where configuration.OutputChannels.All(s => s.Path != topic)
@@ -177,7 +172,7 @@ public class MqttManager
     public void ConnectToBroker()
     {
         if (configuration.BrokerAddress != string.Empty) {
-            PluginLog.Information("Connecting to MQTT broker...");
+            Service.Log.Information("Connecting to MQTT broker...");
 
             var options = new ManagedMqttClientOptionsBuilder()
                          .WithClientOptions(new MqttClientOptionsBuilder()
@@ -194,7 +189,7 @@ public class MqttManager
             mqttClient.StartAsync(options);
             mqttClient.EnqueueAsync(ConnectedMessage());
         } else {
-            PluginLog.Warning("No broker address has been set. Will not attempt to connect.");
+            Service.Log.Warning("No broker address has been set. Will not attempt to connect.");
         }
     }
 
@@ -209,7 +204,7 @@ public class MqttManager
         try {
             mqttClient.ApplicationMessageReceivedAsync += handler;
         } catch (Exception ex) {
-            PluginLog.Error($"Failed to add MessageReceivedHandler:/n{ex}");
+            Service.Log.Error($"Failed to add MessageReceivedHandler:/n{ex}");
         }
     }
 
@@ -221,9 +216,7 @@ public class MqttManager
 
     public bool PublishMessage(string topic, string payload, bool retain, MqttQualityOfServiceLevel qos)
     {
-        if (IsConnected == false) {
-            return false;
-        }
+        if (IsConnected == false) return false;
         var messageBuilder = new MqttApplicationMessageBuilder()
                             .WithTopic(BuildTopic(topic))
                             .WithPayload(payload)
@@ -237,7 +230,7 @@ public class MqttManager
         try {
             mqttClient.EnqueueAsync(message);
         } catch (ArgumentNullException e) {
-            PluginLog.Error($"Failed to publish message: {e.Message}");
+            Service.Log.Error($"Failed to publish message: {e.Message}");
             return false;
         }
 
@@ -281,9 +274,7 @@ public class MqttManager
 
     public void Dispose()
     {
-        if (IsConnected) {
-            DisconnectFromBroker();
-        }
+        if (IsConnected) DisconnectFromBroker();
 
         mqttClient.ConnectedAsync                   -= LogConnectedAsync;
         mqttClient.ConnectingFailedAsync            -= LogConnectingFailedAsync;

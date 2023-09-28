@@ -14,10 +14,7 @@ internal class WorldInfoTopic : Topic, IDisposable
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
 
-    public override void Initialize()
-    {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public WorldInfoTopic() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Publish a message whenever the player changes worlds.
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -38,8 +35,5 @@ internal class WorldInfoTopic : Topic, IDisposable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Text.Json;
-using Dalamud.IoC;
-using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 using Lumina.Excel.GeneratedSheets;
 
@@ -9,20 +7,15 @@ namespace Ffxiv2Mqtt.Topics.Events;
 
 internal sealed class Territory : Topic, ICleanable, IDisposable
 {
-    protected override     string        TopicPath   => "Event/TerritoryChanged";
-    protected override     bool          Retained    => true;
-    [PluginService] public IClientState? ClientState { get; set; }
-    [PluginService] public IDataManager? DataManager { get; set; }
+    protected override string TopicPath => "Event/TerritoryChanged";
+    protected override bool   Retained  => true;
 
-    public override void Initialize()
-    {
-        ClientState!.TerritoryChanged += TerritoryChanged;
-    }
+    public Territory() { Service.ClientState.TerritoryChanged += TerritoryChanged; }
 
     // Publish a message whenever the player changes territories.
     private void TerritoryChanged(ushort territoryId)
     {
-        var territoryRow = DataManager?.Excel.GetSheet<TerritoryType>()?.GetRow(territoryId);
+        var territoryRow = Service.DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryId);
         if (territoryRow is null) return;
         Publish(JsonSerializer.Serialize(new
                                          {
@@ -34,13 +27,7 @@ internal sealed class Territory : Topic, ICleanable, IDisposable
     }
 
     // Remove retained messages when exiting 
-    public void Cleanup()
-    {
-        Publish("");
-    }
+    public void Cleanup() { Publish(""); }
 
-    public void Dispose()
-    {
-        ClientState!.TerritoryChanged -= TerritoryChanged;
-    }
+    public void Dispose() { Service.ClientState.TerritoryChanged -= TerritoryChanged; }
 }

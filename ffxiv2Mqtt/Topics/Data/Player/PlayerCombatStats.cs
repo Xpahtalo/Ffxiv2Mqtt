@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.IoC;
-using Ffxiv2Mqtt.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.UI.Info;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -17,19 +14,11 @@ internal unsafe class PlayerCombatStats : Topic, IDisposable
     protected override string TopicPath => "Player/Combat/Stats";
     protected override bool   Retained  => false;
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
-
-    public override void Initialize()
-    {
-        if (PlayerEvents is not null) PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public PlayerCombatStats() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
         var shouldPublish = false;
-
 
         var localPlayerShields = ((Character*)localPlayer.Address)->CharacterData.ShieldValue;
 
@@ -46,8 +35,5 @@ internal unsafe class PlayerCombatStats : Topic, IDisposable
                                              }));
     }
 
-    public void Dispose()
-    {
-        if (PlayerEvents is not null) PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

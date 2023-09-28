@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Dalamud.Logging;
 using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
@@ -14,13 +13,13 @@ internal class TopicManager : IDisposable
 
     internal TopicManager(MqttManager m, Configuration configuration)
     {
-        PluginLog.Verbose($"Creating {GetType().Name}");
+        Service.Log.Verbose($"Creating {GetType().Name}");
         topics        = new List<Topic>();
         cleanables    = new List<ICleanable>();
         configurables = new List<IConfigurable>();
 
         Configure(configuration);
-        PluginLog.Verbose($"{GetType().Name} created");
+        Service.Log.Verbose($"{GetType().Name} created");
     }
 
 
@@ -33,7 +32,7 @@ internal class TopicManager : IDisposable
             if (topic is IConfigurable)
                 configurables.Add((IConfigurable)topic);
         } catch (NullReferenceException) {
-            PluginLog.Error("Tried to add null topic");
+            Service.Log.Error("Tried to add null topic");
         }
     }
 

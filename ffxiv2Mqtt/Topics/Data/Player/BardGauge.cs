@@ -1,13 +1,10 @@
 ﻿using System;
-using Dalamud.Game.ClientState;
-using Dalamud.Game.ClientState.JobGauge;
 using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
-using Ffxiv2Mqtt.Services;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
@@ -25,15 +22,15 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
     protected override string TopicPath => "Player/JobGauge/BRD";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents?  PlayerEvents  { get; set; }
-    [PluginService] public IJobGauges?     JobGauges     { get; set; }
-    [PluginService] public IClientState?   ClientState   { get; set; }
+
+    [PluginService] public IJobGauges?    JobGauges     { get; set; }
+    [PluginService] public IClientState?  ClientState   { get; set; }
     [PluginService] public Configuration? Configuration { get; set; }
 
-    public override void Initialize()
+    public BardGauge()
     {
         Configure();
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
     }
 
     public void Configure()
@@ -43,13 +40,11 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
-        if (ClientState!.IsPvP)
+        if (Service.ClientState.IsPvP)
             return;
         if ((Job)localPlayer.ClassJob.Id != Job.Bard)
             return;
-        var gauge = JobGauges?.Get<BRDGauge>();
-        if (gauge is null)
-            return;
+        var gauge = Service.JobGauges.Get<BRDGauge>();
 
         var shouldPublish = false;
         for (var i = 0; i < coda.Length; i++) TestValue(gauge.Coda[i], ref coda[i], ref shouldPublish);
@@ -72,8 +67,5 @@ internal class BardGauge : Topic, IDisposable, IConfigurable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

@@ -16,10 +16,7 @@ internal class PlayerCast : Topic, IDisposable
     // ReSharper disable once MemberCanBePrivate.Global
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
-    public override void Initialize()
-    {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public PlayerCast() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Publish a message if the player either starts or stops casting.
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -37,8 +34,5 @@ internal class PlayerCast : Topic, IDisposable
                                              }));
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

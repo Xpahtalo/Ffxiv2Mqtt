@@ -6,7 +6,7 @@ using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class PlayerGathererStatsTopic : Topic, IDisposable
+internal class PlayerGathererStats : Topic, IDisposable
 {
     private uint gp;
     private bool forcePublish;
@@ -15,10 +15,10 @@ internal class PlayerGathererStatsTopic : Topic, IDisposable
     protected override     bool          Retained     => false;
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
-    public override void Initialize()
+    public PlayerGathererStats()
     {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-        PlayerEvents!.OnJobChange        += JobChanged;
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
+        Service.PlayerEvents.OnJobChange        += JobChanged;
     }
 
     // Publish a message if GP changes.
@@ -46,7 +46,7 @@ internal class PlayerGathererStatsTopic : Topic, IDisposable
 
     public void Dispose()
     {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-        PlayerEvents!.OnJobChange        -= JobChanged;
+        Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
+        Service.PlayerEvents.OnJobChange        -= JobChanged;
     }
 }

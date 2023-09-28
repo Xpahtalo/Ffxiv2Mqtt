@@ -3,7 +3,6 @@ using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
-using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Services;
 
@@ -18,23 +17,16 @@ internal class AstrologianGauge : Topic, IDisposable
     protected override     string        TopicPath    => "Player/JobGauge/AST";
     protected override     bool          Retained     => false;
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-    [PluginService] public IJobGauges?    JobGauges    { get; set; }
-    [PluginService] public IClientState?  ClientState  { get; set; }
 
-    public override void Initialize()
-    {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public AstrologianGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
-        if (ClientState!.IsPvP)
+        if (Service.ClientState.IsPvP)
             return;
         if ((Job)localPlayer.ClassJob.Id != Job.Astrologian)
             return;
-        var gauge = JobGauges?.Get<ASTGauge>();
-        if (gauge is null)
-            return;
+        var gauge = Service.JobGauges.Get<ASTGauge>();
 
         var shouldPublish = false;
         TestValue(gauge.DrawnCard,      ref drawnCard,      ref shouldPublish);
@@ -51,8 +43,5 @@ internal class AstrologianGauge : Topic, IDisposable
     }
 
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

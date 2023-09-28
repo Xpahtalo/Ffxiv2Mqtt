@@ -18,23 +18,18 @@ internal class RedMageGauge : Topic, IDisposable
     protected override bool   Retained  => false;
 
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-    [PluginService] public IJobGauges?    JobGauges    { get; set; }
-    [PluginService] public IClientState?  ClientState  { get; set; }
+    [PluginService] public IJobGauges?   JobGauges    { get; set; }
+    [PluginService] public IClientState? ClientState  { get; set; }
 
-    public override void Initialize()
-    {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public RedMageGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
     {
-        if (ClientState!.IsPvP)
+        if (Service.ClientState.IsPvP)
             return;
         if ((Job)localPlayer.ClassJob.Id != Job.RedMage)
             return;
-        var gauge = JobGauges?.Get<RDMGauge>();
-        if (gauge is null)
-            return;
+        var gauge = Service.JobGauges.Get<RDMGauge>();
 
         var shouldPublish = false;
         TestValue(gauge.ManaStacks, ref manaStacks, ref shouldPublish);
@@ -50,8 +45,5 @@ internal class RedMageGauge : Topic, IDisposable
                     });
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

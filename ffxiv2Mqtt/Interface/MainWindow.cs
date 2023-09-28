@@ -55,13 +55,9 @@ internal class MainWindow : Window
             ImGui.Spacing();
 
             if (mqttManager.IsStarted) {
-                if (ImGui.Button("Disconnect")) {
-                    mqttManager.DisconnectFromBroker();
-                }
+                if (ImGui.Button("Disconnect")) mqttManager.DisconnectFromBroker();
             } else {
-                if (ImGui.Button("Connect")) {
-                    mqttManager.ConnectToBroker();
-                }
+                if (ImGui.Button("Connect")) mqttManager.ConnectToBroker();
             }
         }
 
@@ -69,11 +65,8 @@ internal class MainWindow : Window
         ImGui.Separator();
         ImGui.Text("Debug");
         ImGui.Text("Current Subscriptions:");
-        foreach (var subscription in mqttManager.CurrentSubscriptions) {
-            ImGui.Text(subscription);
-        }
+        foreach (var subscription in mqttManager.CurrentSubscriptions) ImGui.Text(subscription);
 #endif
-
     }
 
 #endregion
@@ -92,8 +85,7 @@ internal class MainWindow : Window
         var includeClientId = configuration.IncludeClientId;
         if (ImGui.Checkbox("Include Client ID in topic?", ref includeClientId))
             configuration.IncludeClientId = includeClientId;
-        HelpMarker(
-            "This is useful if you have multiple computers connected to the same broker, so you can differentiate between them. Otherwise, leave it off.");
+        HelpMarker("This is useful if you have multiple computers connected to the same broker, so you can differentiate between them. Otherwise, leave it off.");
 
         var user                                                       = configuration.User;
         if (ImGui.InputText("User", ref user, 256)) configuration.User = user;
@@ -106,7 +98,7 @@ internal class MainWindow : Window
                       "Password is stored in plaintext. It is not secure, so please use a unique password for your user.");
 
 
-        var brokerAddress = configuration.BrokerAddress;
+        var brokerAddress                                                                           = configuration.BrokerAddress;
         if (ImGui.InputText("Broker Address", ref brokerAddress, 2000)) configuration.BrokerAddress = brokerAddress;
 
         var brokerPort                                                              = configuration.BrokerPort;
@@ -125,8 +117,7 @@ internal class MainWindow : Window
 
         var interval                                                              = configuration.Interval;
         if (ImGui.InputInt("Sync Interval", ref interval)) configuration.Interval = interval;
-        HelpMarker(
-            "This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
+        HelpMarker("This is used to send messages multiple times as timers tick. 1000 is one second. Set to -1 to disable.");
 
         if (ImGui.Button("Save")) {
             topicManager.Configure(configuration);
@@ -155,13 +146,12 @@ internal class MainWindow : Window
 
     private void DrawAddSubscriptionButton()
     {
-        if (ImGui.Button("Add New Subscription")) {
+        if (ImGui.Button("Add New Subscription"))
             configuration.OutputChannels.Add(new OutputChannel
                                              {
                                                  Path        = "",
                                                  ChannelType = OutputChannelType.Disabled,
                                              });
-        }
     }
 
     private void DrawSubscriptions()
@@ -169,39 +159,30 @@ internal class MainWindow : Window
         var i = 0;
         foreach (var outputChannel in configuration.OutputChannels.ToArray()) {
             using var id = new ImRaii.Id().Push(i++);
-            
+
             var path         = outputChannel.Path;
             var channelType  = outputChannel.ChannelType;
             var includeTopic = outputChannel.IncludeTopic;
             var delimiter    = outputChannel.Delimiter;
 
-            if (ImGui.InputText($"Topic", ref path, 2000)) {
-                outputChannel.Path = path;
-            }
+            if (ImGui.InputText("Topic", ref path, 2000)) outputChannel.Path = path;
 
             using (var outputCombo = ImRaii.Combo("Output", $"{channelType}")) {
-                if (outputCombo) {
+                if (outputCombo)
                     foreach (var outputChannelType in Enum.GetValues(typeof(OutputChannelType))) {
                         if (!ImGui.Selectable($"{outputChannelType}"))
                             continue;
 
-                        OutputChannelType.TryParse(outputChannelType.ToString(), out channelType);
+                        Enum.TryParse(outputChannelType.ToString(), out channelType);
                         outputChannel.ChannelType = channelType;
                     }
-                }
             }
 
-            if (ImGui.Checkbox($"Include Topic?", ref includeTopic)) {
-                outputChannel.IncludeTopic = includeTopic;
-            }
+            if (ImGui.Checkbox("Include Topic?", ref includeTopic)) outputChannel.IncludeTopic = includeTopic;
 
-            if (ImGui.InputText($"Delimiter", ref delimiter, 10)) {
-                outputChannel.Delimiter = delimiter;
-            }
+            if (ImGui.InputText("Delimiter", ref delimiter, 10)) outputChannel.Delimiter = delimiter;
 
-            if (ImGui.Button($"Remove")) {
-                configuration.OutputChannels.Remove(outputChannel);
-            }
+            if (ImGui.Button("Remove")) configuration.OutputChannels.Remove(outputChannel);
         }
     }
 
@@ -232,5 +213,4 @@ internal class MainWindow : Window
     }
 
 #endregion
-
 }

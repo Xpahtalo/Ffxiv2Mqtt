@@ -14,10 +14,7 @@ internal class PlayerCrafterStats : Topic, IDisposable
     protected override     bool          Retained     => false;
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
-    public override void Initialize()
-    {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-    }
+    public PlayerCrafterStats() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Send a message when the player's CP changes.
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -33,8 +30,5 @@ internal class PlayerCrafterStats : Topic, IDisposable
                                              }));
     }
 
-    public void Dispose()
-    {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 }

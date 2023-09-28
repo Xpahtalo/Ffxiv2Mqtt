@@ -20,10 +20,10 @@ internal class PlayerInfo : Topic, IDisposable
     protected override     bool          Retained     => true;
     [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
-    public override void Initialize()
+    public PlayerInfo()
     {
-        PlayerEvents!.LocalPlayerUpdated += PlayerUpdated;
-        PlayerEvents!.OnJobChange        += JobChanged;
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
+        Service.PlayerEvents.OnJobChange        += JobChanged;
     }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
@@ -36,38 +36,25 @@ internal class PlayerInfo : Topic, IDisposable
         TestValue(localPlayer.MaxCp,       ref maxCp,      ref shouldPublish);
         TestValue(localPlayer.MaxGp,       ref maxGp,      ref shouldPublish);
 
-        if (shouldPublish || forcePublish) {
-            forcePublish = false;
-            var payload =
-                $"{{\"Class\":\"{localPlayer.ClassJob.GameData?.Abbreviation ?? ""}\"," +
-                $"\"ClassId\":{localPlayer.ClassJob.Id},"                               +
-                $"\"Level\":{localPlayer.Level},"                                       +
-                $"\"MaxHP\":{localPlayer.MaxHp},"                                       +
-                $"\"MaxMP\":{localPlayer.MaxMp},"                                       +
-                $"\"MaxCP\":{localPlayer.MaxCp},"                                       +
-                $"\"MaxGP\":{localPlayer.MaxGp}}}";
-            Publish(payload);
-            // Publish(new
-            //         {
-            //             Class   = localPlayer.ClassJob.GameData?.Abbreviation ?? "",
-            //             ClassId = localPlayer.ClassJob.Id,
-            //             localPlayer.Level,
-            //             MaxHP   = localPlayer.MaxHp,
-            //             MaxMP   = localPlayer.MaxMp,
-            //             MaxCP   = localPlayer.MaxCp,
-            //             MaxGP   = localPlayer.MaxGp,
-            //         });
-        }
+        if (!shouldPublish && !forcePublish)
+            return;
+        forcePublish = false;
+        var payload =
+            $"{{\"Class\":\"{localPlayer.ClassJob.GameData?.Abbreviation ?? ""}\"," +
+            $"\"ClassId\":{localPlayer.ClassJob.Id},"                               +
+            $"\"Level\":{localPlayer.Level},"                                       +
+            $"\"MaxHP\":{localPlayer.MaxHp},"                                       +
+            $"\"MaxMP\":{localPlayer.MaxMp},"                                       +
+            $"\"MaxCP\":{localPlayer.MaxCp},"                                       +
+            $"\"MaxGP\":{localPlayer.MaxGp}}}";
+        Publish(payload);
     }
 
-    private void JobChanged(Job previousJob, Job currentJob)
-    {
-        forcePublish = true;
-    }
+    private void JobChanged(Job previousJob, Job currentJob) { forcePublish = true; }
 
     public void Dispose()
     {
-        PlayerEvents!.LocalPlayerUpdated -= PlayerUpdated;
-        PlayerEvents!.OnJobChange        -= JobChanged;
+        Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
+        Service.PlayerEvents.OnJobChange        -= JobChanged;
     }
 }

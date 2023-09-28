@@ -1,5 +1,5 @@
-﻿using System.Text.Json;
-using System.Numerics;
+﻿using System.Numerics;
+using System.Text.Json;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Ffxiv2Mqtt.Services;
@@ -15,7 +15,7 @@ internal abstract class Topic
     [PluginService] public MqttManager MqttManager { get; set; } = null!;
 
     // Perform setup after property injection e.g. subscribe to events.
-    public abstract void Initialize();
+    //public abstract void Initialize();
 
     // Serializes the object into a JSON payload and publishes it to the topic.
     protected void Publish(object o) { Publish(TopicPath, JsonSerializer.Serialize(o)); }

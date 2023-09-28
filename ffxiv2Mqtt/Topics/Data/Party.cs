@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Dalamud.Game;
-using Dalamud.Game.ClientState.Conditions;
 using Dalamud.Game.ClientState.Party;
-using Dalamud.Game.DutyState;
-using Dalamud.IoC;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
 
@@ -21,14 +17,10 @@ internal class Party : Topic, IDisposable
 {
     private          int                   partyCount;
     private readonly JsonSerializerOptions serializerOptions;
-    
+
     protected override string TopicPath => "Party";
     protected override bool   Retained  => false;
 
-    [PluginService] public IPartyList?   PartyList   { get; set; }
-    [PluginService] public IFramework?   Framework   { get; set; }
-    [PluginService] public ICondition?   Condition   { get; set; }
-    [PluginService] public IDutyState?   DutyState   { get; set; }
 
     public Party()
     {
@@ -36,38 +28,28 @@ internal class Party : Topic, IDisposable
                             {
                                 Converters = { new PartyMemberSerializer() },
                             };
-    }
-
-    public override void Initialize()
-    {
-        if (Framework is not null) Framework.Update += FrameworkUpdate;
+        Service.Framework.Update += FrameworkUpdate;
     }
 
     private void FrameworkUpdate(IFramework framework)
     {
-        if (DutyState is { IsDutyStarted: false })
+        if (Service.DutyState is { IsDutyStarted: false })
             return;
-        
+
         // Assuming none of the previous blocking conditions are true, send party messages if the count has changed.
-        if(PartyList is not null && PartyList.Length == partyCount)    
+        if (Service.PartyList.Length == partyCount)
             return;
 
-        partyCount = PartyList!.Length;
+        partyCount = Service.PartyList.Length;
         Publish($"{TopicPath}/Count",   partyCount.ToString());
-        Publish($"{TopicPath}/Members", JsonSerializer.Serialize(PartyList, serializerOptions));
+        Publish($"{TopicPath}/Members", JsonSerializer.Serialize(Service.PartyList, serializerOptions));
     }
 
-    public void Dispose()
-    {
-        if (Framework is not null) Framework.Update               -= FrameworkUpdate;
-    }
+    public void Dispose() { Service.Framework.Update -= FrameworkUpdate; }
 
     private class PartyMemberSerializer : JsonConverter<PartyMember>
     {
-        public override PartyMember Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override PartyMember Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) { throw new NotImplementedException(); }
 
         public override void Write(Utf8JsonWriter writer, PartyMember value, JsonSerializerOptions options)
         {

@@ -3,8 +3,6 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Statuses;
-using Dalamud.IoC;
-using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -17,9 +15,6 @@ internal class PlayerStatuses : Topic, IDisposable
     protected override string TopicPath => "Player/Status";
     protected override bool   Retained  => false;
 
-    [PluginService]
-    // ReSharper disable once MemberCanBePrivate.Global
-    public PlayerEvents? PlayerEvents { get; set; }
 
     // Setting up a the JsonSerializerOptions takes some time, so saving it here for reuse makes things much faster.
     public PlayerStatuses()
@@ -28,11 +23,7 @@ internal class PlayerStatuses : Topic, IDisposable
                             {
                                 Converters = { new StatusSerializer() },
                             };
-    }
-
-    public override void Initialize()
-    {
-        if (PlayerEvents is not null) PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
     }
 
     // Publish a message if the number of statuses on the player has changed.
@@ -54,18 +45,12 @@ internal class PlayerStatuses : Topic, IDisposable
             Publish(JsonSerializer.Serialize(localPlayer.StatusList, serializerOptions));
     }
 
-    public void Dispose()
-    {
-        if (PlayerEvents is not null) PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
-    }
+    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
 
     // A custom serializer is required to safely read a status because it has many properties that don't make sense to send.
     private class StatusSerializer : JsonConverter<Status>
     {
-        public override Status Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
-        {
-            throw new NotImplementedException();
-        }
+        public override Status Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) { throw new NotImplementedException(); }
 
         public override void Write(Utf8JsonWriter writer, Status value, JsonSerializerOptions options)
         {
