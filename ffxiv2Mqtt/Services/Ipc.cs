@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Dalamud.IoC;
-using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using MQTTnet;
 using MQTTnet.Client;

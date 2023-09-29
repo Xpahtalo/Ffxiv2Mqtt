@@ -33,7 +33,6 @@ internal abstract class Topic
         updated  = true;
     }
 
-    // In .NET 7 and C# 11, these can be simplified down to a single method with generics using INumber.
     private protected static void TestCountUp<T>(T current, ref T previous, T interval, ref bool updated)
         where T : INumber<T>
     {

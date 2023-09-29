@@ -58,13 +58,15 @@ public class Ffxiv2Mqtt : IDalamudPlugin
             try {
                 Service.Log.Debug($"Adding {t.Name}");
                 var topic = (Topic?)Activator.CreateInstance(t);
-                if (topic is null) return;
+                if (topic is null)
+                    return;
                 pluginInterface.Inject(topic, Configuration);
                 topicManager.AddTopic(topic);
             } catch (Exception e) {
                 Service.Log.Error($"Failed to create {t.Name}: {e}");
             }
-
+        topicManager.Configure(Configuration);
+        
         windowSystem = new WindowSystem("Ffxiv2Mqtt");
         windowSystem.AddWindow(mainWindow = new MainWindow(Configuration, topicManager));
 
