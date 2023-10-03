@@ -13,7 +13,7 @@ internal class PlayerGathererStats : Topic, IDisposable
 
     protected override     string        TopicPath    => "Player/Gatherer/CurrentStats";
     protected override     bool          Retained     => false;
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+
 
     public PlayerGathererStats()
     {

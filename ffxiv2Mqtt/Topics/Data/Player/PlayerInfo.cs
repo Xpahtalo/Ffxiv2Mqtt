@@ -18,7 +18,6 @@ internal class PlayerInfo : Topic, IDisposable
 
     protected override     string        TopicPath    => "Player/Info";
     protected override     bool          Retained     => true;
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
     public PlayerInfo()
     {

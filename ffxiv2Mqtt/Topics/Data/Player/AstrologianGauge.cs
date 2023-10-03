@@ -16,7 +16,7 @@ internal class AstrologianGauge : Topic, IDisposable
 
     protected override     string        TopicPath    => "Player/JobGauge/AST";
     protected override     bool          Retained     => false;
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
+    
 
     public AstrologianGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 

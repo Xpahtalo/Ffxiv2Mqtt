@@ -20,8 +20,6 @@ internal class SamuraiGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/SAM";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public SamuraiGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

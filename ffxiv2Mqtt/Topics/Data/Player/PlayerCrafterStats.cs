@@ -12,7 +12,6 @@ internal class PlayerCrafterStats : Topic, IDisposable
 
     protected override     string        TopicPath    => "Player/Crafter/CurrentStats";
     protected override     bool          Retained     => false;
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
 
     public PlayerCrafterStats() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 

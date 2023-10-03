@@ -16,8 +16,6 @@ internal class GunbreakerGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/GNB";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public GunbreakerGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
 

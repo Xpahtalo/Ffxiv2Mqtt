@@ -14,8 +14,6 @@ internal class PaladinGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/PLD";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public PaladinGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

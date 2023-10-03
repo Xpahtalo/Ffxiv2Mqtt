@@ -17,10 +17,6 @@ internal class RedMageGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/RDM";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-    [PluginService] public IJobGauges?   JobGauges    { get; set; }
-    [PluginService] public IClientState? ClientState  { get; set; }
-
     public RedMageGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

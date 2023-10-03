@@ -19,8 +19,6 @@ internal class DancerGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/DNC";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public DancerGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)

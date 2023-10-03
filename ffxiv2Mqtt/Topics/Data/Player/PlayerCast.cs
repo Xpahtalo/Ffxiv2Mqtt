@@ -13,9 +13,6 @@ internal class PlayerCast : Topic, IDisposable
     protected override string TopicPath => "Player/Casting";
     protected override bool   Retained  => false;
 
-    // ReSharper disable once MemberCanBePrivate.Global
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public PlayerCast() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Publish a message if the player either starts or stops casting.

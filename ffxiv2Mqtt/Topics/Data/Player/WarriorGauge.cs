@@ -14,8 +14,6 @@ internal class WarriorGauge : Topic, IDisposable
     protected override string TopicPath => "Player/JobGauge/WAR";
     protected override bool   Retained  => false;
 
-    [PluginService] public PlayerEvents? PlayerEvents { get; set; }
-
     public WarriorGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     private void PlayerUpdated(PlayerCharacter localPlayer)
