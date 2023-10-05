@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
+using Dalamud.Interface;
+using Dalamud.Interface.Internal.Notifications;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
 using MQTTnet.Client;
@@ -102,6 +104,9 @@ public class MqttManager
 
                     toast.Append(payload);
                     Service.ToastGui.ShowNormal(toast.ToString());
+                    break;
+                case OutputChannelType.DalamudToast:
+                    Service.PluginInterface.UiBuilder.AddNotification(payload, channel.IncludeTopic ? e.ApplicationMessage.Topic : "ffxiv2mqtt", NotificationType.Info, 5000);
                     break;
                 case OutputChannelType.Disabled:
                     break;
