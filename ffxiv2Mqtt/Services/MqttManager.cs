@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
 using MQTTnet.Client;
