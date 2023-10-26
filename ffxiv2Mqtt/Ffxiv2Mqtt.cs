@@ -75,7 +75,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
 
         CommandManager.AddHandler(ConfigCommandName, new CommandInfo(OnCommand)
                                                      {
-                                                         HelpMessage = "Display MQTT Client Info",
+                                                         HelpMessage = "Open plugin settings.",
                                                      });
         CommandManager.AddHandler(TestCommandName, new CommandInfo(OnCommand)
                                                    {
