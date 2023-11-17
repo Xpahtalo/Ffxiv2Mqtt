@@ -22,7 +22,7 @@ internal class SamuraiGauge : Topic, IDisposable
 
     public SamuraiGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;

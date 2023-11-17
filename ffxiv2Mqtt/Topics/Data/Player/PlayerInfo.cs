@@ -25,7 +25,7 @@ internal class PlayerInfo : Topic, IDisposable
         Service.PlayerEvents.OnJobChange        += JobChanged;
     }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish = false;
         TestValue(localPlayer.ClassJob.Id, ref classJobId, ref shouldPublish);

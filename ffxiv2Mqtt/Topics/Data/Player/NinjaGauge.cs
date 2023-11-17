@@ -3,16 +3,17 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
-using Ffxiv2Mqtt.Topics.Interfaces;
+using CSNinjaGauge = FFXIVClientStructs.FFXIV.Client.Game.Gauge.NinjaGauge;
+
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class NinjaGauge : Topic, IDisposable, IConfigurable
+internal class NinjaGauge : Topic, IDisposable 
 {
-    private byte hutonManualCasts;
-    private int  hutonTimer;
+    // private byte hutonManualCasts;
+    // private int  hutonTimer;
     private byte ninki;
-    private int  syncTimer;
+    private byte kazematoi;
 
     protected override string TopicPath => "Player/JobGauge/NIN";
     protected override bool   Retained  => false;
@@ -20,39 +21,36 @@ internal class NinjaGauge : Topic, IDisposable, IConfigurable
 
     [PluginService] public Configuration? Configuration { get; set; }
 
-    public NinjaGauge()
-    {
-        Configure();
+    public NinjaGauge() {
         Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
     }
 
-    public void Configure()
-    {
-        if (Configuration is not null) syncTimer = Configuration.Interval;
-    }
+    private unsafe void PlayerUpdated(IPlayerCharacter localPlayer) {
+        if (Service.ClientState.IsPvP) {
+            return;
+        }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
-    {
-        if (Service.ClientState.IsPvP)
+        if ((Job)localPlayer.ClassJob.Id != Job.Ninja) {
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Ninja)
-            return;
+        }
+
         var gauge = Service.JobGauges.Get<NINGauge>();
 
         var shouldPublish = false;
-        TestValue(gauge.HutonManualCasts, ref hutonManualCasts, ref shouldPublish);
-        TestValue(gauge.Ninki,            ref ninki,            ref shouldPublish);
-        TestCountDown(gauge.HutonTimer, ref hutonTimer, syncTimer, ref shouldPublish);
+        TestValue(gauge.Ninki, ref ninki, ref shouldPublish);
+        var gaugeKazematoi = ((CSNinjaGauge*)gauge.Address)->Kazematoi;
+        TestValue(gaugeKazematoi, ref kazematoi, ref shouldPublish);
 
 
-        if (shouldPublish)
-            Publish(new
-                    {
-                        gauge.Ninki,
-                        gauge.HutonTimer,
-                        gauge.HutonManualCasts,
-                    });
+        if (shouldPublish) {
+            Publish(new {
+                gauge.Ninki,
+                gaugeKazematoi,
+            });
+        }
     }
 
-    public void Dispose() { Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated; }
+    public void Dispose() {
+        Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
+    }
 }

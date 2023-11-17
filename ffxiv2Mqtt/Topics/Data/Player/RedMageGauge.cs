@@ -19,7 +19,7 @@ internal class RedMageGauge : Topic, IDisposable
 
     public RedMageGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;

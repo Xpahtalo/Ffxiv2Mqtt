@@ -10,7 +10,7 @@ public class Configuration : IPluginConfiguration
 {
     // the below exist just to make saving less cumbersome
     [NonSerialized]
-    private DalamudPluginInterface? pluginInterface;
+    private IDalamudPluginInterface? pluginInterface;
 
     public int Version { get; set; } = 1;
 
@@ -28,7 +28,7 @@ public class Configuration : IPluginConfiguration
     // Path Settings
     public int Interval { get; set; } = 5000;
 
-    public void Initialize(DalamudPluginInterface pluginInterface) { this.pluginInterface = pluginInterface; }
+    public void Initialize(IDalamudPluginInterface pluginInterface) { this.pluginInterface = pluginInterface; }
 
     public void Save() { pluginInterface!.SavePluginConfig(this); }
 }

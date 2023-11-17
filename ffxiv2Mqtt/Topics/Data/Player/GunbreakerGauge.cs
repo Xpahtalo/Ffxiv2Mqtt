@@ -19,7 +19,7 @@ internal class GunbreakerGauge : Topic, IDisposable
     public GunbreakerGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;

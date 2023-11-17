@@ -1,13 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Dalamud.NET.Sdk/10.0.0">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.5.0</Version>
+        <Version>1.0.6.0</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>
     </PropertyGroup>
 
     <PropertyGroup>
-        <TargetFramework>net7.0-windows</TargetFramework>
         <Platforms>x64</Platforms>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
@@ -17,12 +16,10 @@
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
-
-    <Import Project="Dalamud.Plugin.Bootstrap.targets"/>
     
     <ItemGroup>
-        <PackageReference Include="MQTTnet" Version="4.3.1.873"/>
-        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.1.873"/>
+        <PackageReference Include="MQTTnet" Version="4.3.6.1152" />
+        <PackageReference Include="MQTTnet.Extensions.ManagedClient" Version="4.3.6.1152" />
     </ItemGroup>
 
     <ItemGroup>

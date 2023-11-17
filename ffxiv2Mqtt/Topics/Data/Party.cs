@@ -41,11 +41,11 @@ internal class Party : Topic, IDisposable
 
     public void Dispose() { Service.Framework.Update -= FrameworkUpdate; }
 
-    private class PartyMemberSerializer : JsonConverter<PartyMember>
+    private class PartyMemberSerializer : JsonConverter<IPartyMember>
     {
-        public override PartyMember Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) { throw new NotImplementedException(); }
+        public override IPartyMember Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) { throw new NotImplementedException(); }
 
-        public override void Write(Utf8JsonWriter writer, PartyMember value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, IPartyMember value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
             writer.WriteString("Name", value.Name.ToString());

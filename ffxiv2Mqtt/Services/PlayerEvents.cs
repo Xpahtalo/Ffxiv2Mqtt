@@ -13,7 +13,7 @@ internal class PlayerEvents : IDisposable
     public delegate void OnJobChangeDelegate(Job previousJob, Job currentJob);
 
     // A delegate type used with the LocalPlayerUpdated event.
-    public delegate void LocalPlayerUpdatedDelegate(PlayerCharacter localPlayer);
+    public delegate void LocalPlayerUpdatedDelegate(IPlayerCharacter localPlayer);
 
     // Event that gets fired when the player changes jobs.
     public event OnJobChangeDelegate? OnJobChange;

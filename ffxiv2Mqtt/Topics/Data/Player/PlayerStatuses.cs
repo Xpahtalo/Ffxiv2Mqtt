@@ -27,7 +27,7 @@ internal class PlayerStatuses : Topic, IDisposable
     }
 
     // Publish a message if the number of statuses on the player has changed.
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish     = false;
         var activeStatusCount = 0;

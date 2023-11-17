@@ -2,7 +2,6 @@
 using System.Linq;
 using Dalamud.Game.Command;
 using Dalamud.Interface.Windowing;
-using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Interface;
@@ -25,7 +24,7 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private readonly TopicManager topicManager;
     private readonly Ipc          ipc;
 
-    private       DalamudPluginInterface PluginInterface { get; }
+    private       IDalamudPluginInterface PluginInterface { get; }
     private       ICommandManager        CommandManager  { get; }
     public        string                 Name            => InternalName;
     private const string                 InternalName = "FFXIV2MQTT"; // Do not change this ever.
@@ -35,8 +34,8 @@ public class Ffxiv2Mqtt : IDalamudPlugin
     private const string CustomCommandName = "/mqttcustom";
 
     public Ffxiv2Mqtt(
-        [RequiredVersion("1.0")] DalamudPluginInterface pluginInterface,
-        [RequiredVersion("1.0")] ICommandManager        commandManager)
+        IDalamudPluginInterface pluginInterface,
+        ICommandManager        commandManager)
     {
         PluginInterface = pluginInterface;
         CommandManager  = commandManager;

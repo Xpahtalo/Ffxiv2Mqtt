@@ -22,7 +22,7 @@ internal class PlayerGathererStats : Topic, IDisposable
     }
 
     // Publish a message if GP changes.
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish = false;
 

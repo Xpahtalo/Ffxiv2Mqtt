@@ -16,7 +16,7 @@ internal class PaladinGauge : Topic, IDisposable
 
     public PaladinGauge() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;

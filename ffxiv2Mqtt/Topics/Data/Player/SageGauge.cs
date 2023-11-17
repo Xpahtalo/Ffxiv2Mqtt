@@ -35,7 +35,7 @@ internal class SageGauge : Topic, IDisposable, IConfigurable
         if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;

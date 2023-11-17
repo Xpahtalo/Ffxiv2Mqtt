@@ -4,8 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Dalamud.Game.Text.SeStringHandling;
-using Dalamud.Interface;
-using Dalamud.Interface.Internal.Notifications;
+using Dalamud.Interface.ImGuiNotification;
 using Ffxiv2Mqtt.Enums;
 using MQTTnet;
 using MQTTnet.Client;
@@ -106,7 +105,12 @@ public class MqttManager
                     Service.ToastGui.ShowNormal(toast.ToString());
                     break;
                 case OutputChannelType.DalamudToast:
-                    Service.PluginInterface.UiBuilder.AddNotification(payload, channel.IncludeTopic ? e.ApplicationMessage.Topic : "ffxiv2mqtt", NotificationType.Info, 5000);
+                    Service.NotificationManager.AddNotification(new Notification {
+                        Content         = payload,
+                        Title           = channel.IncludeTopic ? e.ApplicationMessage.Topic : "ffxiv2mqtt",
+                        Type            = NotificationType.Info,
+                        InitialDuration = TimeSpan.FromSeconds(5),
+                    });
                     break;
                 case OutputChannelType.Disabled:
                     break;
@@ -258,16 +262,6 @@ public class MqttManager
         return new MqttApplicationMessageBuilder()
               .WithTopic(BuildTopic("connected"))
               .WithPayload("true")
-              .WithRetainFlag()
-              .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
-              .Build();
-    }
-
-    private MqttApplicationMessage DisconnectedMessage()
-    {
-        return new MqttApplicationMessageBuilder()
-              .WithTopic(BuildTopic("connected"))
-              .WithPayload("false")
               .WithRetainFlag()
               .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
               .Build();

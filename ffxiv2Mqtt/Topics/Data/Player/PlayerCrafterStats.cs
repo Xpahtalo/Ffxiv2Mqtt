@@ -16,7 +16,7 @@ internal class PlayerCrafterStats : Topic, IDisposable
     public PlayerCrafterStats() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Send a message when the player's CP changes.
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldUpdate = false;
 

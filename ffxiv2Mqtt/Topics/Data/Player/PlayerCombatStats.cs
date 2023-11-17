@@ -16,7 +16,7 @@ internal unsafe class PlayerCombatStats : Topic, IDisposable
 
     public PlayerCombatStats() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish = false;
 

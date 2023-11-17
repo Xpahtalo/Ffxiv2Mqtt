@@ -13,6 +13,7 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
     private bool  isEnochianActive;
     private bool  isParadoxActive;
     private byte  astralFireStacks;
+    private int   astralSoulStacks;
     private byte  umbralIceStacks;
     private short elementTimeRemaining;
     private short enochianTimeRemaining;
@@ -38,7 +39,7 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
         if (Configuration is not null) syncTimer = (short)Configuration.Interval;
     }
 
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         if (Service.ClientState.IsPvP)
             return;
@@ -50,6 +51,7 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
         TestValue(gauge.IsEnochianActive, ref isEnochianActive, ref shouldPublish);
         TestValue(gauge.IsParadoxActive,  ref isParadoxActive,  ref shouldPublish);
         TestValue(gauge.AstralFireStacks, ref astralFireStacks, ref shouldPublish);
+        TestValue(gauge.AstralSoulStacks, ref astralSoulStacks, ref shouldPublish);
         TestValue(gauge.UmbralIceStacks,  ref umbralIceStacks,  ref shouldPublish);
         TestValue(gauge.UmbralHearts,     ref umbralHearts,     ref shouldPublish);
         TestValue(gauge.PolyglotStacks,   ref polyglotStacks,   ref shouldPublish);
@@ -63,6 +65,7 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
                         EnochianTimeRemaining = gauge.EnochianTimer,
                         ParadoxActive         = gauge.IsParadoxActive,
                         gauge.AstralFireStacks,
+                        gauge.AstralSoulStacks,
                         gauge.UmbralIceStacks,
                         ElementTimeRemaining = gauge.EnochianTimer,
                         gauge.UmbralHearts,

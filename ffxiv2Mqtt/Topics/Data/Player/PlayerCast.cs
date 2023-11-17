@@ -16,7 +16,7 @@ internal class PlayerCast : Topic, IDisposable
     public PlayerCast() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Publish a message if the player either starts or stops casting.
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish = false;
 

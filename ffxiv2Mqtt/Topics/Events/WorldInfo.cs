@@ -14,7 +14,7 @@ internal class WorldInfoTopic : Topic, IDisposable
     public WorldInfoTopic() { Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated; }
 
     // Publish a message whenever the player changes worlds.
-    private void PlayerUpdated(PlayerCharacter localPlayer)
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
     {
         var shouldPublish = false;
 
