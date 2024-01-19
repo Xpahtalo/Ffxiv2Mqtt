@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -190,8 +190,14 @@ public class MqttManager
 
     public void DisconnectFromBroker()
     {
-        mqttClient.EnqueueAsync(DisconnectedMessage());
-        mqttClient.StopAsync();
+        // We disconnect manually so we can ask the broker to send our last
+        // will message. The old code here used to publish and then disconnect,
+        // which is not reliable as the message doesn't always get sent before
+        // the disconnect.
+        mqttClient.InternalClient.DisconnectAsync(MqttClientDisconnectOptionsReason.DisconnectWithWillMessage).Wait();
+        // The StopAsync is still necessary so the MqttManager knows it's
+        // disconnected.
+        mqttClient.StopAsync(false).Wait();
     }
 
     public void AddMessageReceivedHandler(Func<MqttApplicationMessageReceivedEventArgs, Task> handler)
