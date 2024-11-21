@@ -25,26 +25,25 @@ internal class PlayerInfo : Topic, IDisposable
         Service.PlayerEvents.OnJobChange        += JobChanged;
     }
 
-    private void PlayerUpdated(IPlayerCharacter localPlayer)
-    {
+    private void PlayerUpdated(IPlayerCharacter localPlayer) {
         var shouldPublish = false;
-        TestValue(localPlayer.ClassJob.Id, ref classJobId, ref shouldPublish);
-        TestValue(localPlayer.Level,       ref level,      ref shouldPublish);
-        TestValue(localPlayer.MaxHp,       ref maxHp,      ref shouldPublish);
-        TestValue(localPlayer.MaxMp,       ref maxMp,      ref shouldPublish);
-        TestValue(localPlayer.MaxCp,       ref maxCp,      ref shouldPublish);
-        TestValue(localPlayer.MaxGp,       ref maxGp,      ref shouldPublish);
+        TestValue(localPlayer.ClassJob.RowId, ref classJobId, ref shouldPublish);
+        TestValue(localPlayer.Level,          ref level,      ref shouldPublish);
+        TestValue(localPlayer.MaxHp,          ref maxHp,      ref shouldPublish);
+        TestValue(localPlayer.MaxMp,          ref maxMp,      ref shouldPublish);
+        TestValue(localPlayer.MaxCp,          ref maxCp,      ref shouldPublish);
+        TestValue(localPlayer.MaxGp,          ref maxGp,      ref shouldPublish);
 
         if (!shouldPublish && !forcePublish)
             return;
         forcePublish = false;
         var payload =
-            $"{{\"Class\":\"{localPlayer.ClassJob.GameData?.Abbreviation ?? ""}\"," +
-            $"\"ClassId\":{localPlayer.ClassJob.Id},"                               +
-            $"\"Level\":{localPlayer.Level},"                                       +
-            $"\"MaxHP\":{localPlayer.MaxHp},"                                       +
-            $"\"MaxMP\":{localPlayer.MaxMp},"                                       +
-            $"\"MaxCP\":{localPlayer.MaxCp},"                                       +
+            $"{{\"Class\":\"{localPlayer.ClassJob.Value.Abbreviation}\"," +
+            $"\"ClassId\":{localPlayer.ClassJob.RowId},"                  +
+            $"\"Level\":{localPlayer.Level},"                             +
+            $"\"MaxHP\":{localPlayer.MaxHp},"                             +
+            $"\"MaxMP\":{localPlayer.MaxMp},"                             +
+            $"\"MaxCP\":{localPlayer.MaxCp},"                             +
             $"\"MaxGP\":{localPlayer.MaxGp}}}";
         Publish(payload);
     }

@@ -4,6 +4,7 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
+using Ffxiv2Mqtt.Extensions;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
@@ -37,7 +38,7 @@ internal class ScholarGauge : Topic, IDisposable, IConfigurable
     {
         if (Service.ClientState.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Scholar)
+        if (!localPlayer.IsJob(Job.Scholar))
             return;
         var gauge = Service.JobGauges.Get<SCHGauge>();
 

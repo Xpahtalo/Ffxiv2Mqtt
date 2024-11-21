@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.Json;
 using Ffxiv2Mqtt.Topics.Interfaces;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace Ffxiv2Mqtt.Topics.Events;
 
@@ -15,14 +15,13 @@ internal sealed class Territory : Topic, ICleanable, IDisposable
     // Publish a message whenever the player changes territories.
     private void TerritoryChanged(ushort territoryId)
     {
-        var territoryRow = Service.DataManager.Excel.GetSheet<TerritoryType>()?.GetRow(territoryId);
-        if (territoryRow is null) return;
+        var territoryRow = Service.DataManager.Excel.GetSheet<TerritoryType>().GetRow(territoryId);
         Publish(JsonSerializer.Serialize(new
                                          {
-                                             Name     = territoryRow.PlaceName?.Value?.Name.ToString() ?? "Unknown",
+                                             Name     = territoryRow.PlaceName.Value.Name.ToString(),
                                              ID       = territoryId,
-                                             Region   = territoryRow.PlaceNameRegion?.Value?.Name.ToString(),
-                                             RegionID = territoryRow.PlaceNameRegion?.Value?.RowId,
+                                             Region   = territoryRow.PlaceNameRegion.Value.Name.ToString(),
+                                             RegionID = territoryRow.PlaceNameRegion.Value.RowId,
                                          }));
     }
 

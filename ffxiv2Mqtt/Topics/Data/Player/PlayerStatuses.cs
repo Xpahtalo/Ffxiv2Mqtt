@@ -16,7 +16,7 @@ internal class PlayerStatuses : Topic, IDisposable
     protected override bool   Retained  => false;
 
 
-    // Setting up a the JsonSerializerOptions takes some time, so saving it here for reuse makes things much faster.
+    // Setting up the JsonSerializerOptions takes some time, so saving it here for reuse makes things much faster.
     public PlayerStatuses()
     {
         serializerOptions = new JsonSerializerOptions
@@ -55,7 +55,7 @@ internal class PlayerStatuses : Topic, IDisposable
         public override void Write(Utf8JsonWriter writer, Status value, JsonSerializerOptions options)
         {
             writer.WriteStartObject();
-            writer.WriteString("Name", value.GameData.Name.ToString());
+            writer.WriteString("Name", value.GameData.Value.Name);
             writer.WriteNumber("StatusId",      value.StatusId);
             writer.WriteNumber("Param",         value.Param);
             writer.WriteNumber("RemainingTime", value.RemainingTime);

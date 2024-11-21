@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.JobGauge.Enums;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Ffxiv2Mqtt.Enums;
+using Ffxiv2Mqtt.Extensions;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -25,7 +26,7 @@ internal class AstrologianGauge : Topic, IDisposable {
             return;
         }
 
-        if ((Job)localPlayer.ClassJob.Id != Job.Astrologian) {
+        if (!localPlayer.IsJob(Job.Astrologian)) {
             return;
         }
 

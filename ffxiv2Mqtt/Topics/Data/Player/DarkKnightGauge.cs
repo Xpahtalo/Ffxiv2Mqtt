@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
+using Ffxiv2Mqtt.Extensions;
 using Ffxiv2Mqtt.Topics.Interfaces;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
@@ -36,7 +37,7 @@ internal class DarkKnightGauge : Topic, IDisposable, IConfigurable
     {
         if (Service.ClientState.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.DarkKnight)
+        if (!localPlayer.IsJob(Job.DarkKnight))
             return;
         var gauge = Service.JobGauges.Get<DRKGauge>();
         if (gauge is null)

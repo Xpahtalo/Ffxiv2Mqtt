@@ -37,7 +37,7 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     }
 
     // Publish the login state and last character name when logging out.
-    private void Logout()
+    private void Logout(int type, int code)
     {
         Publish(JsonSerializer.Serialize(new
                                          {

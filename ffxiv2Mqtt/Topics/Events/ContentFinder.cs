@@ -1,5 +1,5 @@
 ﻿using System;
-using Lumina.Excel.GeneratedSheets;
+using Lumina.Excel.Sheets;
 
 namespace Ffxiv2Mqtt.Topics.Events;
 
@@ -7,9 +7,6 @@ internal sealed class ContentFinder : Topic, IDisposable
 {
     protected override string TopicPath => "Event/ContentFinder";
     protected override bool   Retained  => false;
-
-    // ReSharper disable once MemberCanBePrivate.Global
-
 
     public ContentFinder() { Service.ClientState.CfPop += CfPop; }
 

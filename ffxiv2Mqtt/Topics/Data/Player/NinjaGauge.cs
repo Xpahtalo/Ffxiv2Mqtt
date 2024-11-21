@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
+using Ffxiv2Mqtt.Extensions;
 using CSNinjaGauge = FFXIVClientStructs.FFXIV.Client.Game.Gauge.NinjaGauge;
 
 
@@ -30,7 +31,7 @@ internal class NinjaGauge : Topic, IDisposable
             return;
         }
 
-        if ((Job)localPlayer.ClassJob.Id != Job.Ninja) {
+        if (!localPlayer.IsJob(Job.Ninja)) {
             return;
         }
 

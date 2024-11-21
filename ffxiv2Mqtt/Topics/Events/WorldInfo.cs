@@ -21,14 +21,14 @@ internal class WorldInfoTopic : Topic, IDisposable
         var currentWorld = localPlayer.CurrentWorld;
         var homeWorld    = localPlayer.HomeWorld;
 
-        TestValue(currentWorld.Id, ref previousWorldId, ref shouldPublish);
+        TestValue(currentWorld.RowId, ref previousWorldId, ref shouldPublish);
 
         if (shouldPublish)
             Publish(new
                     {
-                        World      = currentWorld?.GameData?.Name.ToString(),
-                        WorldId    = currentWorld?.Id,
-                        Datacenter = currentWorld?.GameData?.DataCenter?.Value?.Name.ToString(),
+                        World = currentWorld.Value.Name.ToString(),
+                        WorldId    = currentWorld.RowId,
+                        Datacenter = currentWorld.Value.DataCenter.Value.Name.ToString(),
                     });
     }
 

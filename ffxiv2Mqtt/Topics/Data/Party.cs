@@ -49,7 +49,7 @@ internal class Party : Topic, IDisposable
         {
             writer.WriteStartObject();
             writer.WriteString("Name", value.Name.ToString());
-            writer.WriteString("Job",  ((Job)value.ClassJob.Id).ToString());
+            writer.WriteString("Job",  ((Job)value.ClassJob.RowId).ToString());
             writer.WriteEndObject();
         }
     }

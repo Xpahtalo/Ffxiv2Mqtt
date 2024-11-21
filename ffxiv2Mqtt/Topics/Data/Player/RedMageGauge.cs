@@ -1,10 +1,8 @@
 ﻿using System;
 using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
-using Dalamud.IoC;
-using Dalamud.Plugin.Services;
 using Ffxiv2Mqtt.Enums;
-using Ffxiv2Mqtt.Services;
+using Ffxiv2Mqtt.Extensions;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
@@ -23,7 +21,7 @@ internal class RedMageGauge : Topic, IDisposable
     {
         if (Service.ClientState.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.RedMage)
+        if (!localPlayer.IsJob(Job.RedMage))
             return;
         var gauge = Service.JobGauges.Get<RDMGauge>();
 

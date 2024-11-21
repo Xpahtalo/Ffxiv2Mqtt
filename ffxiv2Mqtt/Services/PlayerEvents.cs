@@ -33,7 +33,7 @@ internal class PlayerEvents : IDisposable
         var localPlayer = Service.ClientState.LocalPlayer;
         if (localPlayer == null) return;
 
-        var currentJob = (Job)localPlayer.ClassJob.Id;
+        var currentJob = (Job)localPlayer.ClassJob.RowId;
         if (currentJob != previousJob) {
 #if DEBUG
             Service.Log.Debug($"{GetType().Name}.Update: Job changed from \"{previousJob}\" to \"{currentJob}\". Firing OnJobChange event.");

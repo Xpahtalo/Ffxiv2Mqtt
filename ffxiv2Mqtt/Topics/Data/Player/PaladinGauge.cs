@@ -3,6 +3,7 @@ using Dalamud.Game.ClientState.JobGauge.Types;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.IoC;
 using Ffxiv2Mqtt.Enums;
+using Ffxiv2Mqtt.Extensions;
 using Ffxiv2Mqtt.Services;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
@@ -20,7 +21,7 @@ internal class PaladinGauge : Topic, IDisposable
     {
         if (Service.ClientState.IsPvP)
             return;
-        if ((Job)localPlayer.ClassJob.Id != Job.Paladin)
+        if (!localPlayer.IsJob(Job.Paladin))
             return;
         var gauge = Service.JobGauges.Get<PLDGauge>();
 
