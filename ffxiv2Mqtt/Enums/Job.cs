@@ -43,6 +43,8 @@ public enum Job : uint
     Dancer        = 38,
     Reaper        = 39,
     Sage          = 40,
+    Viper         = 41,
+    Pictomancer   = 42,
 }
 
 public static class JobExtensions
