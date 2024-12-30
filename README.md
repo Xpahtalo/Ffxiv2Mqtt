@@ -54,3 +54,48 @@ put `/mqttcustom lights on` in a macro, then create an automation in HomeAssista
 ```
 
 You now have a macro in game that can turn on your bedroom lights!
+
+### Available Topics
+
+Below is a list of Topics that this plugin can send:
+
+- **Event Topics**  
+  - Event/ContentFinder  
+  - Event/Login  
+  - Event/TerritoryChanged  
+  - Event/WorldChanged  
+
+- **Party and Player Information**  
+  - Party  
+  - Player/Casting  
+  - Player/Combat/Stats  
+  - Player/Conditions  
+  - Player/Crafter/CurrentStats  
+  - Player/Gatherer/CurrentStats  
+  - Player/Info  
+  - Player/Status  
+
+- **Job-Specific Player Gauges**  
+  - Player/JobGauge/AST  
+  - Player/JobGauge/BRD  
+  - Player/JobGauge/BLM  
+  - Player/JobGauge/DNC  
+  - Player/JobGauge/DRK  
+  - Player/JobGauge/DRG  
+  - Player/JobGauge/GNB  
+  - Player/JobGauge/MCH  
+  - Player/JobGauge/MNK  
+  - Player/JobGauge/NIN  
+  - Player/JobGauge/PLD  
+  - Player/JobGauge/PCT  
+  - Player/JobGauge/RPR  
+  - Player/JobGauge/RDM  
+  - Player/JobGauge/SGE  
+  - Player/JobGauge/SAM  
+  - Player/JobGauge/SCH  
+  - Player/JobGauge/SMN  
+  - Player/JobGauge/VPR  
+  - Player/JobGauge/WAR  
+  - Player/JobGauge/WHM  
+
+For more detailed information about these Topics, refer to the source code: [ffxiv2Mqtt/Topics](/ffxiv2Mqtt/Topics).
