@@ -98,20 +98,28 @@ public class Ffxiv2Mqtt : IDalamudPlugin
             case TestCommandName:
                 Service.MqttManager.PublishMessage("test", "success");
                 break;
-            case CustomCommandName:
+            case CustomCommandName: 
             {
-                var argsList = args.Split(' ');
+				var spaceIndex = args.IndexOf(' ');
 
-                if (argsList.Length < 2) {
-                    Service.Log.Error("Not enough arguments.");
-                    return;
-                }
+				if (spaceIndex == -1) {
+					Service.Log.Error("Not enough arguments. Please provide both a topic and a payload.");
+					break;
+				}
 
-                Service.Log.Information($"Publishing a custom message. topic: {argsList[0]} payload: {argsList[1]}");
-                Service.MqttManager.PublishMessage(argsList[0], argsList[1]);
-                break;
-            }
-        }
+				var topic = args.Substring(0, spaceIndex);
+				var payload = args.Substring(spaceIndex + 1);
+
+				if (string.IsNullOrWhiteSpace(payload)) {
+					Service.Log.Error("Payload cannot be empty.");
+					break;
+				}
+
+				Service.Log.Information($"Publishing a custom message. topic: {topic} payload: {payload}");
+				Service.MqttManager.PublishMessage(topic, payload);
+				break;
+			}
+		}
     }
 
     private void DrawMainWindow() { windowSystem.Draw(); }
