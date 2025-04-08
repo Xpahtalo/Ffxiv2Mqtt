@@ -36,7 +36,7 @@ internal class PlayerStatuses : Topic, IDisposable
         foreach (var status in localPlayer.StatusList) {
             if (status.Address == IntPtr.Zero) continue;
             activeStatusCount++;
-            stacks += status.StackCount;
+            stacks += status.Param;
         }
 
         TestValue(activeStatusCount, ref statusCount, ref shouldPublish);
@@ -60,7 +60,7 @@ internal class PlayerStatuses : Topic, IDisposable
             writer.WriteNumber("Param",         value.Param);
             writer.WriteNumber("RemainingTime", value.RemainingTime);
             writer.WriteNumber("SourceID",      value.SourceId);
-            writer.WriteNumber("StackCount",    value.StackCount);
+            writer.WriteNumber("Parameter",    value.Param);
             writer.WriteEndObject();
         }
     }

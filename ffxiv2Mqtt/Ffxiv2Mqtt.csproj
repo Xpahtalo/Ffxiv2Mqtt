@@ -1,20 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Dalamud.NET.Sdk/11.0.0">
+<Project Sdk="Dalamud.NET.Sdk/12.0.2">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.7.0</Version>
+        <Version>1.0.8.0</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <Platforms>x64</Platforms>
-        <Nullable>enable</Nullable>
-        <LangVersion>latest</LangVersion>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
     
     <ItemGroup>

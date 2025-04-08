@@ -16,7 +16,6 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
     private byte  astralFireStacks;
     private int   astralSoulStacks;
     private byte  umbralIceStacks;
-    private short elementTimeRemaining;
     private short enochianTimeRemaining;
     private byte  umbralHearts;
     private byte  polyglotStacks;
@@ -56,7 +55,6 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
         TestValue(gauge.UmbralIceStacks,  ref umbralIceStacks,  ref shouldPublish);
         TestValue(gauge.UmbralHearts,     ref umbralHearts,     ref shouldPublish);
         TestValue(gauge.PolyglotStacks,   ref polyglotStacks,   ref shouldPublish);
-        TestCountDown(gauge.ElementTimeRemaining, ref elementTimeRemaining,  syncTimer, ref shouldPublish);
         TestCountDown(gauge.EnochianTimer,        ref enochianTimeRemaining, syncTimer, ref shouldPublish);
 
         if (shouldPublish)
@@ -68,7 +66,6 @@ internal class BlackMageGauge : Topic, IDisposable, IConfigurable
                         gauge.AstralFireStacks,
                         gauge.AstralSoulStacks,
                         gauge.UmbralIceStacks,
-                        ElementTimeRemaining = gauge.EnochianTimer,
                         gauge.UmbralHearts,
                         gauge.PolyglotStacks,
                     });

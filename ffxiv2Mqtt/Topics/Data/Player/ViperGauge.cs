@@ -7,69 +7,73 @@ using Ffxiv2Mqtt.Extensions;
 
 namespace Ffxiv2Mqtt.Topics.Data.Player;
 
-internal class ViperGauge : Topic, IDisposable {
-    private byte         rattlingCoilStacks;
-    private byte         serpentOffering;
+internal class ViperGauge : Topic, IDisposable
+{
     private byte         anguineTribute;
     private DreadCombo   dreadCombo;
+    private byte         rattlingCoilStacks;
     private SerpentCombo serpentCombo;
+    private byte         serpentOffering;
+
+    public ViperGauge()
+    {
+        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
+    }
 
     protected override string TopicPath => "Player/JobGauge/VPR";
     protected override bool   Retained  => false;
 
-    public ViperGauge() {
-        Service.PlayerEvents.LocalPlayerUpdated += PlayerUpdated;
-    }
-
-    public void Dispose() {
+    public void Dispose()
+    {
         Service.PlayerEvents.LocalPlayerUpdated -= PlayerUpdated;
     }
 
-    private void PlayerUpdated(IPlayerCharacter localPlayer) {
-        if (Service.ClientState.IsPvP) {
-            return;
-        }
+    private void PlayerUpdated(IPlayerCharacter localPlayer)
+    {
+        if (Service.ClientState.IsPvP) return;
 
-        if (!localPlayer.IsJob(Job.Viper)) {
-            return;
-        }
+        if (!localPlayer.IsJob(Job.Viper)) return;
 
         var gauge = Service.JobGauges.Get<VPRGauge>();
 
         var shouldPublish = false;
         TestValue(gauge.RattlingCoilStacks, ref rattlingCoilStacks, ref shouldPublish);
-        TestValue(gauge.SerpentOffering,    ref serpentOffering,    ref shouldPublish);
-        TestValue(gauge.AnguineTribute,     ref anguineTribute,     ref shouldPublish);
-        TestValue(gauge.DreadCombo,         ref dreadCombo,         ref shouldPublish);
-        TestValue(gauge.SerpentCombo,       ref serpentCombo,       ref shouldPublish);
+        TestValue(gauge.SerpentOffering, ref serpentOffering, ref shouldPublish);
+        TestValue(gauge.AnguineTribute, ref anguineTribute, ref shouldPublish);
+        TestValue(gauge.DreadCombo, ref dreadCombo, ref shouldPublish);
+        TestValue(gauge.SerpentCombo, ref serpentCombo, ref shouldPublish);
 
-        if (shouldPublish) {
-            var dreadCombo = gauge.DreadCombo switch {
+        if (shouldPublish)
+        {
+            var dreadComboName = gauge.DreadCombo switch
+            {
                 DreadCombo.Dreadwinder    => "Dreadwinder",
                 DreadCombo.HuntersCoil    => "HuntersCoil",
                 DreadCombo.SwiftskinsCoil => "SwiftskinsCoil",
                 DreadCombo.PitOfDread     => "PitOfDread",
                 DreadCombo.HuntersDen     => "HuntersDen",
                 DreadCombo.SwiftskinsDen  => "SwiftskinsDen",
-                _                         => "none",
+                _                         => "none"
             };
 
-            var serpentCombo = gauge.SerpentCombo switch {
-                SerpentCombo.DEATHRATTLE  => "DeathRattle",
-                SerpentCombo.LASTLASH     => "LastLash",
-                SerpentCombo.FIRSTLEGACY  => "FirstLegacy",
-                SerpentCombo.SECONDLEGACY => "SecondLegacy",
-                SerpentCombo.THIRDLEGACY  => "ThirdLegacy",
-                SerpentCombo.FOURTHLEGACY => "FourthLegacy",
-                _                         => "none",
+            var serpentComboName = gauge.SerpentCombo switch
+            {
+                SerpentCombo.DeathRattle  => "DeathRattle",
+                SerpentCombo.LastLash     => "LastLash",
+                SerpentCombo.FirstLegacy  => "FirstLegacy",
+                SerpentCombo.SecondLegacy => "SecondLegacy",
+                SerpentCombo.ThirdLegacy  => "ThirdLegacy",
+                SerpentCombo.FourthLegacy => "FourthLegacy",
+                _                         => "none"
             };
 
-            Publish(new {
+            Publish(new
+            {
                 gauge.RattlingCoilStacks,
                 gauge.SerpentOffering,
                 gauge.AnguineTribute,
-                DreadCombo   = dreadCombo,
-                SerpentCombo = serpentCombo,
+                DreadCombo   = dreadComboName,
+                SerpentCombo = serpentComboName
             });
         }
     }

@@ -60,7 +60,7 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
         TestValue(gauge.IsIfritAttuned,   ref isIfritAttuned,   ref shouldPublish);
         TestValue(gauge.IsTitanReady,     ref isTitanReady,     ref shouldPublish);
         TestValue(gauge.IsTitanAttuned,   ref isTitanAttuned,   ref shouldPublish);
-        TestCountDown(gauge.AttunmentTimerRemaining, ref attunmentTimerRemaining, syncTimer, ref shouldPublish);
+        TestCountDown(gauge.AttunementTimerRemaining, ref attunmentTimerRemaining, syncTimer, ref shouldPublish);
         TestCountDown(gauge.SummonTimerRemaining,    ref summonTimeRemaining,     syncTimer, ref shouldPublish);
 
         if (shouldPublish)
@@ -68,7 +68,7 @@ internal class SummonerGauge : Topic, IDisposable, IConfigurable
                     {
                         gauge.AetherflowStacks,
                         gauge.Attunement,
-                        gauge.AttunmentTimerRemaining,
+                        gauge.AttunementTimerRemaining,
                         gauge.IsBahamutReady,
                         gauge.IsPhoenixReady,
                         gauge.IsGarudaReady,
