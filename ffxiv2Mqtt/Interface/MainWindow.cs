@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Numerics;
+using Dalamud.Bindings.ImGui;
 using Dalamud.Interface.Colors;
 using Dalamud.Interface.Utility.Raii;
 using Dalamud.Interface.Windowing;
 using Ffxiv2Mqtt.Enums;
 using Ffxiv2Mqtt.Topics;
-using ImGuiNET;
 
 namespace Ffxiv2Mqtt.Interface;
 
@@ -194,7 +194,7 @@ internal class MainWindow : Window
         if (!ImGui.IsItemHovered())
             return;
         ImGui.BeginTooltip();
-        ImGui.TextUnformatted(text);
+        ImGui.Text(text);
         ImGui.EndTooltip();
     }
 
@@ -205,7 +205,7 @@ internal class MainWindow : Window
         if (!ImGui.IsItemHovered())
             return;
         ImGui.BeginTooltip();
-        ImGui.TextUnformatted(tooltipText);
+        ImGui.Text(tooltipText);
         ImGui.EndTooltip();
     }
 
