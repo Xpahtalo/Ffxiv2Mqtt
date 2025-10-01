@@ -107,7 +107,7 @@ You now have a macro in game that can turn on your bedroom lights!
 
 You can also create entities within Home Assistant, and use those entities in automations. Creating entities will also maintain a history of the tracked states.
 
-To create a sensor, first identify the data you want to track. For instance, if we want to create an entity of our character's current class, we'll need to subscribe to the `ffxiv/Player/Info` topic (make sure to add your client ID if you set one). You may want to go into the MQTT device settings and subscribe to `ffxiv/#` (or `ffxiv/clientID/#` if you set a client ID in the plugin settings)) to see all available data and properties.
+To create an entity, first identify the data you want to track. For instance, if we want to create an entity of our character's current class, you'll need to subscribe to the `ffxiv/Player/Info` topic (make sure to add your client ID if you set one and/or adjust the prefix if you changed it). You may want to go into the MQTT device settings and subscribe to `ffxiv/#` (or `ffxiv/clientID/#` if you set a client ID in the plugin settings)) to see all available data and properties.
 
 To add your first entity, click the "Add MQTT device" button:
 
