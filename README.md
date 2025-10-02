@@ -60,7 +60,25 @@ For more detailed information about these Topics, refer to the source code: [ffx
 ## Using with Home Assistant
 
 If you are using Mosquitto Broker through [Home Assistant](home-assistant.io), you can just add new a Home Assistant user and input the
-password and user into the plugin config.
+password and user into the plugin config. To verify that you are receiving messages in Home Assistant, go to your MQTT
+integration, click the settings icon on the main integration, and then use the "Listen to a topic" tool to see the incoming data from
+the plugin. To access this tool, go to the MQTT integration and click the "setttings" icon next to your configured broker:
+
+![Menu 1: click the setting icon to access the MQTT broker utilities](img/mqtt_listen_1.png)
+
+Next, set the topic name to `ffxiv/#` to see all topic data (or `ffxiv/ClientID/#` if you set a custom Client ID,
+replacing ClientID with the literal client ID you set in the plugin), then click the "Start Listening" button:
+
+![Menu 2: fill in the topic with wildcard and click "Start Listening"](img/mqtt_listen_2.png)
+
+At this point, you should start seeing a stream of messages from the game:
+
+![Menu 3: you should see messages from the game](img/mqtt_listen_3.png)
+
+If you do not see incoming messages,
+either the topic name is incorrect, the plugin is not connected to your broker, your Home Assistant instance is
+not connected with your broker. You may need to do actions in-game to see certain messages; try changing classes,
+getting into combat, teleporting to a new location, etc.
 
 ### Directly using MQTT Messages in Automations
 
@@ -107,7 +125,7 @@ You now have a macro in game that can turn on your bedroom lights!
 
 You can also create entities within Home Assistant, and use those entities in automations. Creating entities will also maintain a history of the tracked states.
 
-To create an entity, first identify the data you want to track. For instance, if we want to create an entity of our character's current class, you'll need to subscribe to the `ffxiv/Player/Info` topic (make sure to add your client ID if you set one and/or adjust the prefix if you changed it). You may want to go into the MQTT device settings and subscribe to `ffxiv/#` (or `ffxiv/clientID/#` if you set a client ID in the plugin settings)) to see all available data and properties.
+To create an entity, first identify the data you want to track. For instance, if we want to create an entity of our character's current class, you'll need to subscribe to the `ffxiv/Player/Info` topic (adjust as necessary if you set a custom prefix or client ID), and we'll need to get the Class property from the message.
 
 To add your first entity, click the "Add MQTT device" button:
 
