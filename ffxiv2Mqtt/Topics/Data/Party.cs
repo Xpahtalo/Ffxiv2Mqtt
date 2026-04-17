@@ -1,16 +1,12 @@
 ﻿using System;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using Dalamud.Game.ClientState.Party;
 using Dalamud.Plugin.Services;
-using Ffxiv2Mqtt.Enums;
+using FFXIVClientStructs.FFXIV.Client.UI.Info;
 
 namespace Ffxiv2Mqtt.Topics.Data;
 
 internal class Party : Topic, IDisposable
 {
-    private          int                   partyCount;
-    private readonly JsonSerializerOptions serializerOptions;
+    private int partyCount;
 
     protected override string TopicPath => "Party";
     protected override bool   Retained  => false;
@@ -18,39 +14,48 @@ internal class Party : Topic, IDisposable
 
     public Party()
     {
-        serializerOptions = new JsonSerializerOptions
-                            {
-                                Converters = { new PartyMemberSerializer() },
-                            };
         Service.Framework.Update += FrameworkUpdate;
     }
 
-    private void FrameworkUpdate(IFramework framework)
+    private unsafe void FrameworkUpdate(IFramework framework)
     {
-        if (Service.DutyState is { IsDutyStarted: false })
+        if (Service.DutyState.IsDutyStarted)
             return;
 
-        // Assuming none of the previous blocking conditions are true, send party messages if the count has changed.
-        if (Service.PartyList.Length == partyCount)
-            return;
+        if (InfoProxyCrossRealm.IsCrossRealmParty())
+        {
+            var partyProxy = InfoProxyCrossRealm.Instance();
+            if (partyProxy is null)
+                return;
+            
+            var count = 0;
 
-        partyCount = Service.PartyList.Length;
-        Publish($"{TopicPath}/Count",   partyCount.ToString());
-        Publish($"{TopicPath}/Members", JsonSerializer.Serialize(Service.PartyList, serializerOptions));
+            foreach (var group in partyProxy->CrossRealmGroups)
+            foreach (var member in group.GroupMembers)
+                if (member.ContentId != 0)
+                    count++;
+
+            if (count == partyCount)
+                return;
+
+            partyCount = count;
+        }
+        else
+        {
+            if (Service.PartyList.Count == partyCount)
+                return;
+            partyCount = Service.PartyList.Count;
+        }
+
+        Publish(new
+        {
+            Count = partyCount,
+            CrossRealm = InfoProxyCrossRealm.IsCrossRealmParty()
+        });
     }
 
-    public void Dispose() { Service.Framework.Update -= FrameworkUpdate; }
-
-    private class PartyMemberSerializer : JsonConverter<IPartyMember>
+    public void Dispose()
     {
-        public override IPartyMember Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) { throw new NotImplementedException(); }
-
-        public override void Write(Utf8JsonWriter writer, IPartyMember value, JsonSerializerOptions options)
-        {
-            writer.WriteStartObject();
-            writer.WriteString("Name", value.Name.ToString());
-            writer.WriteString("Job",  ((Job)value.ClassJob.RowId).ToString());
-            writer.WriteEndObject();
-        }
+        Service.Framework.Update -= FrameworkUpdate;
     }
 }
