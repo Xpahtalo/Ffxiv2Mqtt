@@ -2,7 +2,7 @@
 <Project Sdk="Dalamud.NET.Sdk/15.0.0">
     <PropertyGroup>
         <Authors>X'pahtalo</Authors>
-        <Version>1.0.8.2</Version>
+        <Version>1.0.9.0</Version>
         <PackageProjectUrl>https://github.com/Xpahtalo/Ffxiv2Mqtt</PackageProjectUrl>
     </PropertyGroup>
     
