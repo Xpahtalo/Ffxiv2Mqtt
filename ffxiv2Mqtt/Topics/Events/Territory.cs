@@ -13,7 +13,7 @@ internal sealed class Territory : Topic, ICleanable, IDisposable
     public Territory() { Service.ClientState.TerritoryChanged += TerritoryChanged; }
 
     // Publish a message whenever the player changes territories.
-    private void TerritoryChanged(ushort territoryId)
+    private void TerritoryChanged(uint territoryId)
     {
         var territoryRow = Service.DataManager.Excel.GetSheet<TerritoryType>().GetRow(territoryId);
         Publish(JsonSerializer.Serialize(new

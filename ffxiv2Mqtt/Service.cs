@@ -26,6 +26,7 @@ public class Service
     [PluginService] public static IJobGauges             JobGauges           { get; private set; }
     [PluginService] public static ICondition             Condition           { get; private set; }
     [PluginService] public static INotificationManager   NotificationManager { get; private set; }
+    [PluginService] public static IPlayerState           PlayerState         { get; private set; }
     [PluginService] public static IPluginLog             Log                 { get; private set; }
 }
 #pragma warning restore CS8618

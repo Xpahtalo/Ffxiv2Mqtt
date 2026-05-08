@@ -30,7 +30,7 @@ internal class PlayerEvents : IDisposable
 
     private void Update(IFramework framework)
     {
-        var localPlayer = Service.ClientState.LocalPlayer;
+        var localPlayer = Service.ObjectTable.LocalPlayer;
         if (localPlayer == null) return;
 
         var currentJob = (Job)localPlayer.ClassJob.RowId;

@@ -155,7 +155,7 @@ internal class MainWindow : Window
     {
         var i = 0;
         foreach (var outputChannel in configuration.OutputChannels.ToArray()) {
-            using var id = new ImRaii.Id().Push(i++);
+            ImGui.PushID(i++);
 
             var path         = outputChannel.Path;
             var channelType  = outputChannel.ChannelType;
@@ -180,6 +180,7 @@ internal class MainWindow : Window
             if (ImGui.InputText("Delimiter", ref delimiter, 10)) outputChannel.Delimiter = delimiter;
 
             if (ImGui.Button("Remove")) configuration.OutputChannels.Remove(outputChannel);
+            ImGui.PopID();
         }
     }
 

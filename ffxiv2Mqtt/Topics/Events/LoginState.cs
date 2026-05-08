@@ -23,16 +23,23 @@ internal sealed class LoginState : Topic, ICleanable, IDisposable
     // Publish the login state and character name when logging in.
     private void Login()
     {
-        Task.Run(async () =>
+        Task.Run(async void () =>
         {
-            while (Service.ClientState.LocalPlayer?.Name is null)
-                await Task.Delay(1000);
-            characterName = Service.ClientState.LocalPlayer!.Name.ToString();
-            Publish(JsonSerializer.Serialize(new
-                                             {
-                                                 LoggedIn  = true,
-                                                 Character = characterName,
-                                             }));
+            try
+            {
+                while (!Service.PlayerState.IsLoaded)
+                    await Task.Delay(1000);
+                characterName = Service.PlayerState.CharacterName;
+                Publish(JsonSerializer.Serialize(new
+                {
+                    LoggedIn  = true,
+                    Character = characterName,
+                }));
+            }
+            catch (Exception e)
+            {
+                Service.Log.Error($"Exception while waiting for character to load:\n{e}");
+            }
         });
     }
 
